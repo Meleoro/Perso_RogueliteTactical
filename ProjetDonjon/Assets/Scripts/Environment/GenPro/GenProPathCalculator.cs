@@ -10,11 +10,11 @@ public class GenProTile
     public GenProTile previousTile;
 }
 
-public class PathCalculator 
+public class GenProPathCalculator 
 {
     public GenProTile[,] floorGenProTiles;
 
-    public PathCalculator(int algoTabSize)
+    public GenProPathCalculator(int algoTabSize)
     {
         floorGenProTiles = new GenProTile[algoTabSize, algoTabSize];
 

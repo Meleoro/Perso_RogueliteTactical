@@ -17,7 +17,7 @@ public class ProceduralGenerationManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;
-    private PathCalculator _pathCalculator;
+    private GenProPathCalculator _pathCalculator;
 
 
     private void Start()
@@ -35,7 +35,7 @@ public class ProceduralGenerationManager : MonoBehaviour
         wantedRoomAmount = Random.Range(enviroData.minRoomAmount, enviroData.maxRoomAmount);
 
         int tabSize = wantedRoomAmount * 2;
-        _pathCalculator = new PathCalculator(tabSize);
+        _pathCalculator = new GenProPathCalculator(tabSize);
 
         GenerateStartAndEnd(new Vector2Int(wantedRoomAmount, wantedRoomAmount));
         CloseUnusedEntrances();

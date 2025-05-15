@@ -303,6 +303,12 @@
       },
       "url": "https://packages.unity.com"
     },
+    "utilities": {
+      "version": "file:D:/GIT/Utilities",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,

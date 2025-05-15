@@ -171,6 +171,7 @@ public class HeroInfosScreen : MonoBehaviour
         int currentStrength = heroData.baseStrength;
         int currentSpeed = heroData.baseSpeed;
         int currentLuck = heroData.baseLuck;
+        int currentMovePoints = heroData.baseMovePoints;
 
         for(int i = 0; i < hero.EquippedLoot.Length; i++)
         {
@@ -191,7 +192,7 @@ public class HeroInfosScreen : MonoBehaviour
         _statsTexts[2].text = currentSpeed.ToString();
         _statsTexts[3].text = currentLuck.ToString();
 
-        hero.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck);
+        hero.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints);
     }
 
     private void ActualiseInventory()

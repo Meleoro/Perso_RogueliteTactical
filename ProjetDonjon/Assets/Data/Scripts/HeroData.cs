@@ -1,14 +1,22 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HeroData", menuName = "Scriptable Objects/HeroData")]
-public class HeroData : ScriptableObject
+[Serializable]
+public struct HeroSkillStruct
 {
-    [Header("Main Stats")]
-    public int baseHealth;
-    public int baseStrength;
-    public int baseSpeed;
-    public int baseLuck;
+    public SkillData skill;
+    public int levelToUnlock;
+}
 
-    [Header("Prefabs")]
+[CreateAssetMenu(fileName = "HeroData", menuName = "Scriptable Objects/HeroData")]
+public class HeroData : UnitData
+{
+    [Header("Hero Infos")]
+    public int baseMovePoints;
+    public int maxSkillPoints;
+    public int startSkillPoints;
     public Inventory heroInventoryPrefab;
+
+    [Header("Hero Skills")]
+    public HeroSkillStruct[] heroSkills;
 }

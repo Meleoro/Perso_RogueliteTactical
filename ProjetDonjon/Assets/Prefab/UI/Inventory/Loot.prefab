@@ -398,14 +398,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 32
   possibleBackgrounds:
-  - backgroundSprite: {fileID: -5247728971304704449, guid: 76430d63dd25d124492427a01a535f83, type: 3}
+  - backgroundSprite: {fileID: 3869326146484331497, guid: 76430d63dd25d124492427a01a535f83, type: 3}
     spaceTaken:
     - row: 01
-  - backgroundSprite: {fileID: 1006691037975800823, guid: 76430d63dd25d124492427a01a535f83, type: 3}
+  - backgroundSprite: {fileID: -9133514187571732568, guid: 76430d63dd25d124492427a01a535f83, type: 3}
     spaceTaken:
     - row: 01
     - row: 01
-  - backgroundSprite: {fileID: -4987674522823557757, guid: 76430d63dd25d124492427a01a535f83, type: 3}
+  - backgroundSprite: {fileID: -1281370316282833832, guid: 76430d63dd25d124492427a01a535f83, type: 3}
     spaceTaken:
     - row: 0101
     - row: 0101

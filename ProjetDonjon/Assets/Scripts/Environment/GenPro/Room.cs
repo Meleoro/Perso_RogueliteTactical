@@ -1,8 +1,11 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 
 
@@ -27,6 +30,9 @@ public class Room : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private BattleTile battleTilePrefab;
     [SerializeField] private Vector3 battleTilesOffset;
+    [SerializeField] private float startCameraSize;
+    [SerializeField] private int minDangerAmount;
+    [SerializeField] private int maxDangerAmount;
 
     [Header("Private Infos")]
     private Vector2Int roomCoordinates;
@@ -34,11 +40,19 @@ public class Room : MonoBehaviour
     private Vector2Int roomsSizeUnits;
     private RoomEntrance[] roomEntrances;
     private List<BattleTile> battleTiles;
+    private List<Enemy> roomEnemies = new();
+    private List<EnemySpawner> roomEnemySpawners;
+    private bool battleIsDone;
+    private BattleTile[,] placedBattleTiles;
+    private Vector2Int tabSize;
 
     [Header("Public Infos")]
     public Vector2Int RoomCoordinates { get { return roomCoordinates; } }
     public Vector2Int RoomSize { get { return roomSize; } }
     public RoomEntrance[] RoomEntrances { get { return roomEntrances; } }
+    public List<Enemy> RoomEnemies {  get { return roomEnemies; } }
+    public BattleTile[,] PlacedBattleTiles {  get { return placedBattleTiles; } }
+    public List<BattleTile> BattleTiles {  get { return battleTiles; } }
 
     [Header("References")]
     [SerializeField] private Tilemap _groundTilemap;
@@ -46,14 +60,20 @@ public class Room : MonoBehaviour
     [SerializeField] private Tilemap _wallsTilemap;
     [SerializeField] private Tilemap _bottomWallsTilemap;
     [SerializeField] private RoomBlockableEntranceStruct[] _blockableEntrances;
+    [SerializeField] private Transform _spawnersParentTr;
 
     [Header("Other References")]
     public Transform _heroSpawnerTr;
 
 
+
     private void Start()
     {
         SetupBattleTiles();
+
+        if (_spawnersParentTr == null) return;
+        SetupSpawners();
+        SetupEnemies();
     }
 
 
@@ -285,27 +305,146 @@ public class Room : MonoBehaviour
 
     #region Battle Functions
 
-    public void SetupBattleTiles()
+    private void SetupBattleTiles()
     {
-        for(int x = _battleGroundTilemap.cellBounds.min.x; x < _battleGroundTilemap.cellBounds.max.x; x++)
+        battleTiles = new List<BattleTile>();
+        tabSize = new Vector2Int(Mathf.Abs(_battleGroundTilemap.cellBounds.max.x - _battleGroundTilemap.cellBounds.min.x), Mathf.Abs(_battleGroundTilemap.cellBounds.max.y - _battleGroundTilemap.cellBounds.min.y));
+        placedBattleTiles = new BattleTile[tabSize.x, tabSize.y];
+         
+        for (int x = _battleGroundTilemap.cellBounds.min.x; x < _battleGroundTilemap.cellBounds.max.x; x++)
         {
             for (int y = _battleGroundTilemap.cellBounds.min.y; y < _battleGroundTilemap.cellBounds.max.y; y++)
             {
                 if (!_battleGroundTilemap.HasTile(new Vector3Int(x, y))) continue;
 
+                Vector2Int currentCoordinates = new Vector2Int(x - _battleGroundTilemap.cellBounds.min.x, y - _battleGroundTilemap.cellBounds.min.y);
                 Vector3 tilePosWorld = _battleGroundTilemap.CellToWorld(new Vector3Int(x, y));
                 BattleTile newTile = Instantiate(battleTilePrefab, tilePosWorld + battleTilesOffset, Quaternion.Euler(0, 0, 0), transform);
+                battleTiles.Add(newTile);
 
-                newTile.SetupBattleTile(new Vector2Int(x, y));
+                newTile.SetupBattleTile(currentCoordinates);
+                StartCoroutine(newTile.HideTileCoroutine(Random.Range(0, 0.2f)));
+
+                placedBattleTiles[currentCoordinates.x, currentCoordinates.y] = newTile;
+            }
+        }
+
+        for (int x = 0; x < tabSize.x; x++)
+        {
+            for (int y = 0; y < tabSize.y; y++)
+            {
+                if (placedBattleTiles[x, y] == null) continue;
+
+                if(x < tabSize.x - 1)
+                    if (placedBattleTiles[x + 1, y] != null) placedBattleTiles[x, y].AddNeighbor(placedBattleTiles[x + 1, y]);
+
+                if (y < tabSize.y - 1)
+                    if (placedBattleTiles[x, y + 1] != null) placedBattleTiles[x, y].AddNeighbor(placedBattleTiles[x, y + 1]);
+
+                if(x > 0)
+                    if (placedBattleTiles[x - 1, y] != null) placedBattleTiles[x, y].AddNeighbor(placedBattleTiles[x - 1, y]);
+
+                if (y > 0)
+                    if (placedBattleTiles[x, y - 1] != null) placedBattleTiles[x, y].AddNeighbor(placedBattleTiles[x, y - 1]);
             }
         }
     }
 
+    private void SetupSpawners()
+    {
+        roomEnemySpawners = _spawnersParentTr.GetComponentsInChildren<EnemySpawner>().ToList();
+
+        for (int i = 0; i < roomEnemySpawners.Count; i++)
+        {
+            roomEnemySpawners[i].associatedTile = GetNearestBattleTile(roomEnemySpawners[i].transform.position);
+        }
+    }
+
+    private BattleTile GetNearestBattleTile(Vector2 position)
+    {
+        float bestDist = Mathf.Infinity;
+        BattleTile pickedTile = null;
+
+        for (int i = 0; i< battleTiles.Count; i++)
+        {
+            float currentDist = Vector2.Distance(position, battleTiles[i].transform.position);
+            if(currentDist < bestDist)
+            {
+                bestDist = currentDist;
+                pickedTile = battleTiles[i];    
+            }
+        }
+
+        return pickedTile;
+    }
+
+    private void SetupEnemies()
+    {
+        int currentDangerAmount = 0;
+        int antiCrashCounter = 0;
+
+        while(currentDangerAmount < minDangerAmount && antiCrashCounter++ < 100)
+        {
+            int pickedSpawnerIndex = Random.Range(0, roomEnemySpawners.Count);
+            EnemySpawner currentSpawner = roomEnemySpawners[pickedSpawnerIndex];
+
+            Enemy pickedEnemy = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
+            if (pickedEnemy is null) continue;
+
+            currentDangerAmount += pickedEnemy.EnemyData.dangerLevel;
+            Enemy newEnemy = Instantiate(pickedEnemy, transform);
+            newEnemy.MoveUnit(currentSpawner.associatedTile);
+
+            roomEnemies.Add(newEnemy);
+            roomEnemySpawners.Remove(currentSpawner);
+        }
+    }
+
+
+
+    public BattleTile GetBattleTile(Vector2Int coordinates)
+    {
+        if (coordinates.x >= tabSize.x)
+            return null;
+        if (coordinates.y >= tabSize.y)
+            return null;
+        if (coordinates.x < 0)
+            return null;
+        if (coordinates.y < 0)
+            return null;
+
+        return PlacedBattleTiles[coordinates.x, coordinates.y];
+    }
+
+
+    private void StartBattle()
+    {
+        battleIsDone = true;
+        BattleManager.Instance.StartBattle(battleTiles, transform.position, startCameraSize, this);
+
+        for(int i = 0; i < battleTiles.Count; i++)
+        {
+            StartCoroutine(battleTiles[i].ShowTileCoroutine(Random.Range(0, 0.2f)));
+        }
+    }
+
+    public void EndBattle()
+    {
+        for (int i = 0; i < battleTiles.Count; i++)
+        {
+            StartCoroutine(battleTiles[i].HideTileCoroutine(Random.Range(0, 0.2f)));
+        }
+    }
+
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (battleIsDone) return;
+
         if (collision.CompareTag("Hero"))
         {
-
+            StartBattle();
         }
     }
 

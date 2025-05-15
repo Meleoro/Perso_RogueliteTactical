@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: OldScreenEffectMaterial
+  m_Shader: {fileID: -6465566751694194690, guid: 73204a6e56198a74e9a76018acbe6982, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AddedLight: 1
+    - _BlurOffset: 0.00112
+    - _GridEffectSize: 130.58
+    - _GridEffectStrength: 0.15
+    - _HorizontalLinesCount: 200
+    - _HorizontalLinesSpeed: 0.05
+    - _HorizontalLinesStrength: 0.3
+    - _HorizontalLinesWidth: 0.2
+    - _HorizontalNoiseImpact: -1.2
+    - _HorizontalNoiseSize: 500
+    - _HorizontalNoiseSpeed: 0.5
+    - _HorizontalNoiseStrength: 0
+    - _MainEffectNoiseImpact: 1.7
+    - _MainEffectRemapX: -1
+    - _MainEffectRemapY: 2.43
+    - _MainEffectSize: 250.18
+    - _MainEffectStrength: 1
+    - _ScrollSpeed: 0.05
+    m_Colors:
+    - _HorizontalLinesColor: {r: 0.21698111, g: 0.21186364, b: 0.21186364, a: 0.38431373}
+    - _LeftBlurColor: {r: 1, g: 0, b: 0, a: 0}
+    - _RightBlurColor: {r: 0, g: 0.12997723, b: 1, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

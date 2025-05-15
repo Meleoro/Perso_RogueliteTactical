@@ -34,6 +34,8 @@ public class UIManager : GenericSingletonClass<UIManager>
     [Header("References")]
     [SerializeField] private InventoriesManager _inventoriesManager;
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
+    [SerializeField] private HeroInfoPanel[] _heroInfoPanels;
+    [SerializeField] private Animator _heroInfoPanelsAnimator;
 
 
     private void Start()
@@ -87,4 +89,28 @@ public class UIManager : GenericSingletonClass<UIManager>
     {
         currentState = UIState.Inventories;
     }
+
+
+    #region Battle UI
+
+    public void SetupHeroInfosPanel(Hero[] heroes)
+    {
+        for (int i = 0; i < _heroInfoPanels.Length; i++)
+        {
+            _heroInfoPanels[i].InitialisePanel(heroes[i]);
+            heroes[i].SetupHeroInfosPanel(_heroInfoPanels[i]);
+        }
+    }
+
+    public void ShowHeroInfosPanels()
+    {
+        _heroInfoPanelsAnimator.SetBool("IsOpened", true);
+    }
+
+    public void HideHeroInfosPanels()
+    {
+        _heroInfoPanelsAnimator.SetBool("IsOpened", false);
+    }
+
+    #endregion
 }

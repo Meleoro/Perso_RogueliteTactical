@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using UnityEngine;
-
 public class HeroController : MonoBehaviour
 {
     enum ControllerState
@@ -19,6 +19,8 @@ public class HeroController : MonoBehaviour
 
     [Header("Private Infos")]
     private ControllerState currentControllerState;
+    private bool isInBattle;
+    private bool isAutoMoving;
 
     [Header("References")]
     [SerializeField] private Animator _animator;
@@ -34,8 +36,16 @@ public class HeroController : MonoBehaviour
     }
 
 
-    private void Update()
+    public void UpdateController()
     {
+        if (isAutoMoving) return;
+        if (isInBattle) 
+        {
+            _rb.linearVelocity = Vector2.zero;
+            Move(Vector2.zero);
+            return;
+        }
+
         Move(InputManager.moveDir);
 
         if (InputManager.wantsToJump)
@@ -98,8 +108,44 @@ public class HeroController : MonoBehaviour
         }
     }
 
+
+    public IEnumerator AutoMoveCoroutine(Vector3 aimedPos)
+    {
+        isAutoMoving = true;
+
+        while (Vector2.Distance(aimedPos, transform.position) > 0.1f)
+        {
+            Move((aimedPos - transform.position).normalized);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.position = aimedPos;
+        transform.rotation = Quaternion.Euler(0, 0, 0);
+        isAutoMoving = false;
+    }
+
+
+    public Action EndAutoMoveAction;
+    public IEnumerator AutoMoveCoroutineEndBattle(Transform aimedTr)
+    {
+        isAutoMoving = true;
+
+        while (Vector2.Distance(aimedTr.position, transform.position) > 0.1f)
+        {
+            Move((aimedTr.position - transform.position).normalized);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        transform.position = aimedTr.position;
+        isAutoMoving = false;
+
+        EndAutoMoveAction.Invoke();
+    }
+
     #endregion
-    
+
 
     #region Jump Junctions 
 
@@ -163,4 +209,15 @@ public class HeroController : MonoBehaviour
     }
 
     #endregion
+
+
+    public void EnterBattle()
+    {
+        isInBattle = true;
+    }
+
+    public void ExitBattle()
+    {
+        isInBattle = false;
+    }
 }
