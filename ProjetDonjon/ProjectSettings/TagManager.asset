@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hero
   - Enemy
+  - Walls
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Interactibles
   - WallTilemap
   - HeroTrigger
-  - 
+  - TrapColliders
   - 
   - 
   - 

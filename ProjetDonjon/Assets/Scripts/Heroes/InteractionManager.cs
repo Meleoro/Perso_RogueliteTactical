@@ -8,6 +8,7 @@ public class InteractionManager : MonoBehaviour
     [Header("Private Infos")]
     private List<IInteractible> interactiblesAtRange = new List<IInteractible>();
     private IInteractible closestInteractible;
+    private bool isSetup;
 
     [Header("Referencess")]
     private Transform currentHeroTransform;
@@ -19,6 +20,7 @@ public class InteractionManager : MonoBehaviour
 
     public void ActualiseCurrentHeroTransform(Transform newTr)
     {
+        isSetup = true; 
         currentHeroTransform = newTr;
     }
 
@@ -27,6 +29,8 @@ public class InteractionManager : MonoBehaviour
 
     private void Update()
     {
+        if (!isSetup) return;
+
         transform.position = currentHeroTransform.position;
 
         if (closestInteractible is null) return;

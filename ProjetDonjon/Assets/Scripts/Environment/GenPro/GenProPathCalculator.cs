@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class GenProTile
 {
@@ -13,17 +14,19 @@ public class GenProTile
 public class GenProPathCalculator 
 {
     public GenProTile[,] floorGenProTiles;
+    GenProTile endTile;
 
     public GenProPathCalculator(int algoTabSize)
     {
-        floorGenProTiles = new GenProTile[algoTabSize, algoTabSize];
+        floorGenProTiles = new GenProTile[algoTabSize * 2, algoTabSize * 2];
 
-        for(int x = 0; x < algoTabSize; x++)
+        for(int x = 0; x < algoTabSize * 2; x++)
         {
-            for (int y = 0; y < algoTabSize; y++)
+            for (int y = 0; y < algoTabSize * 2; y++)
             {
                 floorGenProTiles[x, y] = new GenProTile();
                 floorGenProTiles[x, y].tileCoordinates = new Vector2Int(x, y);
+                floorGenProTiles[x, y].tileRoom = null;
             }
         }
     }
@@ -39,10 +42,14 @@ public class GenProPathCalculator
         }
     }
 
-    public List<Vector2Int> GetPath(Vector2Int startLocation, Vector2Int endLocation, bool includeStart = false, bool includeEnd = false)
+    public List<Vector2Int> GetPath(Vector2Int startLocation, Vector2Int endLocation, bool includeStart = false, bool includeEnd = false, bool onlyOnEmpty = false)
     {
+        if(startLocation == endLocation) new List<Vector2Int>();
+
         List<Vector2Int> openList = new List<Vector2Int>();
         List<Vector2Int> closedList = new List<Vector2Int>();
+
+        endTile = floorGenProTiles[endLocation.x, endLocation.y];
 
         openList.Add(startLocation);
 
@@ -72,7 +79,7 @@ public class GenProPathCalculator
                 return GetFinalPath(startLocation, endLocation, includeStart, includeEnd);
             }
 
-            List<Vector2Int> pickedLocationNeighbors = GetPossibleNeighborLocations(pickedPos);
+            List<Vector2Int> pickedLocationNeighbors = GetPossibleNeighborLocations(pickedPos, onlyOnEmpty);
             for(int i = 0; i < pickedLocationNeighbors.Count; i++)
             {
                 if (openList.Contains(pickedLocationNeighbors[i])) continue;
@@ -94,6 +101,7 @@ public class GenProPathCalculator
         currentTile = currentTile.previousTile;
 
         if (includeEnd) finalPath.Add(endLocation);
+        if(currentTile == null) return new List<Vector2Int>();
 
         while(currentTile.tileCoordinates != startLocation)
         {
@@ -116,39 +124,79 @@ public class GenProPathCalculator
     }
 
 
-    private List<Vector2Int> GetPossibleNeighborLocations(Vector2Int startLocation)
+    private List<Vector2Int> GetPossibleNeighborLocations(Vector2Int startLocation, bool onlyOnEmpty)
     {
         List<Vector2Int> returnedList = new List<Vector2Int>();
 
         // Left
-        if(VerifyNeighborTile(startLocation, startLocation + new Vector2Int(-1, 0)))
+        if (startLocation.x - 1 >= 0)
         {
-            returnedList.Add(startLocation + new Vector2Int(-1, 0));
+            if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(-1, 0), onlyOnEmpty))
+            {
+                returnedList.Add(startLocation + new Vector2Int(-1, 0));
+            }
         }
 
         // Right
-        if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(1, 0)))
+        if (startLocation.x + 1 < floorGenProTiles.GetLength(0))
         {
-            returnedList.Add(startLocation + new Vector2Int(1, 0));
+            if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(1, 0), onlyOnEmpty))
+            {
+                returnedList.Add(startLocation + new Vector2Int(1, 0));
+            }
         }
 
         // Up
-        if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(0, 1)))
+        if (startLocation.y + 1 < floorGenProTiles.GetLength(1))
         {
-            returnedList.Add(startLocation + new Vector2Int(0, 1));
+            if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(0, 1), onlyOnEmpty))
+            {
+                returnedList.Add(startLocation + new Vector2Int(0, 1));
+            }
         }
 
         // Down
-        if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(0, -1)))
+        if (startLocation.y - 1 >= 0)
         {
-            returnedList.Add(startLocation + new Vector2Int(0, -1));
+            if (VerifyNeighborTile(startLocation, startLocation + new Vector2Int(0, -1), onlyOnEmpty))
+            {
+                returnedList.Add(startLocation + new Vector2Int(0, -1));
+            }
         }
 
         return returnedList;
     }
 
-    private bool VerifyNeighborTile(Vector2Int startLocation, Vector2Int verifiedLocation)
+    private bool VerifyNeighborTile(Vector2Int startLocation, Vector2Int verifiedLocation, bool onlyOnEmpty)
     {
+        if (onlyOnEmpty)
+        {
+            if (floorGenProTiles[startLocation.x, startLocation.y].tileRoom == null &&
+                floorGenProTiles[verifiedLocation.x, verifiedLocation.y].tileRoom == null)
+            {
+                return true;
+            }
+
+            if (floorGenProTiles[startLocation.x, startLocation.y].tileRoom != null &&
+                floorGenProTiles[verifiedLocation.x, verifiedLocation.y].tileRoom == null)
+            {
+                if (floorGenProTiles[startLocation.x, startLocation.y].tileRoom.VerifyHasDoorToward(verifiedLocation))
+                {
+                    return true;
+                }
+            }
+
+            if (floorGenProTiles[verifiedLocation.x, verifiedLocation.y] == endTile && floorGenProTiles[verifiedLocation.x, verifiedLocation.y].tileRoom != null)
+            {
+                if (floorGenProTiles[verifiedLocation.x, verifiedLocation.y].tileRoom.VerifyHasDoorToward(startLocation))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         // If both tiles are empty
         if (floorGenProTiles[startLocation.x, startLocation.y].tileRoom == null && 
             floorGenProTiles[verifiedLocation.x, verifiedLocation.y].tileRoom == null)

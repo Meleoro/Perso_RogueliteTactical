@@ -11,6 +11,8 @@ public class SkillsPanelButton : MonoBehaviour
     [SerializeField] private Color overlayActionAddedColor;
     [SerializeField] private Color clickedActionAddedColor;
     [SerializeField] private Color impossibleActionRemovedColor;
+    [SerializeField] private Sprite fullSPSprite;
+    [SerializeField] private Sprite emptySPSprite;
 
     [Header("Actions")]
     public Action<SkillsPanelButton> OnButtonClick;
@@ -29,19 +31,38 @@ public class SkillsPanelButton : MonoBehaviour
     [Header("References")]
     [SerializeField] private TextMeshProUGUI _buttonText;
     [SerializeField] private Image _buttonImage;
+    [SerializeField] private Image _skillIcon;
+    [SerializeField] private Image[] _skillPointsImages;
+    private RectTransform _rectTr;
 
 
     private void Start()
     {
         colorSave = _buttonImage.color;
+        _rectTr = GetComponent<RectTransform>();
     }
 
     public void InitialiseButton(HeroSkillStruct heroSkillStruct, Hero hero)
     {
         skillData = heroSkillStruct.skill;
         _buttonText.text = skillData.skillName;
+        _skillIcon.sprite = skillData.skillIcon;    
 
         canBeUsed = true;
+    }
+
+    public void ActualiseSkillPointsImages(Hero currentHero)
+    {
+        for(int i = 0; i < _skillPointsImages.Length; i++)
+        {
+            _skillPointsImages[i].sprite = i < currentHero.CurrentSkillPoints ? fullSPSprite : emptySPSprite;
+            _skillPointsImages[i].gameObject.SetActive(i < skillData.skillPointCost);
+        }
+
+        if(currentHero.CurrentSkillPoints < skillData.skillPointCost)
+        {
+            canBeUsed = false;
+        }
     }
 
 
@@ -52,12 +73,12 @@ public class SkillsPanelButton : MonoBehaviour
         if (isClicked)
         {
             _buttonImage.ULerpImageColor(0.1f, colorSave + overlayActionAddedColor + clickedActionAddedColor);
-            _buttonImage.rectTransform.UChangeScale(0.1f, Vector3.one * 1.1f);
+            _rectTr.UChangeScale(0.1f, Vector3.one * 1.05f);
         }
         else
         {
             _buttonImage.ULerpImageColor(0.1f, colorSave + overlayActionAddedColor);
-            _buttonImage.rectTransform.UChangeScale(0.1f, Vector3.one * 1f);
+            _rectTr.UChangeScale(0.1f, Vector3.one * 1f);
 
             OnSkillOverlay.Invoke(skillData);
         }
@@ -70,16 +91,27 @@ public class SkillsPanelButton : MonoBehaviour
         if (isClicked)
         {
             _buttonImage.ULerpImageColor(0.1f, colorSave + clickedActionAddedColor);
-            _buttonImage.rectTransform.UChangeScale(0.1f, Vector3.one * 1.05f);
+            _rectTr.UChangeScale(0.1f, Vector3.one * 1f);
         }
         else
         {
             _buttonImage.ULerpImageColor(0.1f, colorSave);
-            _buttonImage.rectTransform.UChangeScale(0.1f, Vector3.one * 0.95f);
+            _rectTr.UChangeScale(0.1f, Vector3.one * 0.95f);
 
             if(!noActionCall)
                 OnSkillQuitOverlay.Invoke();
         }
+    }
+
+    public void QuitOverlayButtonInstant(bool noActionCall = false)
+    {
+        isClicked = false;
+
+        _buttonImage.color = colorSave;
+        _rectTr.localScale = Vector3.one * 0.95f;
+
+        if (!noActionCall)
+            OnSkillQuitOverlay.Invoke();
     }
 
     public void ClickButton()
@@ -104,12 +136,12 @@ public class SkillsPanelButton : MonoBehaviour
     private IEnumerator ClickEffectCoroutine()
     {
         _buttonImage.ULerpImageColor(0.1f, colorSave - clickedActionAddedColor);
-        _buttonImage.rectTransform.UChangeScale(0.1f, Vector3.one * 0.85f);
+        _rectTr.UChangeScale(0.1f, Vector3.one * 0.9f);
 
         yield return new WaitForSeconds(0.1f);
 
         _buttonImage.ULerpImageColor(0.2f, colorSave + clickedActionAddedColor + overlayActionAddedColor);
-        _buttonImage.rectTransform.UChangeScale(0.2f, Vector3.one * 1.05f);
+        _rectTr.UChangeScale(0.2f, Vector3.one * 1.05f);
     }
 
     #endregion

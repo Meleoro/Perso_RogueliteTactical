@@ -5,11 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Utilities;
 
 public class BattleManager : GenericSingletonClass<BattleManager>
 {
+    [Header("Parameters")]
+    [SerializeField] private Tile[] holeTiles;
+
     [Header("Actions")]
     public Action OnMoveUnit;
     public Action OnSkillUsed;
@@ -17,8 +22,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     [Header("Private Infos")]
     private bool isInBattle;
-    private List<Hero> currentHeroes = new();
-    private List<Enemy> currentEnemies = new();
+    private List<Unit> currentHeroes = new();
+    private List<Unit> deadHeroes = new();
+    private List<AIUnit> currentEnemies = new();
     private List<Unit> currentUnits = new();
     private Room battleRoom;
     private Unit currentUnit;
@@ -28,10 +34,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     [Header("Public Infos")]
     public Room BattleRoom { get {  return battleRoom; } }
     public Unit CurrentUnit { get { return currentUnit; } }
-    public List<Hero> CurrentHeroes { get { return currentHeroes; } }
-    public List<Enemy> CurrentEnemies { get { return currentEnemies; } }
+    public List<Unit> CurrentHeroes { get { return currentHeroes; } }
+    public List<AIUnit> CurrentEnemies { get { return currentEnemies; } }
     public bool IsInBattle {  get { return isInBattle; } }
     public MenuType CurrentActionType { get { return _playerActionsMenu.CurrentMenu; } }
+    public Tile[] HoleTiles { get { return holeTiles; } }
 
 
     [Header("References")]
@@ -65,11 +72,21 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         if (unit.GetType() == typeof(Hero))
         {
-            currentHeroes.Add((Hero)unit);
+            currentHeroes.Add(unit);
+
+            if(deadHeroes.Contains(unit))
+                deadHeroes.Remove(unit);
         }
         else
         {
-            currentEnemies.Add((Enemy)unit);
+            if((unit as AIUnit).IsEnemy)
+            {
+                currentEnemies.Add((AIUnit)unit);
+            }
+            else
+            {
+                currentHeroes.Add((AIUnit)unit);
+            }
         }
     }
 
@@ -81,15 +98,23 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         if (unit.GetType() == typeof(Hero))
         {
             currentHeroes.Remove((Hero)unit);
+            deadHeroes.Add(unit);
         }
         else 
         {
-            currentEnemies.Remove((Enemy)unit);
+            if ((unit as AIUnit).IsEnemy)
+            {
+                currentEnemies.Remove((AIUnit)unit);
+            }
+            else
+            {
+                currentHeroes.Remove((AIUnit)unit);
+            }
         }
 
         if(currentEnemies.Count == 0)
         {
-            //EndBattle();
+            EndBattle();
         }
         else if(currentHeroes.Count == 0)
         {
@@ -122,8 +147,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             battleRoom.RoomEnemies[i].EnterBattle(battleRoom.RoomEnemies[i].CurrentTile);
         }
 
-        _timeline.InitialiseTimeline(currentUnits);
-
         CameraManager.Instance.EnterBattle(battleCenterPos, cameraSize);
         HeroesManager.Instance.EnterBattle(possibleTiles);
 
@@ -136,7 +159,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     {
         yield return new WaitForSeconds(1f);
 
-        StartCoroutine(BattleManager.Instance.NextTurnCoroutine(0, false));
+        _timeline.InitialiseTimeline(currentUnits);
+
+        StartCoroutine(NextTurnCoroutine(0, false));
     }
 
 
@@ -147,6 +172,12 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         battleRoom.EndBattle();
 
         UIManager.Instance.HideHeroInfosPanels();
+
+        foreach(Unit hero in deadHeroes)
+        {
+            hero.Heal(1);
+        }
+        deadHeroes.Clear();
 
         CameraManager.Instance.ExitBattle();
         HeroesManager.Instance.ExitBattle();
@@ -169,15 +200,14 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         currentUnit = _timeline.Slots[0].Unit;
         currentUnit.StartTurn();
 
-        CameraManager.Instance.FocusOnTr(currentUnit.transform, 5f);
-
         if (currentUnit.GetType() == typeof(Hero))
         {
             _playerActionsMenu.SetupHeroActionsUI(currentUnit as Hero);
         }
         else
         {
-            Enemy enemy = currentUnit as Enemy;
+            CameraManager.Instance.FocusOnTr(currentUnit.transform, 5f);
+            AIUnit enemy = currentUnit as AIUnit;
             StartCoroutine(enemy.PlayEnemyTurnCoroutine());
         }
     }
@@ -198,11 +228,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
 
         List<Vector2Int> path = _pathCalculator.GetPath(currentUnit.CurrentTile.TileCoordinates, aimedTile.TileCoordinates, useDiagonals);
-        BattleTile[] pathTiles =  new BattleTile[path.Count];
+        BattleTile[] pathTiles =  new BattleTile[path.Count - 1];
 
-        for(int i = 0; i < path.Count; i++)
+        for(int i = 1; i < path.Count; i++)
         {
-            pathTiles[i] = battleRoom.PlacedBattleTiles[path[i].x, path[i].y];
+            pathTiles[i-1] = battleRoom.PlacedBattleTiles[path[i].x, path[i].y];
         }
 
         StartCoroutine(currentUnit.MoveUnitCoroutine(pathTiles));
@@ -212,8 +242,17 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         yield return new WaitForSeconds(path.Count * 0.1f);
 
-        if(CurrentUnit.GetType() == typeof(Hero)) 
-            OnMoveUnit.Invoke();
+        if(CurrentUnit.GetType() == typeof(Hero))
+        {
+            (CurrentUnit as Hero).DoAction();
+            if ((currentUnit as Hero).CurrentActionPoints > 0)
+            {
+                _playerActionsMenu.OpenActionsMenu();
+                yield break;
+            }
+
+            currentUnit.EndTurn(0.5f);
+        }
     }
 
 
@@ -224,6 +263,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         OnSkillUsed.Invoke();
 
+        BattleTile[] skillBattleTiles = GetAllSkillTiles().ToArray();
+        StartCoroutine(CameraManager.Instance.DoAttackFeelCoroutine(CurrentUnit._unitAnimsInfos));
         CurrentUnit._animator.SetTrigger(usedSkill.animName);
 
         while (true)
@@ -234,15 +275,26 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 break;
         }
 
-        BattleTile[] skillBattleTiles = GetAllSkillTiles().ToArray();
         for (int i = 0; i < skillBattleTiles.Length; i++)
         {
             ApplySkillOnTile(skillBattleTiles[i], usedSkill, currentUnit);
         }
 
         ResetTiles();
-        
-        StartCoroutine(NextTurnCoroutine(1f));
+
+        if(currentUnit.GetType() == typeof(Hero))
+        {
+            (currentUnit as Hero).DoAction();
+            if ((currentUnit as Hero).CurrentActionPoints > 0)
+            {
+                yield return new WaitForSeconds(0.5f);
+
+                _playerActionsMenu.OpenActionsMenu();
+                yield break;
+            }
+        }
+
+        currentUnit.EndTurn(0.5f);
     }
 
 
@@ -264,29 +316,30 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     private void ApplySkillOnTile(BattleTile battleTile, SkillData usedSkill, Unit unit)
     {
-        if (battleTile.UnitOnTile is null) return;
-
         for (int i = 0; i < usedSkill.skillEffects.Length; i++)
         {
-            if (battleTile.UnitOnTile is null) return;
-
             // We verify the effect applies on the unit type on the tile
             switch (usedSkill.skillEffects[i].skillEffectTargetType)
             {
                 case SkillEffectTargetType.Enemies:
-                    if (battleTile.UnitOnTile.GetType() == currentUnit.GetType()) continue;
+                    if (battleTile.UnitOnTile is null) return;
+                    if (battleTile.UnitOnTile.IsEnemy == currentUnit.IsEnemy) continue;
                     break;
 
                 case SkillEffectTargetType.Allies:
-                    if (battleTile.UnitOnTile.GetType() != currentUnit.GetType()) continue;
+                    if (battleTile.UnitOnTile is null) return;
+                    if (battleTile.UnitOnTile.IsEnemy != currentUnit.IsEnemy) continue;
                     break;
 
                 case SkillEffectTargetType.Self:
+                    if (battleTile.UnitOnTile is null) return;
                     if (battleTile.UnitOnTile != unit) continue;
                     break;
+
+                case SkillEffectTargetType.Empty:
+                    if (battleTile.UnitOnTile is not null) continue;
+                    break;
             }
-
-
 
             // We apply the effect
             switch (usedSkill.skillEffects[i].skillEffectType)
@@ -296,11 +349,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                     break;
 
                 case SkillEffectType.Heal:
-
+                    battleTile.UnitOnTile.Heal(usedSkill.skillEffects[i].additivePower);
                     break;
 
                 case SkillEffectType.AddShield:
-                    battleTile.UnitOnTile.AddShield(usedSkill.skillEffects[i].additivePower);
+                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, 100, currentUnit);
                     break;
 
                 case SkillEffectType.ModifyMove:
@@ -326,8 +379,27 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 case SkillEffectType.Provoke:
                     battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
                     break;
+
+                case SkillEffectType.Hinder:
+                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
+                    break;
+
+                case SkillEffectType.Summon:
+                    SummonUnit(usedSkill.skillEffects[i].summonPrefab, battleTile);
+                    break;
             }
         }
+    }
+
+    private void SummonUnit(AIUnit prefab, BattleTile tile)
+    {
+        AIUnit unit = Instantiate(prefab, transform);
+        unit.MoveUnit(tile);
+
+        AddUnit(unit);
+        unit.EnterBattle(tile);
+
+        _timeline.AddUnit(unit);
     }
 
     #endregion
@@ -335,7 +407,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     #region Tiles Functions
 
-    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize)
+    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool checkReachable = true, bool useDiagonals = false, bool blockedByUnits = false)
     {
         List<BattleTile> returnedTiles = new List<BattleTile>();
 
@@ -347,7 +419,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             Vector2Int coordAccordingToCenter = new Vector2Int(currentCoord.x - (int)(paternSize * 0.5f), currentCoord.y - (int)(paternSize * 0.5f));
             BattleTile battleTile = battleRoom.GetBattleTile(paternMiddle + coordAccordingToCenter);
 
-            if (battleTile is not null) returnedTiles.Add(battleTile);
+            if (checkReachable && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, useDiagonals)) continue;
+            if (battleTile is null) continue;
+            if (battleTile.UnitOnTile is not null && blockedByUnits) continue;
+
+            returnedTiles.Add(battleTile);
         }
 
         return returnedTiles;
@@ -389,19 +465,19 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                     Vector2Int coordinateDif = overlayedTile.TileCoordinates - CurrentUnit.CurrentTile.TileCoordinates;
 
                     if(coordinateDif.y != 0)
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternVertical, (int)Mathf.Sqrt(skill.skillAOEPaternVertical.Length));
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternVertical, (int)Mathf.Sqrt(skill.skillAOEPaternVertical.Length), false);
 
                     else
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternHorizontal, (int)Mathf.Sqrt(skill.skillAOEPaternHorizontal.Length));
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternHorizontal, (int)Mathf.Sqrt(skill.skillAOEPaternHorizontal.Length), false);
                 }
                 else
                 {
-                    skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPatern, (int)Mathf.Sqrt(skill.skillAOEPatern.Length));
+                    skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPatern, (int)Mathf.Sqrt(skill.skillAOEPatern.Length), false);
                 }
                 break;
 
             case SkillType.SkillArea:
-                skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length));
+                skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length), false);
                 break;
         }
 
@@ -412,19 +488,62 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     }
 
 
-    public void DisplayPossibleMoveTiles(Enemy enemy)
+    // FOR ENEMIES, SHOWS THE POSSIBLE MOVE / SKILL TILES 
+    public void DisplayPossibleTiles(AIUnit enemy)
     {
         ResetTiles();
 
-        List<BattleTile> moveTills = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.EnemyData.movePatern, (int)Mathf.Sqrt(enemy.EnemyData.movePatern.Length));
-        for (int i = 0; i < moveTills.Count; i++)
+        List<BattleTile> tiles = new List<BattleTile>();
+        List<BattleTile> secondaryTiles = new List<BattleTile>();
+        switch (enemy.CurrentPreviewType)
         {
-            moveTills[i].DisplayMoveTile();
+            case PreviewType.Move:
+                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern, 
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, true);
+
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    tiles[i].DisplayMoveTile();
+                }
+
+                break;
+
+            case PreviewType.Attack:
+                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.CurrentSkillData.skillPatern,
+                    (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true);
+
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    tiles[i].DisplayPossibleAttackTile(true);
+                }
+                break;
+
+            case PreviewType.MoveAndAttack:
+                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern,
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, true);
+
+                for (int i = 0; i < tiles.Count; i++)
+                {
+                    secondaryTiles = GetPaternTiles(tiles[i].TileCoordinates, enemy.CurrentSkillData.skillPatern,
+                        (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true);
+
+                    for (int j = 0; j < secondaryTiles.Count; j++)
+                    {
+                        if (secondaryTiles[j].CurrentTileState == BattleTileState.Move) continue;
+                        secondaryTiles[j].DisplayPossibleAttackTile(true);
+                    }
+
+                    tiles[i].DisplayMoveTile();
+                }
+
+                break;
         }
     }
 
     public void StopDisplayPossibleMoveTiles()
     {
+        if (_playerActionsMenu.CurrentMenu == MenuType.Skills) return;
+
         ResetTiles();
 
         if(_playerActionsMenu.CurrentMenu == MenuType.Move)
@@ -465,6 +584,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             {
                 if (closedList.Contains(neighbors[j])) continue;
                 if (neighbors[j].UnitOnTile != null) continue;
+                if (neighbors[j].IsHole) continue;
 
                 openList.Add(neighbors[j]);
                 closedList.Add(neighbors[j]);
@@ -479,7 +599,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     public void ResetTiles()
     {
-        for(int i = 0; i < battleRoom.BattleTiles.Count; i++)
+        for (int i = 0; i < battleRoom.BattleTiles.Count; i++)
         {
             battleRoom.BattleTiles[i].DisplayNormalTile();
         }

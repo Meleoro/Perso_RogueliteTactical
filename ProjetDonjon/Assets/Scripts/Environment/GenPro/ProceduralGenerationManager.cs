@@ -1,22 +1,38 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
 
-public class ProceduralGenerationManager : MonoBehaviour
+public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGenerationManager>
 {
+    private enum RoomType
+    {
+        Battle,
+        Corridor,
+        CorridorTrap,
+        CorridorJump,
+        Trap,
+        Jump,
+        Challenge,
+        Puzzle
+    }
+
     [Header("Parameters")]
-    [SerializeField] private EnviroData enviroData;
+    public EnviroData enviroData;
     [SerializeField] private Vector2Int roomSizeUnits;
     [SerializeField] private Vector2 offsetRoomCenter;
-
 
     [Header("Private Infos")]
     private int wantedRoomAmount;
     private List<Room> generatedRooms;
     private Vector3 spawnPos;
 
+    [Header("Public Infos")]
+    public int currentFloor;
+
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;
+    [SerializeField] private SpriteLayererManager _spriteLayererManager;
     private GenProPathCalculator _pathCalculator;
 
 
@@ -24,6 +40,7 @@ public class ProceduralGenerationManager : MonoBehaviour
     {
         GenerateFloor(enviroData);
         _heroesManager.Initialise(null, spawnPos);
+        StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.1f));
     }
 
 
@@ -38,6 +55,9 @@ public class ProceduralGenerationManager : MonoBehaviour
         _pathCalculator = new GenProPathCalculator(tabSize);
 
         GenerateStartAndEnd(new Vector2Int(wantedRoomAmount, wantedRoomAmount));
+        GenerateAlternativePathes(2);
+        GenerateDeadEnds(3);
+
         CloseUnusedEntrances();
     }
 
@@ -51,17 +71,76 @@ public class ProceduralGenerationManager : MonoBehaviour
         // End
         Vector2Int endPos = new Vector2Int(0, 0);
         int antiCrashCounter = 0;
-        while (_pathCalculator.GetManhattanDistance(centerPosition, endPos) > enviroData.maxDistGoldenPath ||
-            _pathCalculator.GetManhattanDistance(centerPosition, endPos) < enviroData.minDistGoldenPath && ++antiCrashCounter < 1000)
+        while ((_pathCalculator.GetManhattanDistance(centerPosition, endPos) > enviroData.maxDistGoldenPath ||
+            _pathCalculator.GetManhattanDistance(centerPosition, endPos) < enviroData.minDistGoldenPath) && ++antiCrashCounter < 1000)
         {
             endPos = new Vector2Int(centerPosition.x + Random.Range(-enviroData.minDistGoldenPath, enviroData.minDistGoldenPath),
                 centerPosition.y + Random.Range(2, enviroData.maxDistGoldenPath));
         }
 
         AddRoom(endPos, enviroData.possibleStairsRooms[Random.Range(0, enviroData.possibleStairsRooms.Length)]);
-        GeneratePath(centerPosition, endPos);
+        GeneratePath(centerPosition, endPos, (int)(_pathCalculator.GetManhattanDistance(centerPosition, endPos) * 0.5f));
     }
 
+
+    private void GenerateAlternativePathes(int alternativePathesCount)
+    {
+        for(int i = 0; i < alternativePathesCount; ++i)
+        {
+            Room baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+            Vector2Int firstRoomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+            int antiCrash = 0;
+
+            while((_pathCalculator.floorGenProTiles[firstRoomCoordinates.x, firstRoomCoordinates.y].tileRoom != null || 
+                !baseRoom.VerifyHasDoorToward(firstRoomCoordinates)) && antiCrash++ < 200)
+            {
+                baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+                firstRoomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+            }
+
+            baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+            Vector2Int secondRoomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+            antiCrash = 0;
+            List<Vector2Int> path = _pathCalculator.GetPath(firstRoomCoordinates, secondRoomCoordinates, true, true, true);
+
+            while ((_pathCalculator.floorGenProTiles[secondRoomCoordinates.x, secondRoomCoordinates.y].tileRoom != null ||
+                !baseRoom.VerifyHasDoorToward(secondRoomCoordinates) || path.Count < 2 || path.Count > 4) && antiCrash++ < 200)
+            {
+                baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+                secondRoomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+                path = _pathCalculator.GetPath(firstRoomCoordinates, secondRoomCoordinates, true, true, true);
+            }
+
+            GeneratePath(firstRoomCoordinates, secondRoomCoordinates, 
+                (int)(path.Count * 0.5f), true);
+        }
+    }
+
+
+    private void GenerateDeadEnds(int deadEndsCount)
+    {
+        for (int i = 0; i < deadEndsCount; ++i)
+        {
+            Room baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+            Room newRoom = GetRoomFromType(i == deadEndsCount - 1 ? (RoomType)6 : (RoomType)Random.Range(4, 6));
+            Vector2Int roomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+            newRoom.SetupRoom(roomCoordinates, roomSizeUnits);
+            int antiCrash = 0;
+
+            while ((_pathCalculator.floorGenProTiles[roomCoordinates.x, roomCoordinates.y].tileRoom != null ||
+                !baseRoom.VerifyHasDoorToward(roomCoordinates) || !newRoom.VerifyHasDoorToward(baseRoom.RoomCoordinates)) && antiCrash++ < 200)
+            {
+                baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+                newRoom = GetRoomFromType(i == deadEndsCount - 1 ? (RoomType)6 : (RoomType)Random.Range(4, 6));
+                roomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+                newRoom.SetupRoom(roomCoordinates, roomSizeUnits);
+            }
+
+            AddRoom(roomCoordinates, newRoom);
+        }
+
+
+    }
 
     private void CloseUnusedEntrances()
     {
@@ -74,15 +153,92 @@ public class ProceduralGenerationManager : MonoBehaviour
 
     #region Utility Functions
 
-
-    private void GeneratePath(Vector2Int start, Vector2Int end)
+    private Vector2Int GetRandomDirection()
     {
-        List<Vector2Int> path = _pathCalculator.GetPath(start, end);
+        int random = Random.Range(0, 4);
+        switch(random)
+        {
+            case 0:
+                return new Vector2Int(1, 0);
+
+            case 1:
+                return new Vector2Int(-1, 0);
+
+            case 2:
+                return new Vector2Int(0, 1);
+
+            case 3:
+                return new Vector2Int(0, -1);
+
+        }
+
+        return Vector2Int.zero;
+    }
+
+    private RoomType[] GetPathRoomTypes(Vector2Int[] path, int wantedBattleRoomAmount)
+    {
+        RoomType[] result = new RoomType[path.Length];
+
+        while (true)
+        {
+            int battleRoomAmount = 0;
+
+            for(int i = 0; i < result.Length; i++)
+            {
+                result[i] = (RoomType)Random.Range(0, 4);
+                if (result[i] == RoomType.Battle) battleRoomAmount++;
+            }
+
+            if(battleRoomAmount == wantedBattleRoomAmount)
+            {
+                return result;
+            }
+        }
+    }
+
+    private Room GetRoomFromType(RoomType roomType)
+    {
+        switch(roomType)
+        {
+            case RoomType.Battle:
+                return enviroData.possibleBattleRooms[Random.Range(0, enviroData.possibleBattleRooms.Length)];
+
+            case RoomType.Corridor:
+                return enviroData.possibleCorridorRooms[Random.Range(0, enviroData.possibleCorridorRooms.Length)];
+
+            case RoomType.CorridorTrap:
+                return enviroData.possibleCorridorTrapRooms[Random.Range(0, enviroData.possibleCorridorTrapRooms.Length)];
+
+            case RoomType.CorridorJump:
+                return enviroData.possibleCorridorPlateformRooms[Random.Range(0, enviroData.possibleCorridorPlateformRooms.Length)];
+
+            case RoomType.Trap:
+                return enviroData.possibleTrapRooms[Random.Range(0, enviroData.possibleTrapRooms.Length)];
+
+            case RoomType.Jump:
+                return enviroData.possiblePlateformRooms[Random.Range(0, enviroData.possiblePlateformRooms.Length)];
+
+            case RoomType.Challenge:
+                return enviroData.possibleChallengeRooms[Random.Range(0, enviroData.possibleChallengeRooms.Length)];
+
+            case RoomType.Puzzle:
+                return enviroData.possiblePuzzleRooms[Random.Range(0, enviroData.possiblePuzzleRooms.Length)];
+        }
+
+        return null;
+    }
+
+    private void GeneratePath(Vector2Int start, Vector2Int end, int wantedBattleRoomAmount, bool includeStartEnd = false)
+    {
+        List<Vector2Int> path = _pathCalculator.GetPath(start, end, includeStartEnd, includeStartEnd, true);
         int antiCrashCounter = 0;
+        int currentPathIndex = 0;
+
+        RoomType[] pathRoomTypes = GetPathRoomTypes(path.ToArray(), wantedBattleRoomAmount);
 
         while(!VerifyPathIsValid(path) && ++antiCrashCounter < 1000)
         {
-            Room testedRoom = enviroData.possibleBattleRooms[Random.Range(0, enviroData.possibleBattleRooms.Length)];
+            Room testedRoom = GetRoomFromType(pathRoomTypes[currentPathIndex]);
             Vector2Int currentCoordinates = path[0];
             bool found = false;
 
@@ -102,6 +258,7 @@ public class ProceduralGenerationManager : MonoBehaviour
             if (found)
             {
                 AddRoom(currentCoordinates, testedRoom);
+                currentPathIndex++;
             }
         }
     }

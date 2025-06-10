@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e6cef5a84204b45954bf504b67252a, type: 3}
   m_Name: Group Up !
   m_EditorClassIdentifier: 
-  skillName: Group Up !
+  skillName: SHIELD AURA
   skillDescription: Adds 1 shield to all near allies
   animName: Skill2
   skillPointCost: 2
+  skillIcon: {fileID: -780177246, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   skillType: 2
   skillEffects:
   - skillEffectType: 6

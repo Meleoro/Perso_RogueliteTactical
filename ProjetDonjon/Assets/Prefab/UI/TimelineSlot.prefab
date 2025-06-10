@@ -91,8 +91,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heroColor: {r: 0.29803923, g: 0.4666667, b: 0.5568628, a: 1}
   enemyColor: {r: 0.5568628, g: 0.3529412, b: 0.29803923, a: 1}
-  baseSize: 0.9
-  firstIndexSize: 1.1
+  baseSize: 1
+  firstIndexSize: 1.2
   _unitImage: {fileID: 7475442312084876127}
   _mainImage: {fileID: 4192438689127611930}
   _rectTr: {fileID: 2043052236102996954}

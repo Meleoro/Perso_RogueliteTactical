@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e6cef5a84204b45954bf504b67252a, type: 3}
   m_Name: Slash
   m_EditorClassIdentifier: 
-  skillName: Slash
+  skillName: SLASH
   skillDescription: 'Hit targets on 3 tiles '
   animName: Skill1
   skillPointCost: 2
+  skillIcon: {fileID: -769846746, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   skillType: 1
   skillEffects:
   - skillEffectType: 0

@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utilities;
@@ -7,9 +9,17 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 {
     [Header("Parameters")]
     [SerializeField] private float followSpeed;
+    [SerializeField] private float sizeFollowSpeed;
     [SerializeField] private Vector3 followOffset;
     [SerializeField] private float battleMinSize;
     [SerializeField] private float battleMaxSize;
+
+    [Header("Camera Auto")]
+    [SerializeField] private LayerMask wallLayerMask;
+    [SerializeField] private float baseSizeExplo;
+    [SerializeField] private float maxSizeModifierExplo;
+    [SerializeField] private float maxRaycastDistExplo;
+    [SerializeField] private int raycastAmount;
 
     [Header("Private Infos")]
     private Transform followedTransform;
@@ -19,9 +29,15 @@ public class CameraManager : GenericSingletonClass<CameraManager>
     private bool isInitialised;
     private bool isInBattle;
     private bool isShaking;
+    private float angleBetweenRaycasts;
+    private Vector2 bottomLeftLimit;
+    private Vector2 upRightLimit;
 
     [Header("Public Infos")]
     public Camera Camera { get { return _camera; } }
+
+    [Header("Actions")]
+    public Action OnCameraMouseInput;
 
     [Header("References")]
     [SerializeField] private Camera _camera;
@@ -34,23 +50,48 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 
         this.followedTransform = followedTransform;
         baseSize = _camera.orthographicSize;
+
+        angleBetweenRaycasts = 360f / raycastAmount;
     }
 
 
-    private void Update()
+    private void LateUpdate()
     {
-        if (!isInitialised) return;
-        if (!isInBattle)
+        if (!isInBattle && isInitialised)
         {
             currentWantedPos = followedTransform.position + followOffset;
-            currentWantedSize = baseSize;
+            currentWantedSize = baseSize + GetEnviroSizeModificator();
         }
 
         transform.position = Vector3.Lerp(transform.position, currentWantedPos, followSpeed * Time.deltaTime);
-        _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, currentWantedSize, followSpeed * Time.deltaTime);
+        _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, currentWantedSize, sizeFollowSpeed * Time.deltaTime);
 
         ManageMouseInputs();
     }
+
+
+    #region Explo Camera Functions
+
+    private float GetEnviroSizeModificator()
+    {
+        float currentAngle = 0;
+        float averageDist = 0;
+
+        for(int i = 0; i < raycastAmount; i++)
+        {
+            Vector2 dir = new Vector2(Mathf.Cos(currentAngle * Mathf.Deg2Rad), Mathf.Sin(currentAngle * Mathf.Deg2Rad));
+            RaycastHit2D hit = Physics2D.Raycast(currentWantedPos, dir, maxRaycastDistExplo, wallLayerMask);
+
+            if (hit) averageDist += hit.distance;
+            else averageDist += maxRaycastDistExplo;
+
+            currentAngle += angleBetweenRaycasts;
+        }
+        
+        return Mathf.Lerp(-maxSizeModifierExplo, 0, ((averageDist / raycastAmount) / maxRaycastDistExplo));
+    }
+
+    #endregion
 
 
     #region Battle Functions
@@ -60,7 +101,10 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         isInBattle = true;
 
         currentWantedPos = battleCenterPos + followOffset;
-        currentWantedSize = cameraSize; 
+        currentWantedSize = cameraSize;
+
+        bottomLeftLimit = battleCenterPos - new Vector3(10, 5);
+        upRightLimit = battleCenterPos + new Vector3(10, 5);
     }
 
     public void ExitBattle()
@@ -73,6 +117,15 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         if (Input.GetMouseButton(1))
         {
             currentWantedPos -= (Vector3)InputManager.mouseDelta * (Time.deltaTime * 4);
+            if(InputManager.mouseDelta.sqrMagnitude > 0.1f)
+            {
+                OnCameraMouseInput?.Invoke();
+            }
+
+            currentWantedPos = new Vector3(
+                Mathf.Clamp(currentWantedPos.x, bottomLeftLimit.x, upRightLimit.x),
+                Mathf.Clamp(currentWantedPos.y, bottomLeftLimit.y, upRightLimit.y), 
+                currentWantedPos.z);
         }
 
         currentWantedSize += InputManager.mouseScroll;
@@ -103,6 +156,34 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 
         currentWantedPos = focusedTr.position + followOffset;
         currentWantedSize = cameraSize;
+    }
+
+    public IEnumerator DoAttackFeelCoroutine(UnitAnimsInfos animInfos)
+    {
+        currentWantedSize = 4f;
+
+        while (true)
+        {
+            if (animInfos.PlaySkillEffect)
+                break;
+
+            currentWantedSize -= Time.deltaTime;
+            currentWantedSize = Mathf.Clamp(currentWantedSize, battleMinSize, battleMaxSize);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        currentWantedSize = _camera.orthographicSize + 1.5f;
+
+        float timer = 0;
+        while (timer < 0.5f)
+        {
+            currentWantedSize -= Time.deltaTime * (_camera.orthographicSize - 4);
+
+            timer += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     public void FocusOnPosition(Vector3 focusedPos, float cameraSize)

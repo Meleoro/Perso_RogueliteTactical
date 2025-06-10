@@ -2,8 +2,8 @@ using UnityEditor;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-[CustomEditor(typeof(EnemyData))]
-public class EnemyDataEditor : Editor
+[CustomEditor(typeof(AIData))]
+public class AIDataEditor : Editor
 {
     private SerializedObject so;
     private GUIStyle moduleNameStyle = new GUIStyle();

@@ -22,6 +22,7 @@ public class UIManager : GenericSingletonClass<UIManager>
             else OnStartDrag?.Invoke();
         } 
     }
+    public AlterationDetailsPanel AlterationDetailsPanel { get { return _alterationDetailsPanel; } }
 
     [Header("Actions")]
     public Action OnStartDrag;
@@ -34,8 +35,15 @@ public class UIManager : GenericSingletonClass<UIManager>
     [Header("References")]
     [SerializeField] private InventoriesManager _inventoriesManager;
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
-    [SerializeField] private HeroInfoPanel[] _heroInfoPanels;
-    [SerializeField] private Animator _heroInfoPanelsAnimator;
+    [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
+
+    [Header("References Hero Infos")]
+    [SerializeField] private HeroInfoPanel[] _heroInfoPanels1H;
+    [SerializeField] private Animator _heroInfoPanelsAnimator1H;
+    [SerializeField] private HeroInfoPanel[] _heroInfoPanels2H;
+    [SerializeField] private Animator _heroInfoPanelsAnimator2H;
+    [SerializeField] private HeroInfoPanel[] _heroInfoPanels3H;
+    [SerializeField] private Animator _heroInfoPanelsAnimator3H;
 
 
     private void Start()
@@ -95,21 +103,63 @@ public class UIManager : GenericSingletonClass<UIManager>
 
     public void SetupHeroInfosPanel(Hero[] heroes)
     {
-        for (int i = 0; i < _heroInfoPanels.Length; i++)
+        HeroInfoPanel[] currentPanels = new HeroInfoPanel[0];
+        switch (heroes.Length)
         {
-            _heroInfoPanels[i].InitialisePanel(heroes[i]);
-            heroes[i].SetupHeroInfosPanel(_heroInfoPanels[i]);
+            case 1:
+                currentPanels = _heroInfoPanels1H;
+                break;
+
+            case 2:
+                currentPanels = _heroInfoPanels2H;  
+                break;
+
+            case 3:
+                currentPanels = _heroInfoPanels3H;
+                break;
+        }
+
+        for (int i = 0; i < heroes.Length; i++)
+        {
+            currentPanels[i].InitialisePanel(heroes[i]);
+            heroes[i].SetupHeroInfosPanel(currentPanels[i]);
         }
     }
 
     public void ShowHeroInfosPanels()
     {
-        _heroInfoPanelsAnimator.SetBool("IsOpened", true);
+        switch (HeroesManager.Instance.Heroes.Length)
+        {
+            case 1:
+                _heroInfoPanelsAnimator1H.SetBool("IsOpened", true);
+                break;
+
+            case 2:
+                _heroInfoPanelsAnimator2H.SetBool("IsOpened", true);
+                break;
+
+            case 3:
+                _heroInfoPanelsAnimator3H.SetBool("IsOpened", true);
+                break;
+        }
     }
 
     public void HideHeroInfosPanels()
     {
-        _heroInfoPanelsAnimator.SetBool("IsOpened", false);
+        switch (HeroesManager.Instance.Heroes.Length)
+        {
+            case 1:
+                _heroInfoPanelsAnimator1H.SetBool("IsOpened", false);
+                break;
+
+            case 2:
+                _heroInfoPanelsAnimator2H.SetBool("IsOpened", false);
+                break;
+
+            case 3:
+                _heroInfoPanelsAnimator3H.SetBool("IsOpened", false);
+                break;
+        }
     }
 
     #endregion

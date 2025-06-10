@@ -16,6 +16,7 @@ public class InputManager : MonoBehaviour
     public static bool wantsToRotateLeft;
     public static bool wantsToRotateRight;
     public static bool wantsToReturn;
+    public static bool wantsToRightClick;
 
     private void Update()
     {
@@ -30,5 +31,6 @@ public class InputManager : MonoBehaviour
         wantsToRotateLeft = _playerInput.actions["RotateLeft"].WasPressedThisFrame();
         wantsToRotateRight = _playerInput.actions["RotateRight"].WasPressedThisFrame();
         wantsToReturn = _playerInput.actions["Return"].WasPressedThisFrame();
+        wantsToRightClick = _playerInput.actions["RightClick"].WasPressedThisFrame();
     }
 }

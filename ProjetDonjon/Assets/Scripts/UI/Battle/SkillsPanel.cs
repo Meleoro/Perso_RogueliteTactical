@@ -42,6 +42,8 @@ public class SkillsPanel : MonoBehaviour
         currentHero = hero;
         isOpenned = true;
 
+        currentButtonSkill = null;
+
         transform.position = hero.transform.position + offset;
 
         for (int i = 0; i < _skillButtons.Length; i++)
@@ -54,6 +56,8 @@ public class SkillsPanel : MonoBehaviour
 
             _skillButtons[i].gameObject.SetActive(true);
             _skillButtons[i].InitialiseButton(hero.HeroData.heroSkills[i], hero);
+            _skillButtons[i].ActualiseSkillPointsImages(hero);
+            _skillButtons[i].QuitOverlayButtonInstant(true);
         }
 
         _animator.SetBool("IsOpenned", true);

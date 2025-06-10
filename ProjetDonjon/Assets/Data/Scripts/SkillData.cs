@@ -14,7 +14,8 @@ public enum SkillEffectTargetType
 {
     Self,
     Allies,
-    Enemies
+    Enemies,
+    Empty
 }
 
 public enum SkillEffectType
@@ -28,7 +29,9 @@ public enum SkillEffectType
     AddShield,
     AddEnergy,
     Push,
-    Provoke
+    Provoke,
+    Hinder,
+    Summon
 }
 
 [Serializable]
@@ -40,6 +43,8 @@ public struct SkillEffect
     public int additivePower;
     public float multipliedPower;
     public int duration;
+
+    public AIUnit summonPrefab;
 }
 
 
@@ -50,6 +55,7 @@ public class SkillData : ScriptableObject
     public string skillDescription;
     public string animName;
     public int skillPointCost;
+    public Sprite skillIcon;
 
     public SkillType skillType;
     public SkillEffect[] skillEffects;

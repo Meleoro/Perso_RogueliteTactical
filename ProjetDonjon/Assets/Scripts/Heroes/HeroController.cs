@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using Utilities;
+
+public enum ControllerState
+{
+    Idle,
+    Walk,
+    Jump,
+    Fall
+}
+
 public class HeroController : MonoBehaviour
 {
-    enum ControllerState
-    {
-        Idle,
-        Walk,
-        Jump,
-        Fall
-    }
-
     [Header("Parameters")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
@@ -21,6 +24,12 @@ public class HeroController : MonoBehaviour
     private ControllerState currentControllerState;
     private bool isInBattle;
     private bool isAutoMoving;
+    private Vector2 saveSpriteLocalPos;
+    private Vector2 oldPos;
+    public List<Vector3> savePositions = new List<Vector3>();
+
+    [Header("Public Infos")]
+    public ControllerState CurrentControllerState { get { return currentControllerState; } }
 
     [Header("References")]
     [SerializeField] private Animator _animator;
@@ -33,12 +42,16 @@ public class HeroController : MonoBehaviour
     private void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
+
+        saveSpriteLocalPos = _rbSprite.transform.localPosition;
+        savePositions.Add(transform.position);
     }
 
 
     public void UpdateController()
     {
         if (isAutoMoving) return;
+        if (currentControllerState == ControllerState.Fall) return;
         if (isInBattle) 
         {
             _rb.linearVelocity = Vector2.zero;
@@ -71,6 +84,18 @@ public class HeroController : MonoBehaviour
         _rb.linearVelocity = inputDir * moveSpeed;
 
         Rotate(inputDir);
+
+        if(currentControllerState == ControllerState.Walk)
+        {
+            if (Vector2.Distance(savePositions[^1], transform.position) > 0.1f)
+            {
+                savePositions.Add(transform.position);
+                if (savePositions.Count > 5)
+                {
+                    savePositions.RemoveAt(0);
+                }
+            }
+        }
 
         if (inputDir != Vector2.zero)
         {
@@ -153,6 +178,8 @@ public class HeroController : MonoBehaviour
     {
         currentControllerState = ControllerState.Jump;
 
+        oldPos = transform.position;
+
         _rbSprite.bodyType = RigidbodyType2D.Dynamic;
         _rbSprite.linearVelocity = Vector2.zero;
         _rbSprite.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -185,7 +212,7 @@ public class HeroController : MonoBehaviour
 
         bool isGoingDown = false;
 
-        while (_rbSprite.transform.localPosition.y > 0)
+        while (_rbSprite.transform.localPosition.y > saveSpriteLocalPos.y)
         {
             if(_rbSprite.linearVelocity.y < 0 && !isGoingDown)
             {
@@ -193,15 +220,20 @@ public class HeroController : MonoBehaviour
                 _animator.SetTrigger("JumpNext");
             }
 
-            _rbSprite.transform.localPosition = new Vector3(0, _rbSprite.transform.localPosition.y, 0);
+            float currentYDif = transform.position.y - oldPos.y;
+            _rbSprite.transform.localPosition += new Vector3(0, currentYDif, 0);
 
-            yield return new WaitForFixedUpdate();
+            oldPos = transform.position;
+
+            _rbSprite.transform.localPosition = new Vector3(saveSpriteLocalPos.x, _rbSprite.transform.localPosition.y, 0);
+
+            yield return new WaitForEndOfFrame();
         }
 
         _animator.SetTrigger("JumpNext");
         _landParticleSystem.Play();
 
-        _rbSprite.transform.localPosition = Vector2.zero;
+        _rbSprite.transform.localPosition = saveSpriteLocalPos;
         _rbSprite.linearVelocity = Vector2.zero;
         _rbSprite.bodyType = RigidbodyType2D.Kinematic;
 
@@ -209,6 +241,21 @@ public class HeroController : MonoBehaviour
     }
 
     #endregion
+
+
+    public IEnumerator FallCoroutine()
+    {
+        currentControllerState = ControllerState.Fall;
+        _rb.linearVelocity = Vector2.zero;
+
+        _rbSprite.transform.UChangeScale(0.5f, Vector3.zero, CurveType.EaseInOutSin);
+
+        yield return new WaitForSeconds(0.5f);
+
+        currentControllerState = ControllerState.Idle;
+        transform.position = savePositions[0];
+        _rbSprite.transform.localScale = Vector3.one;
+    }
 
 
     public void EnterBattle()

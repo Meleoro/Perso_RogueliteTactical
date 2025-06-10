@@ -69,10 +69,23 @@ public class Timeline : MonoBehaviour
         Appear();
     }
 
+    public void AddUnit(Unit unit)
+    {
+        TimelineUnit newTilemineUnit = new TimelineUnit();
+
+        newTilemineUnit.unit = unit;
+        newTilemineUnit.progress = 0;
+
+        timelineUnits.Add(newTilemineUnit);
+        currentTimelineUnits.Add(newTilemineUnit);
+
+        RecalculateTimeline();
+    }
+
 
     public void RemoveUnit(Unit unit)
     {
-        for (int j = 0; j < timelineUnits.Count; j++)
+        for (int j = timelineUnits.Count - 1; j >= 0; j--)
         {
             if (timelineUnits[j].unit != unit) continue;
 
@@ -118,6 +131,8 @@ public class Timeline : MonoBehaviour
 
     public void RecalculateTimeline()
     {
+        timelineUnits.Clear();
+
         for (int i = 0; i < currentTimelineUnits.Count; i++)
         {
             TimelineUnit newTilemineUnit = new TimelineUnit();

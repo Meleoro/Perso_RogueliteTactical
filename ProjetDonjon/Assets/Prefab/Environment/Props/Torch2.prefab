@@ -178,6 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2285914203726655733}
   - component: {fileID: 8947212437040487792}
+  - component: {fileID: -5268847209329184441}
   m_Layer: 0
   m_Name: Torch2
   m_TagString: Untagged
@@ -258,6 +259,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-5268847209329184441
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6582144952972390547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ff6927587203042a7dc7582845c5e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offset: 0
+  publicOffset: 0
+  _spriteRenderer: {fileID: 8947212437040487792}
 --- !u!1001 &7708387913796173892
 PrefabInstance:
   m_ObjectHideFlags: 0

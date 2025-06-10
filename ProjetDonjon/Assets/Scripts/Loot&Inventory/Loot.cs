@@ -21,6 +21,7 @@ public class Loot : MonoBehaviour, IInteractible
     [SerializeField] private BackgroundType[] possibleBackgrounds;
     [SerializeField] private Color[] lootColorAccordingToType;
     [SerializeField] private float dragLerpSpeed;
+    [SerializeField] private bool debug;
 
     [Header("Public Infos")]
     public LootData LootData { get { return lootData; } }
@@ -43,7 +44,8 @@ public class Loot : MonoBehaviour, IInteractible
 
     private void Start()
     {
-        Initialise(lootData);
+        if(debug)
+            Initialise(lootData);
     }
 
     private void Update()
@@ -91,6 +93,8 @@ public class Loot : MonoBehaviour, IInteractible
         _imageBackground.sprite = GetBackgroundSprite(lootData.spaceTaken);
         _imageBackground.rectTransform.localScale = Vector3.one * 0.4f;
         _imageBackground.SetNativeSize();
+
+        dragWantedPos = InventoriesManager.Instance.MainLootParent.position;
 
         _imageBackground.color = lootColorAccordingToType[(int)lootData.lootType];
 

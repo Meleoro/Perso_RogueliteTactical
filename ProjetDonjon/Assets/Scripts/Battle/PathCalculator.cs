@@ -65,7 +65,7 @@ public class PathCalculator
 
     #region Get Path
 
-    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool canUseDiagonals)
+    public List<Vector2Int> GetPath(Vector2Int start, Vector2Int end, bool canUseDiagonals, bool includeEndStart = true)
     {
         List<Vector2Int> openList = new List<Vector2Int>();
         List<Vector2Int> closedList = new List<Vector2Int>();
@@ -95,7 +95,7 @@ public class PathCalculator
 
             if (pickedPos == end)
             {
-                return GetFinalPath(start, end);
+                return GetFinalPath(start, end, includeEndStart, includeEndStart);
             }
 
             List<Vector2Int> pickedLocationNeighbors = GetPossibleNeighborLocations(pickedPos, canUseDiagonals);
@@ -141,30 +141,30 @@ public class PathCalculator
     }
 
 
-    private List<Vector2Int> GetPossibleNeighborLocations(Vector2Int startLocation, bool diagonal = false)
+    private List<Vector2Int> GetPossibleNeighborLocations(Vector2Int startLocation, bool diagonal = false, bool takeBlocked = false, bool takeHole = false)
     {
         List<Vector2Int> returnedList = new List<Vector2Int>();
 
         // Left
-        if (VerifyNeighborTile(startLocation + new Vector2Int(-1, 0)))
+        if (VerifyNeighborTile(startLocation + new Vector2Int(-1, 0), takeBlocked, takeHole))
         {
             returnedList.Add(startLocation + new Vector2Int(-1, 0));
         }
 
         // Right
-        if (VerifyNeighborTile(startLocation + new Vector2Int(1, 0)))
+        if (VerifyNeighborTile(startLocation + new Vector2Int(1, 0), takeBlocked, takeHole))
         {
             returnedList.Add(startLocation + new Vector2Int(1, 0));
         }
 
         // Up
-        if (VerifyNeighborTile(startLocation + new Vector2Int(0, 1)))
+        if (VerifyNeighborTile(startLocation + new Vector2Int(0, 1), takeBlocked, takeHole))
         {
             returnedList.Add(startLocation + new Vector2Int(0, 1));
         }
 
         // Down
-        if (VerifyNeighborTile(startLocation + new Vector2Int(0, -1)))
+        if (VerifyNeighborTile(startLocation + new Vector2Int(0, -1), takeBlocked, takeHole))
         {
             returnedList.Add(startLocation + new Vector2Int(0, -1));
         }
@@ -172,25 +172,25 @@ public class PathCalculator
         if (diagonal) 
         {
             // Bottom Left
-            if (VerifyNeighborTile(startLocation + new Vector2Int(-1, -1)))
+            if (VerifyNeighborTile(startLocation + new Vector2Int(-1, -1), takeBlocked, takeHole))
             {
                 returnedList.Add(startLocation + new Vector2Int(-1, -1));
             }
 
             // Down Right
-            if (VerifyNeighborTile(startLocation + new Vector2Int(1, -1)))
+            if (VerifyNeighborTile(startLocation + new Vector2Int(1, -1), takeBlocked, takeHole))
             {
                 returnedList.Add(startLocation + new Vector2Int(1, -1));
             }
 
             // Up Right
-            if (VerifyNeighborTile(startLocation + new Vector2Int(1, 1)))
+            if (VerifyNeighborTile(startLocation + new Vector2Int(1, 1), takeBlocked, takeHole))
             {
                 returnedList.Add(startLocation + new Vector2Int(1, 1));
             }
 
             // Up Left
-            if (VerifyNeighborTile(startLocation + new Vector2Int(-1, 1)))
+            if (VerifyNeighborTile(startLocation + new Vector2Int(-1, 1), takeBlocked, takeHole))
             {
                 returnedList.Add(startLocation + new Vector2Int(-1, 1));
             }
@@ -199,11 +199,17 @@ public class PathCalculator
         return returnedList;
     }
 
-    private bool VerifyNeighborTile(Vector2Int verifiedLocation)
+    private bool VerifyNeighborTile(Vector2Int verifiedLocation, bool takeBlocked, bool takeHole)
     {
         if (verifiedLocation.x < 0 || verifiedLocation.x >= pathCalculatorTiles.GetLength(0) || verifiedLocation.y < 0 || verifiedLocation.y >= pathCalculatorTiles.GetLength(1)) return false;
 
         if (pathCalculatorTiles[verifiedLocation.x, verifiedLocation.y].battleTile is null) return false;
+
+        if (takeHole) return true;
+
+        if (pathCalculatorTiles[verifiedLocation.x, verifiedLocation.y].battleTile.IsHole) return false;
+
+        if (takeBlocked) return true;
 
         if (pathCalculatorTiles[verifiedLocation.x, verifiedLocation.y].isBlocked) return false;
 
@@ -213,4 +219,40 @@ public class PathCalculator
 
     #endregion
 
+
+
+    public bool VerifyIsReachable(Vector2Int start, Vector2Int end, bool useDiagonals)
+    {
+        Vector2Int dir = end - start;
+
+        if(dir.x > 0)
+        {
+            dir.x = 1;
+        } 
+        else if (dir.x < 0)
+        {
+            dir.x = -1;
+        }
+
+        if (dir.y > 0)
+        {
+            dir.y = 1;
+        }
+        else if (dir.y < 0)
+        {
+            dir.y = -1;
+        }
+
+        PathCalculatorTile currentTile = pathCalculatorTiles[start.x + dir.x, start.y + dir.y];
+        while(currentTile.tilePos != end)
+        {
+            if (currentTile.battleTile is null) return false;
+            if (currentTile.isBlocked) return false;
+            if (currentTile.battleTile.IsHole) return false;
+
+            currentTile = pathCalculatorTiles[currentTile.tilePos.x + dir.x, currentTile.tilePos.y + dir.y];
+        }
+
+        return true;
+    }
 }

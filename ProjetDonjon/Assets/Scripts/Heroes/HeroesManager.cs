@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Utilities;
 
@@ -14,7 +15,7 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
     public int CurrentHeroIndex { get { return currentHeroIndex; } }
 
     [Header("Private Infos")]
-    private Hero[] heroes;
+    private Hero[] heroes = new Hero[0];
     private int currentHeroIndex;
 
     [Header("References")]
@@ -73,6 +74,12 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
     }
 
 
+    public void TakeDamage(int damagesAmount)
+    {
+        heroes[currentHeroIndex].TakeDamage(damagesAmount);
+    }
+
+
 
     #region Battle Functions
 
@@ -87,6 +94,7 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
             for (int j = 0; j < possibleTiles.Count; j++)
             {
                 if (possibleTiles[j].UnitOnTile is not null) continue;
+                if (possibleTiles[j].IsHole) continue;
 
                 float currentDist = Vector2.Distance(possibleTiles[j].transform.position, heroes[i].transform.position);
                 if (currentDist < bestDist)

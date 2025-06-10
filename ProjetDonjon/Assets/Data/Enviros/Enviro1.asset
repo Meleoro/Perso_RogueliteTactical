@@ -12,19 +12,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4df46b03aadc9249bda5741a5972ca0, type: 3}
   m_Name: Enviro1
   m_EditorClassIdentifier: 
-  minDistGoldenPath: 4
-  maxDistGoldenPath: 6
+  minDistGoldenPath: 5
+  maxDistGoldenPath: 7
   minRoomAmount: 7
   maxRoomAmount: 10
   floorsAmount: 5
   possibleBattleRooms:
   - {fileID: 2917294264406634095, guid: 6d5789751cd4f5840bd377f0d57b4ae2, type: 3}
-  possibleCorridorRooms: []
-  possibleChallengeRooms: []
-  possibleTrapRooms: []
+  - {fileID: 2917294264406634095, guid: 0ce6309a5c1defe4cacf6938dc39b307, type: 3}
+  - {fileID: 2917294264406634095, guid: 4667598ee5cbfca4d9b29ca669afdd36, type: 3}
+  - {fileID: 2917294264406634095, guid: ddb26f0363c8f6e4da95b3031e6e07bf, type: 3}
+  possibleCorridorRooms:
+  - {fileID: 2917294264406634095, guid: 3fb2efc6eb1d84c4e9c70404e1922f11, type: 3}
+  possibleCorridorTrapRooms:
+  - {fileID: 2917294264406634095, guid: d0712f18a6c113748a718bea172b2827, type: 3}
+  - {fileID: 2917294264406634095, guid: fe3cf7f00058be14ab178e75e85752fe, type: 3}
+  - {fileID: 2917294264406634095, guid: 45f20c2edfd7b814794b0f68b04cda39, type: 3}
+  possibleCorridorPlateformRooms:
+  - {fileID: 2917294264406634095, guid: 6616e4c47be786b42a4f5a3e40966387, type: 3}
+  - {fileID: 2917294264406634095, guid: ada4e059088f9a24c8e4d7787d6220d5, type: 3}
+  - {fileID: 2917294264406634095, guid: bc47482e243ce94468c87bc393626d78, type: 3}
+  - {fileID: 2917294264406634095, guid: 9cc03ae9ad4105a419c16a8e903adfae, type: 3}
+  - {fileID: 2917294264406634095, guid: b749238e1025e1649a06205f509d2f1b, type: 3}
+  possiblePlateformRooms:
+  - {fileID: 2917294264406634095, guid: acd82df5924bf224db9788423c8ed8dc, type: 3}
+  - {fileID: 2917294264406634095, guid: f309f058cedd6e24a90942071bb7db5a, type: 3}
+  - {fileID: 2917294264406634095, guid: 6dbcd3546dae674429c6634589a0c711, type: 3}
+  - {fileID: 2917294264406634095, guid: 28d403d7ca77e1d4db15b4c93708afab, type: 3}
+  possibleTrapRooms:
+  - {fileID: 2917294264406634095, guid: e19b037d6cb7802489ab86828f7b52e1, type: 3}
+  - {fileID: 2917294264406634095, guid: 0dc7e514750cd7548a917b3cf49001aa, type: 3}
   possiblePuzzleRooms: []
+  possibleChallengeRooms:
+  - {fileID: 2917294264406634095, guid: afdc936cb1b93bc4e9a5506e0c4428a1, type: 3}
   possibleStartRooms:
   - {fileID: 2917294264406634095, guid: 581c2856ecf5e4f4987601aa19cdea79, type: 3}
   possibleStairsRooms:
   - {fileID: 2917294264406634095, guid: 7f1c262d991c12f48bffac1db4436036, type: 3}
   possibleBossRooms: []
+  lootPerFloors:
+  - chestPossibleLoots:
+    - probability: 25
+      loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
+    - probability: 25
+      loot: {fileID: 11400000, guid: 7256e143e98fdac43bba6a109d0b0f9c, type: 2}
+    - probability: 25
+      loot: {fileID: 11400000, guid: 97278269c2f0bdf48a7abf0cf71093c6, type: 2}
+    - probability: 25
+      loot: {fileID: 11400000, guid: 489ce2b2d4640574e8be925a9007ddd8, type: 2}
+    battleEndPossibleLoots:
+    - probability: 50
+      loot: {fileID: 11400000, guid: e5beb7085b7e3404d829c9ff66aceb3a, type: 2}
+    - probability: 25
+      loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
+    - probability: 0
+      loot: {fileID: 0}
+    challengeEndPossibleLoots: []
+  - chestPossibleLoots: []
+    battleEndPossibleLoots: []
+    challengeEndPossibleLoots: []
+  - chestPossibleLoots: []
+    battleEndPossibleLoots: []
+    challengeEndPossibleLoots: []

@@ -1,27 +1,43 @@
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using Utilities;
 
-public class Enemy : Unit
+public enum PreviewType
+{
+    Move,
+    Attack,
+    MoveAndAttack
+}
+
+public class AIUnit : Unit
 {
     [Header("Parameters")]
-    [SerializeField] private EnemyData enemyData;
+    [SerializeField] private AIData aiData;
 
     [Header("Private Infos")]
     private BattleTile[] aimedTiles;
+    private BattleTile[] avoidedTiles;
     private SkillData currentSkillData;
+    private PreviewType currentPreviewType;
 
     [Header("Public Infos")]
-    public EnemyData EnemyData { get { return enemyData; } }
+    public AIData AIData { get { return aiData; } }
+    public SkillData CurrentSkillData { get { return currentSkillData; } }
+    public PreviewType CurrentPreviewType { get { return currentPreviewType; } }
 
-
+    #region Setup
 
     private void Start()
     {
-        unitData = enemyData;
-        currentSkillData = enemyData.skills[0];
+        unitData = AIData;
+        currentSkillData = AIData.skills[0];
 
-        InitialiseUnitInfos(enemyData.baseHealth, enemyData.baseStrength, enemyData.baseSpeed, enemyData.baseLuck, 0);
+        currentPreviewType = PreviewType.Move;
+
+        InitialiseUnitInfos(AIData.baseHealth, AIData.baseStrength, AIData.baseSpeed, AIData.baseLuck, 0);
+        StartCoroutine(AppearCoroutine(1f));
     }
 
 
@@ -35,13 +51,80 @@ public class Enemy : Unit
             return;
         }
 
-        aimedTiles = new BattleTile[BattleManager.Instance.CurrentHeroes.Count];
-
-        for (int i = 0; i < BattleManager.Instance.CurrentHeroes.Count; i++)
+        if (isEnemy)
         {
-            aimedTiles[i] = BattleManager.Instance.CurrentHeroes[i].CurrentTile;
+            if (currentSkillData.skillEffects[0].skillEffectTargetType == SkillEffectTargetType.Allies)
+            {
+                aimedTiles = new BattleTile[BattleManager.Instance.CurrentEnemies.Count];
+                for (int i = 0; i < BattleManager.Instance.CurrentEnemies.Count; i++) {
+                    aimedTiles[i] = BattleManager.Instance.CurrentEnemies[i].CurrentTile;
+                }
+            }
+
+            else
+            {
+                aimedTiles = new BattleTile[BattleManager.Instance.CurrentHeroes.Count];
+                for (int i = 0; i < BattleManager.Instance.CurrentHeroes.Count; i++) {
+                    aimedTiles[i] = BattleManager.Instance.CurrentHeroes[i].CurrentTile;
+                }
+            }
+
+            avoidedTiles = new BattleTile[BattleManager.Instance.CurrentHeroes.Count];
+            for (int i = 0; i < BattleManager.Instance.CurrentHeroes.Count; i++) {
+                avoidedTiles[i] = BattleManager.Instance.CurrentHeroes[i].CurrentTile;
+            }
+        }
+
+        else
+        {
+            if (currentSkillData.skillEffects[0].skillEffectTargetType == SkillEffectTargetType.Allies)
+            {
+                aimedTiles = new BattleTile[BattleManager.Instance.CurrentHeroes.Count];
+                for (int i = 0; i < BattleManager.Instance.CurrentHeroes.Count; i++) {
+                    aimedTiles[i] = BattleManager.Instance.CurrentHeroes[i].CurrentTile;
+                }
+            }
+
+            else
+            {
+                aimedTiles = new BattleTile[BattleManager.Instance.CurrentEnemies.Count];
+                for (int i = 0; i < BattleManager.Instance.CurrentEnemies.Count; i++) {
+                    aimedTiles[i] = BattleManager.Instance.CurrentEnemies[i].CurrentTile;
+                }
+            }
+
+            avoidedTiles = new BattleTile[BattleManager.Instance.CurrentEnemies.Count];
+            for (int i = 0; i < BattleManager.Instance.CurrentEnemies.Count; i++) {
+                avoidedTiles[i] = BattleManager.Instance.CurrentEnemies[i].CurrentTile;
+            }
         }
     }
+
+    #endregion
+
+
+    #region Appear / Disappear
+
+    private IEnumerator AppearCoroutine(float duration)
+    {
+        _spriteRenderer.material.ULerpMaterialFloat(duration, 3.5f, "_DitherProgress");
+
+        yield return new WaitForSeconds(duration);  
+    }
+
+    private IEnumerator DisappearCoroutine(float duration)
+    {
+        _spriteRenderer.material.ULerpMaterialFloat(duration, -0.5f, "_DitherProgress");
+
+        yield return new WaitForSeconds(duration);
+
+        base.Die();
+    }
+
+    #endregion
+
+
+    #region AI Functions
 
     public IEnumerator PlayEnemyTurnCoroutine()
     {
@@ -56,8 +139,14 @@ public class Enemy : Unit
         if(skillTile is null)
         {
             (moveTile, skillTile) = GetBestMove(currentTile, 0, 1);
+
+            if (skillTile is null) {
+                (moveTile, skillTile) = GetBestMove(currentTile, 0, 2);
+            }
+
             skillTile = null;
         }
+
 
         StartCoroutine(BattleManager.Instance.MoveUnitCoroutine(moveTile, true));
 
@@ -77,17 +166,20 @@ public class Enemy : Unit
         }
         else
         {
-            EndTurn();
+            EndTurn(0f);
         }
     }
 
     
     private (BattleTile, BattleTile) GetBestMove(BattleTile currentTile, int depth = 0, int maxDepth = 0)
     {
-        BattleTile[] possibleMoves = BattleManager.Instance.GetPaternTiles(currentTile.TileCoordinates, enemyData.movePatern, (int)Mathf.Sqrt(enemyData.movePatern.Length)).ToArray();
+        BattleTile[] possibleMoves = 
+            BattleManager.Instance.GetPaternTiles(currentTile.TileCoordinates, AIData.movePatern, (int)Mathf.Sqrt(AIData.movePatern.Length), true).ToArray();
         int bestGrade = -1000;
         BattleTile pickedMoveTile = currentTile;
         BattleTile pickedSkillTile = null;
+
+        if(IsHindered) possibleMoves = new BattleTile[0];
 
         for (int i = 0; i < possibleMoves.Length; i++)
         {
@@ -105,7 +197,7 @@ public class Enemy : Unit
 
                 if (currentSkillTile is null) continue;
                 if (currentSkillTile.UnitOnTile is null) continue;
-                if (currentSkillTile.UnitOnTile.GetType() != typeof(Hero)) continue;
+                if (!aimedTiles.Contains(currentSkillTile)) continue;
 
                 int moveGrade = GetMoveGrade(currentMoveTile.TileCoordinates, currentSkillTile.TileCoordinates, depth);
 
@@ -113,10 +205,13 @@ public class Enemy : Unit
 
                 bestGrade = moveGrade;
                 pickedMoveTile = possibleMoves[i];
+                pickedSkillTile = currentSkillTile;
             }
             else
             {
-                BattleTile[] possibleSkillTiles = BattleManager.Instance.GetPaternTiles(possibleMoves[i].TileCoordinates, currentSkillData.skillPatern, (int)Mathf.Sqrt(currentSkillData.skillPatern.Length)).ToArray();
+                BattleTile[] possibleSkillTiles = 
+                    BattleManager.Instance.GetPaternTiles(possibleMoves[i].TileCoordinates, currentSkillData.skillPatern, 
+                    (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true).ToArray();
 
                 for (int j = 0; j < possibleSkillTiles.Length; j++)
                 {
@@ -127,7 +222,7 @@ public class Enemy : Unit
                         pickedMoveTile = possibleMoves[i];
 
                         if (possibleSkillTiles[j].UnitOnTile is null) continue;
-                        if (possibleSkillTiles[j].UnitOnTile.GetType() != typeof(Hero)) continue;
+                        if (!aimedTiles.Contains(possibleSkillTiles[j])) continue;
 
                         pickedSkillTile = possibleSkillTiles[j];
                     }
@@ -147,7 +242,7 @@ public class Enemy : Unit
         {
             int currentDist = (int)Vector2Int.Distance(testedMovePos, aimedTiles[i].TileCoordinates);
 
-            switch (enemyData.AI)
+            switch (AIData.AI)
             {
                 case AIType.Classic:
                     finalGrade -= currentDist;
@@ -171,4 +266,32 @@ public class Enemy : Unit
 
         return finalGrade;
     }
+
+    #endregion
+
+
+    #region Overrides
+
+    protected override async void ClickUnit()
+    {
+        await Task.Yield();
+        if (InputManager.wantsToRightClick) return;
+
+        int newPreviewIndex = ((int)currentPreviewType + 1) % 3;
+        currentPreviewType = (PreviewType)newPreviewIndex;
+
+        CurrentTile.ClickTile();
+        CurrentTile.OverlayTile();
+
+        StartCoroutine(SquishCoroutine(0.15f));
+
+        //base.ClickUnit();
+    }
+
+    protected override void Die()
+    {
+        StartCoroutine(DisappearCoroutine(1f));
+    }
+
+    #endregion
 }

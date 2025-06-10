@@ -2414,7 +2414,7 @@
         "plus"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": false,
+    "m_PreviewExpanded": true,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -4791,7 +4791,7 @@
     "m_Title": "We Get The Outline Figure",
     "m_Position": {
         "x": -3143.333251953125,
-        "y": -59.3333740234375
+        "y": -59.333343505859378
     }
 }
 

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
@@ -33,6 +34,9 @@ public class Room : MonoBehaviour
     [SerializeField] private float startCameraSize;
     [SerializeField] private int minDangerAmount;
     [SerializeField] private int maxDangerAmount;
+    [SerializeField] private Tile[] holeTiles;
+    [SerializeField] private Hole holePrefab;
+    [SerializeField] private bool isDebugRoom;
 
     [Header("Private Infos")]
     private Vector2Int roomCoordinates;
@@ -40,9 +44,10 @@ public class Room : MonoBehaviour
     private Vector2Int roomsSizeUnits;
     private RoomEntrance[] roomEntrances;
     private List<BattleTile> battleTiles;
-    private List<Enemy> roomEnemies = new();
+    private List<AIUnit> roomEnemies = new();
     private List<EnemySpawner> roomEnemySpawners;
     private bool battleIsDone;
+    private List<RoomBlockableEntranceStruct> closedEntrances;
     private BattleTile[,] placedBattleTiles;
     private Vector2Int tabSize;
 
@@ -50,7 +55,7 @@ public class Room : MonoBehaviour
     public Vector2Int RoomCoordinates { get { return roomCoordinates; } }
     public Vector2Int RoomSize { get { return roomSize; } }
     public RoomEntrance[] RoomEntrances { get { return roomEntrances; } }
-    public List<Enemy> RoomEnemies {  get { return roomEnemies; } }
+    public List<AIUnit> RoomEnemies {  get { return roomEnemies; } }
     public BattleTile[,] PlacedBattleTiles {  get { return placedBattleTiles; } }
     public List<BattleTile> BattleTiles {  get { return battleTiles; } }
 
@@ -64,16 +69,28 @@ public class Room : MonoBehaviour
 
     [Header("Other References")]
     public Transform _heroSpawnerTr;
+    public Transform _upLeftCornerTilemap;
+    public Transform _upRightCornerTilemap;
+    public Transform _bottomLeftCornerTilemap;
+    public Transform _bottomRightCornerTilemap;
 
 
 
-    private void Start()
+    private async void Start()
     {
+        await Task.Yield();
+        await Task.Yield();
+
         SetupBattleTiles();
 
         if (_spawnersParentTr == null) return;
-        SetupSpawners();
-        SetupEnemies();
+
+        if (isDebugRoom)
+        {
+            await Task.Yield();
+            await Task.Yield();
+            StartBattle();
+        }
     }
 
 
@@ -89,7 +106,11 @@ public class Room : MonoBehaviour
 
     public void CloseUnusedEntrances(List<Room> neighbors)
     {
-        for(int i = 0; i < roomEntrances.Length; i++)
+        PlaceHoles();
+
+        closedEntrances = new List<RoomBlockableEntranceStruct>();  // Needed to activate the corner tilemaps
+
+        for (int i = 0; i < roomEntrances.Length; i++)
         {
             bool closeDoor = true;
             Vector2Int roomTowardPosition = roomEntrances[i].entranceDirection + roomCoordinates;
@@ -107,6 +128,46 @@ public class Room : MonoBehaviour
             {
                 _blockableEntrances[i].entrance.gameObject.SetActive(true);
                 _blockableEntrances[i].entrance.ActivateBlockableEntrance();
+
+                closedEntrances.Add(_blockableEntrances[i]);
+
+                if(_upRightCornerTilemap != null)
+                    VerifyCornersToActivate();
+            }
+        }
+    }
+
+    private void VerifyCornersToActivate()
+    {
+        bool didLeft = false;
+        bool didRight = false;
+        bool didUp = false;
+        bool didDown = false;
+
+        for(int i = 0; i < closedEntrances.Count; i++)
+        {
+            if (closedEntrances[i].towardEntranceDir.y > 0) didUp = true;
+            if (closedEntrances[i].towardEntranceDir.y < 0) didDown = true;
+            if (closedEntrances[i].towardEntranceDir.x > 0) didRight = true;
+            if (closedEntrances[i].towardEntranceDir.x < 0) didLeft = true;
+
+            if(didUp && didLeft) _upLeftCornerTilemap.gameObject.SetActive(true);
+            if(didUp && didRight) _upRightCornerTilemap.gameObject.SetActive(true);
+            if(didDown && didLeft) _bottomLeftCornerTilemap.gameObject.SetActive(true);
+            if(didDown && didRight) _bottomRightCornerTilemap.gameObject.SetActive(true);
+        }
+    }
+
+    private void PlaceHoles()
+    {
+        for (int x = _battleGroundTilemap.cellBounds.min.x; x <= _battleGroundTilemap.cellBounds.max.x; x++)
+        {
+            for (int y = _battleGroundTilemap.cellBounds.min.y; y <= _battleGroundTilemap.cellBounds.max.y; y++)
+            {
+                if (!_battleGroundTilemap.HasTile(new Vector3Int(x, y))) continue;
+                if (!holeTiles.Contains(_battleGroundTilemap.GetTile(new Vector3Int(x, y)))) continue;
+
+                Instantiate(holePrefab, _battleGroundTilemap.CellToWorld(new Vector3Int(x, y)), Quaternion.Euler(0, 0, 0));
             }
         }
     }
@@ -148,69 +209,7 @@ public class Room : MonoBehaviour
             newEntrance.entranceDirection = _blockableEntrances[i].towardEntranceDir;
             roomEntrances[i] = (newEntrance);
         }
-
-        /*// Left & Right Entrances
-        for(int y = bottomWallsTilemap.cellBounds.min.y; y <= wallsTilemap.cellBounds.max.y; y++)
-        {
-            if (!wallsTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.min.x, y)) && 
-                !bottomWallsTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.min.x, y)) &&
-                groundTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.min.x, y)))
-            {
-                int currentY = (y / wallsTilemap.cellBounds.max.y) * roomSize.y;
-                AddRoomEntrance(new Vector2Int(-1, currentY));
-            }
-            if (!wallsTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.max.x, y)) &&
-                !bottomWallsTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.max.x, y)) &&
-                groundTilemap.HasTile(new Vector3Int(wallsTilemap.cellBounds.max.x, y)))
-            {
-                int currentY = (y / wallsTilemap.cellBounds.max.y) * roomSize.y;
-                AddRoomEntrance(new Vector2Int(1, currentY));
-            }
-        }
-
-        // Up & Down Entrances
-        for (int x = wallsTilemap.cellBounds.min.x; x <= wallsTilemap.cellBounds.max.x; x++)
-        {
-            if (!wallsTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.min.y)) &&
-                !bottomWallsTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.min.y)) &&
-                groundTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.min.y)))
-            {
-                int currentX = (x / wallsTilemap.cellBounds.max.x) * roomSize.x;
-                AddRoomEntrance(new Vector2Int(currentX, -1));
-            }
-            if (!wallsTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.max.y)) &&
-                !bottomWallsTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.max.y)) &&
-                groundTilemap.HasTile(new Vector3Int(x, wallsTilemap.cellBounds.max.y)))
-            {
-                int currentX = (x / wallsTilemap.cellBounds.max.x) * roomSize.x;
-                AddRoomEntrance(new Vector2Int(currentX, 1));
-            }
-        }*/
     }
-
-    /*private void AddRoomEntrance(Vector2Int direction)
-    {
-        bool found = false;
-
-        for (int i = 0; i < roomEntrances.Count; i++)
-        {
-            if (roomEntrances[i].entranceDirection == direction)
-            {
-                RoomEntrance entrance = roomEntrances[i];
-                entrance.entranceWidth += 1;
-                roomEntrances[i] = entrance;
-                found = true;
-            }
-        }
-
-        if (!found)
-        {
-            RoomEntrance newEntrance = new RoomEntrance();
-            newEntrance.entranceWidth = 1;
-            newEntrance.entranceDirection = direction;
-            roomEntrances.Add(newEntrance);
-        }
-    }*/
 
     public bool VerifyRoomsCompatibility(Room otherRoom)
     {
@@ -322,7 +321,7 @@ public class Room : MonoBehaviour
                 BattleTile newTile = Instantiate(battleTilePrefab, tilePosWorld + battleTilesOffset, Quaternion.Euler(0, 0, 0), transform);
                 battleTiles.Add(newTile);
 
-                newTile.SetupBattleTile(currentCoordinates);
+                newTile.SetupBattleTile(currentCoordinates, holeTiles.Contains(_battleGroundTilemap.GetTile(new Vector3Int(x, y))));
                 StartCoroutine(newTile.HideTileCoroutine(Random.Range(0, 0.2f)));
 
                 placedBattleTiles[currentCoordinates.x, currentCoordinates.y] = newTile;
@@ -350,13 +349,23 @@ public class Room : MonoBehaviour
         }
     }
 
-    private void SetupSpawners()
+    private void SetupSpawners(Hero[] heroes)
     {
         roomEnemySpawners = _spawnersParentTr.GetComponentsInChildren<EnemySpawner>().ToList();
 
-        for (int i = 0; i < roomEnemySpawners.Count; i++)
+        for (int i = roomEnemySpawners.Count - 1; i >= 0; i--)
         {
             roomEnemySpawners[i].associatedTile = GetNearestBattleTile(roomEnemySpawners[i].transform.position);
+
+            for (int j = 0; j < heroes.Length; j++) 
+            {
+                int dist = (int)Vector2Int.Distance(heroes[j].CurrentTile.TileCoordinates, roomEnemySpawners[i].associatedTile.TileCoordinates);
+                if (dist <= 2) 
+                { 
+                    roomEnemySpawners.RemoveAt(i);
+                    break;
+                }
+            }
         }
     }
 
@@ -382,24 +391,38 @@ public class Room : MonoBehaviour
     {
         int currentDangerAmount = 0;
         int antiCrashCounter = 0;
+        if (roomEnemySpawners.Count == 0) return;
 
-        while(currentDangerAmount < minDangerAmount && antiCrashCounter++ < 100)
+        while(currentDangerAmount < minDangerAmount && antiCrashCounter++ < 100 && roomEnemySpawners.Count > 0)
         {
             int pickedSpawnerIndex = Random.Range(0, roomEnemySpawners.Count);
             EnemySpawner currentSpawner = roomEnemySpawners[pickedSpawnerIndex];
 
-            Enemy pickedEnemy = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
-            if (pickedEnemy is null) continue;
+            Unit pickedUnit = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
+            if (pickedUnit is null) continue;
 
-            currentDangerAmount += pickedEnemy.EnemyData.dangerLevel;
-            Enemy newEnemy = Instantiate(pickedEnemy, transform);
-            newEnemy.MoveUnit(currentSpawner.associatedTile);
+            if(pickedUnit.GetType() == typeof(AIUnit))
+            {
+                currentDangerAmount += (pickedUnit as AIUnit).AIData.dangerLevel;
+                AIUnit newEnemy = Instantiate(pickedUnit as AIUnit, transform);
+                newEnemy.MoveUnit(currentSpawner.associatedTile);
 
-            roomEnemies.Add(newEnemy);
-            roomEnemySpawners.Remove(currentSpawner);
+                roomEnemies.Add(newEnemy);
+                roomEnemySpawners.Remove(currentSpawner);
+                BattleManager.Instance.AddUnit(newEnemy);
+                newEnemy.EnterBattle(newEnemy.CurrentTile);
+            }
+            else
+            {
+                Hero newHero = Instantiate(pickedUnit as Hero, transform);
+                newHero.MoveUnit(currentSpawner.associatedTile);
+
+                roomEnemySpawners.Remove(currentSpawner);
+                BattleManager.Instance.AddUnit(newHero);
+                newHero.EnterBattle(newHero.CurrentTile);
+            }
         }
     }
-
 
 
     public BattleTile GetBattleTile(Vector2Int coordinates)
@@ -417,12 +440,15 @@ public class Room : MonoBehaviour
     }
 
 
-    private void StartBattle()
+    public void StartBattle()
     {
         battleIsDone = true;
         BattleManager.Instance.StartBattle(battleTiles, transform.position, startCameraSize, this);
 
-        for(int i = 0; i < battleTiles.Count; i++)
+        SetupSpawners(HeroesManager.Instance.Heroes);
+        SetupEnemies();
+
+        for (int i = 0; i < battleTiles.Count; i++)
         {
             StartCoroutine(battleTiles[i].ShowTileCoroutine(Random.Range(0, 0.2f)));
         }

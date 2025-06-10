@@ -12,9 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e6cef5a84204b45954bf504b67252a, type: 3}
   m_Name: Provocation
   m_EditorClassIdentifier: 
-  skillName: Grrr... Provocation !
+  skillName: PROVOCATION
   skillDescription: Provocks all the enemies around the unit for 3 turns
   animName: Skill2
+  skillPointCost: 0
+  skillIcon: {fileID: -148733445, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   skillType: 2
   skillEffects:
   - skillEffectType: 9

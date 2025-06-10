@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +8,9 @@ public class Hero : Unit
     [Header("Parameters")]
     [SerializeField] private HeroData heroData;
 
+    [Header("Actions")]
+    public Action OnClickUnit;
+
     [Header("Public Infos")]
     public Loot[] EquippedLoot { get { return equippedLoot; } }
     public Inventory Inventory { get { return inventory; } }
@@ -14,20 +18,24 @@ public class Hero : Unit
     public int CurrentLevel { get { return currentLevel; } set { currentLevel = value; OnHeroInfosChange?.Invoke(); } }  
     public int CurrentSkillPoints { get { return currentSkillPoints; } set { currentSkillPoints = value; OnHeroInfosChange?.Invoke(); } }
     public int CurrentMaxSkillPoints { get { return currentMaxSkillPoints; } set { currentMaxSkillPoints = value; OnHeroInfosChange?.Invoke(); } }
+    public int CurrentActionPoints { get { return currentActionPoints; } }
 
     [Header("Private Infos")]
     private Loot[] equippedLoot = new Loot[6];
     private Inventory inventory;
     private bool isHidden;
+    private bool isDead;
     private Transform currentDisplayedHeroTr;
     private int currentLevel;
     private int currentSkillPoints;
     private int currentMaxSkillPoints;
+    private int currentActionPoints;
 
     [Header("References")]
     [SerializeField] private HeroController _controller;
     [SerializeField] private Transform _spriteRendererParent;
     [SerializeField] private HeroInfoPanel _heroInfoPanel;
+    [SerializeField] private Collider2D[] _colliders;
 
 
     public void Start()
@@ -60,6 +68,11 @@ public class Hero : Unit
         isHidden = false;
 
         _spriteRendererParent.gameObject.SetActive(true);
+
+        for (int i = 0; i < _colliders.Length; i++)
+        {
+            _colliders[i].enabled = true;
+        }
     }
 
     public void HideHero()
@@ -67,6 +80,11 @@ public class Hero : Unit
         isHidden = true;
 
         _spriteRendererParent.gameObject.SetActive(false);
+
+        for(int i = 0; i < _colliders.Length; i++)
+        {
+            _colliders[i].enabled = false;
+        }
     }
 
     public void ActualiseCurrentDisplayedHero(Transform heroTr)
@@ -93,6 +111,53 @@ public class Hero : Unit
 
         if (currentHero == this) return;
         StartCoroutine(_controller.AutoMoveCoroutineEndBattle(currentHero.transform));
+    }
+
+    public override void StartTurn()
+    {
+        base.StartTurn();
+
+        if (currentSkillPoints < currentMaxSkillPoints)
+        {
+            CurrentSkillPoints += 1;
+        }
+        currentActionPoints = 2;
+    }
+
+    public void DoAction()
+    {
+        currentActionPoints--;
+    }
+
+    protected override void Die()
+    {
+        _animator.SetBool("IsDead", true);
+        BattleManager.Instance.RemoveUnit(this);
+
+        isDead = true;
+    }
+
+    public override void Heal(int healedAmount)
+    {
+        base.Heal(healedAmount);
+
+        if (isDead)
+        {
+            isDead = false;
+            BattleManager.Instance.AddUnit(this);
+        }
+    }
+
+    protected override void ClickUnit()
+    {
+        base.ClickUnit();
+
+        OnClickUnit?.Invoke();
+    }
+
+    public override void EndTurn(float delay)
+    {
+        base.EndTurn(delay);
     }
 
     #endregion

@@ -82,6 +82,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
     #endregion
 
+
     public bool VerifyCanOpenCloseInventory()
     {
         for(int i = 0; i < heroesInventories.Length; i++)

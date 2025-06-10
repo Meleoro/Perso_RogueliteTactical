@@ -180,6 +180,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RightClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""2634609b-4e52-4500-9487-5067c70340ec"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -402,6 +411,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""Return"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7566303b-bc81-40a3-8df2-8fecd1ea063e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RightClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -420,6 +440,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_BaseActionMap_MouseDelta = m_BaseActionMap.FindAction("MouseDelta", throwIfNotFound: true);
         m_BaseActionMap_MouseScroll = m_BaseActionMap.FindAction("MouseScroll", throwIfNotFound: true);
         m_BaseActionMap_Return = m_BaseActionMap.FindAction("Return", throwIfNotFound: true);
+        m_BaseActionMap_RightClick = m_BaseActionMap.FindAction("RightClick", throwIfNotFound: true);
     }
 
     ~@Controls()
@@ -510,6 +531,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_BaseActionMap_MouseDelta;
     private readonly InputAction m_BaseActionMap_MouseScroll;
     private readonly InputAction m_BaseActionMap_Return;
+    private readonly InputAction m_BaseActionMap_RightClick;
     /// <summary>
     /// Provides access to input actions defined in input action map "BaseActionMap".
     /// </summary>
@@ -561,6 +583,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "BaseActionMap/Return".
         /// </summary>
         public InputAction @Return => m_Wrapper.m_BaseActionMap_Return;
+        /// <summary>
+        /// Provides access to the underlying input action "BaseActionMap/RightClick".
+        /// </summary>
+        public InputAction @RightClick => m_Wrapper.m_BaseActionMap_RightClick;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -617,6 +643,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Return.started += instance.OnReturn;
             @Return.performed += instance.OnReturn;
             @Return.canceled += instance.OnReturn;
+            @RightClick.started += instance.OnRightClick;
+            @RightClick.performed += instance.OnRightClick;
+            @RightClick.canceled += instance.OnRightClick;
         }
 
         /// <summary>
@@ -658,6 +687,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @Return.started -= instance.OnReturn;
             @Return.performed -= instance.OnReturn;
             @Return.canceled -= instance.OnReturn;
+            @RightClick.started -= instance.OnRightClick;
+            @RightClick.performed -= instance.OnRightClick;
+            @RightClick.canceled -= instance.OnRightClick;
         }
 
         /// <summary>
@@ -768,5 +800,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnReturn(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "RightClick" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRightClick(InputAction.CallbackContext context);
     }
 }

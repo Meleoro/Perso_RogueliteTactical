@@ -2,7 +2,11 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Utilities;
 
 public enum BattleTileState
@@ -37,26 +41,29 @@ public class BattleTile : MonoBehaviour
     private Color currentColorBack;
     private List<BattleTile> tileNeighbors = new List<BattleTile>();
     private BattleTileState currentTileState;
+    private BattleTileState saveTileState;
     private Vector3 savePos;
     private Coroutine highlightCoroutine;
     private BattleTile[] highlightedTiles;
+    private bool isHole;
 
     [Header("Public Infos")]
     public Unit UnitOnTile { get { return unitOnTile; } }
     public List<BattleTile> TileNeighbors { get { return tileNeighbors; } }
     public Vector2Int TileCoordinates { get { return tileCoordinates; } }
     public BattleTileState CurrentTileState { get { return currentTileState; } }
+    public bool IsHole { get { return isHole; } }
 
     [Header("References")]
     [SerializeField] private SpriteRenderer _mainSpriteRenderer;
     [SerializeField] private SpriteRenderer _backSpriteRenderer;
+    [SerializeField] private Button _tileButton;
 
 
 
     #region Setup
 
-
-    public void SetupBattleTile(Vector2Int tileCoordinates)
+    public void SetupBattleTile(Vector2Int tileCoordinates, bool isHole)
     {
         this.tileCoordinates = tileCoordinates;
 
@@ -70,6 +77,12 @@ public class BattleTile : MonoBehaviour
         highlightedTiles = new BattleTile[0];
 
         tileNeighbors = new List<BattleTile>();
+
+        this.isHole = isHole;
+        if (isHole)
+        {
+            _tileButton.enabled = false;
+        }
     }
 
     public void AddNeighbor(BattleTile tile)
@@ -79,6 +92,10 @@ public class BattleTile : MonoBehaviour
 
     #endregion
 
+    private void LateUpdate()
+    {
+        saveTileState = BattleTileState.None;
+    }
 
     #region Hide / Show
 
@@ -92,6 +109,8 @@ public class BattleTile : MonoBehaviour
 
     public IEnumerator ShowTileCoroutine(float delay)
     {
+        if (isHole) yield break;
+
         yield return new WaitForSeconds(delay);
 
         _mainSpriteRenderer.enabled = true;
@@ -108,8 +127,7 @@ public class BattleTile : MonoBehaviour
         if (currentTileState == BattleTileState.Move) return;
 
         currentTileState = BattleTileState.Move;
-
-        StartCoroutine(ChangeStateEffect(moveTileColorOutline, moveTileColorBack));
+        StartCoroutine(ChangeStateEffect(moveTileColorOutline, moveTileColorBack, true, saveTileState == BattleTileState.Move));
     }
 
     public void DisplayPossibleAttackTile(bool doBounce)
@@ -117,37 +135,49 @@ public class BattleTile : MonoBehaviour
         if (currentTileState == BattleTileState.Attack) return;
 
         currentTileState = BattleTileState.Attack;
-
-        StartCoroutine(ChangeStateEffect(attackTileColorOutline, attackTileColorBack, doBounce));
+        StartCoroutine(ChangeStateEffect(attackTileColorOutline, attackTileColorBack, doBounce, saveTileState == BattleTileState.Attack));
     }
 
     public void DisplayDangerTile()
     {
         if (currentTileState == BattleTileState.Danger) return;
 
-        currentTileState = BattleTileState.Danger;
+        if (unitOnTile is not null) unitOnTile.DisplaySkillOutline(false);
 
-        StartCoroutine(ChangeStateEffect(dangerTileColorOutline, dangerTileColorBack, false));
+        currentTileState = BattleTileState.Danger;
+        StartCoroutine(ChangeStateEffect(dangerTileColorOutline, dangerTileColorBack, false, saveTileState == BattleTileState.Danger));
     }
 
     public void DisplayNormalTile()
     {
         if (currentTileState == BattleTileState.None) return;
+        if (currentTileState == BattleTileState.Danger && unitOnTile is not null) unitOnTile.HideOutline();
 
+        saveTileState = currentTileState;
         currentTileState = BattleTileState.None;
-
         StartCoroutine(ChangeStateEffect(baseTileColorOutline, baseTileColorBack, false));
     }
 
-    private IEnumerator ChangeStateEffect(Color outlineColor, Color backColor, bool doBounce = true)
+    private IEnumerator ChangeStateEffect(Color outlineColor, Color backColor, bool doBounce = true, bool doInstant = false)
     {
+        currentColorOutline = outlineColor;
+        currentColorBack = backColor;
+
         StopHighlight();
+
+        if (doInstant)
+        {
+            _mainSpriteRenderer.UStopSpriteRendererLerpColor();
+            _backSpriteRenderer.UStopSpriteRendererLerpColor();
+
+            _mainSpriteRenderer.color = outlineColor;
+            _backSpriteRenderer.color = backColor;
+
+            yield break;
+        }
 
         _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
         _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
-
-        currentColorOutline = outlineColor;
-        currentColorBack = backColor;
 
         if (doBounce)
         {
@@ -181,7 +211,7 @@ public class BattleTile : MonoBehaviour
 
     public void OverlayTile()
     {
-        if (currentTileState == BattleTileState.Attack)
+        if (currentTileState == BattleTileState.Attack && BattleManager.Instance.CurrentActionType == MenuType.Skills)
         {
             BattleManager.Instance.DisplayDangerTiles(this, null);
         }
@@ -190,9 +220,10 @@ public class BattleTile : MonoBehaviour
             // Displays a preview of the possible movement of the tile's current unit if it's possible
             if (unitOnTile is not null && BattleManager.Instance.CurrentUnit is not null && BattleManager.Instance.CurrentActionType != MenuType.Skills)
             {
+                unitOnTile.DisplayOverlayOutline();
                 if (unitOnTile.GetType() != typeof(Hero) && BattleManager.Instance.CurrentUnit.GetType() == typeof(Hero))
                 {
-                    BattleManager.Instance.DisplayPossibleMoveTiles(unitOnTile as Enemy);
+                    BattleManager.Instance.DisplayPossibleTiles(unitOnTile as AIUnit);
                 }
             }
         }
@@ -229,6 +260,7 @@ public class BattleTile : MonoBehaviour
             // Hides the preview of the possible movement of the tile's current unit if it's possible
             if (unitOnTile is not null && BattleManager.Instance.CurrentUnit is not null)
             {
+                unitOnTile.HideOutline();
                 if (unitOnTile.GetType() != typeof(Hero) && BattleManager.Instance.CurrentUnit.GetType() == typeof(Hero))
                 {
                     BattleManager.Instance.StopDisplayPossibleMoveTiles();
@@ -250,15 +282,21 @@ public class BattleTile : MonoBehaviour
         _backSpriteRenderer.color = currentColorBack;
     }
 
-    public void ClickTile()
+    public async void ClickTile()
     {
+        await Task.Yield();
+
+        if (InputManager.wantsToRightClick) return;
+
         switch (currentTileState)
         {
             case BattleTileState.Move:
+                if (BattleManager.Instance.CurrentActionType != MenuType.Move) break;
                 StartCoroutine(BattleManager.Instance.MoveUnitCoroutine(this, false));
                 break;
 
             case BattleTileState.Danger:
+                if (BattleManager.Instance.CurrentActionType != MenuType.Skills) break;
                 StartCoroutine(BattleManager.Instance.UseSkillCoroutine(null));
                 break;
         }
@@ -271,13 +309,13 @@ public class BattleTile : MonoBehaviour
 
     public void HighlightMovePathTile()
     {
-        highlightCoroutine = StartCoroutine(HighlightTile(moveTileColorOutline, moveTileColorBack, 0.4f));
+        highlightCoroutine = StartCoroutine(HighlightTile(moveTileColorOutline, moveTileColorBack, 0.3f));
     }
 
 
     public void HighlightSkillTile()
     {
-        highlightCoroutine = StartCoroutine(HighlightTile(attackTileColorOutline, attackTileColorBack, 0.4f));
+        highlightCoroutine = StartCoroutine(HighlightTile(attackTileColorOutline, attackTileColorBack, 0.3f));
     }
 
 
@@ -286,8 +324,11 @@ public class BattleTile : MonoBehaviour
         if (highlightCoroutine is null) return;
         StopCoroutine(highlightCoroutine);
 
-        _mainSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorOutline, CurveType.EaseInOutCubic);
-        _backSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorBack, CurveType.EaseInOutCubic);
+        _mainSpriteRenderer.UStopSpriteRendererLerpColor();
+        _backSpriteRenderer.UStopSpriteRendererLerpColor();
+
+        //_mainSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorOutline, CurveType.EaseInOutCubic);
+        //_backSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorBack, CurveType.EaseInOutCubic);
     }
 
 
@@ -295,14 +336,14 @@ public class BattleTile : MonoBehaviour
     {
         while (true)
         {
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.95f, outlineColor + new Color(0.02f, 0.02f, 0.02f, 0.2f), CurveType.EaseInOutCubic);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.95f, backColor + new Color(0.005f, 0.005f, 0.005f, 0.2f), CurveType.EaseInOutCubic);
+            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, outlineColor + new Color(0.02f, 0.02f, 0.02f, 0.2f), CurveType.EaseInOutCubic);
+            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, backColor + new Color(0.005f, 0.005f, 0.005f, 0.2f), CurveType.EaseInOutCubic);
 
             yield return new WaitForSeconds(duration);
 
 
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.95f, outlineColor, CurveType.EaseInOutCubic);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.95f, backColor, CurveType.EaseInOutCubic);
+            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, outlineColor + new Color(0.01f, 0.01f, 0.01f, 0.1f), CurveType.EaseInOutCubic);
+            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, backColor + new Color(0.005f, 0.005f, 0.005f, 0.1f), CurveType.EaseInOutCubic);
 
             yield return new WaitForSeconds(duration);
         }
