@@ -231,6 +231,7 @@ MonoBehaviour:
   maxDangerAmount: 4
   holeTiles: []
   holePrefab: {fileID: 0}
+  isDebugRoom: 0
   _groundTilemap: {fileID: 3654010563077959481}
   _battleGroundTilemap: {fileID: 8633615801790892311}
   _wallsTilemap: {fileID: 7660288885118121577}

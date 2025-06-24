@@ -19,12 +19,14 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     public Action OnMoveUnit;
     public Action OnSkillUsed;
     public Action OnBattleEnd;
+    public Action OnBattleStart;
 
     [Header("Private Infos")]
     private bool isInBattle;
     private List<Unit> currentHeroes = new();
     private List<Unit> deadHeroes = new();
     private List<AIUnit> currentEnemies = new();
+    private List<AIUnit> currentAllies = new();
     private List<Unit> currentUnits = new();
     private Room battleRoom;
     private Unit currentUnit;
@@ -85,7 +87,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             }
             else
             {
-                currentHeroes.Add((AIUnit)unit);
+                currentHeroes.Add(unit);
+                currentAllies.Add((AIUnit)unit);
             }
         }
     }
@@ -108,7 +111,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             }
             else
             {
-                currentHeroes.Remove((AIUnit)unit);
+                currentHeroes.Remove(unit);
+                currentAllies.Remove((AIUnit)unit);
             }
         }
 
@@ -132,7 +136,10 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         currentUnits.Clear();
         currentHeroes.Clear();
         currentEnemies.Clear();
+        currentAllies.Clear();
         _pathCalculator.InitialisePathCalculator(battleRoom.PlacedBattleTiles);
+
+        OnBattleStart.Invoke();
 
         isInBattle = true;
         this.battleRoom = battleRoom;
@@ -164,7 +171,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         StartCoroutine(NextTurnCoroutine(0, false));
     }
 
-
     private void EndBattle()
     {
         isInBattle = false;
@@ -172,12 +178,19 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         battleRoom.EndBattle();
 
         UIManager.Instance.HideHeroInfosPanels();
+        _playerActionsMenu.CloseActionsMenu();
 
         foreach(Unit hero in deadHeroes)
         {
             hero.Heal(1);
+            hero.HideOutline();
         }
         deadHeroes.Clear();
+
+        for (int i = 0; i < currentAllies.Count; i++)
+        {
+            currentAllies[i].TakeDamage(1000);
+        }
 
         CameraManager.Instance.ExitBattle();
         HeroesManager.Instance.ExitBattle();
@@ -193,6 +206,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     public IEnumerator NextTurnCoroutine(float delay = 0, bool endTurn = true)
     {
         yield return new WaitForSeconds(delay);
+
+        if (!isInBattle) yield break;
 
         if(endTurn)
             _timeline.NextTurn();
@@ -430,7 +445,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     }
 
 
-    public void DisplayPossibleSkillTiles(SkillData skill, BattleTile baseTile, bool doBounce = true)
+    public List<BattleTile> DisplayPossibleSkillTiles(SkillData skill, BattleTile baseTile, bool doBounce = true)
     {
         ResetTiles();
 
@@ -443,6 +458,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         {
             skillTiles[i].DisplayPossibleAttackTile(doBounce);
         }
+
+        return skillTiles;
     }
 
 

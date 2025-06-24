@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.UI;
 using Utilities;
 
 public enum UIState
@@ -36,6 +37,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     [SerializeField] private InventoriesManager _inventoriesManager;
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
     [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
+    [SerializeField] private Image _transitionFadeImage;
 
     [Header("References Hero Infos")]
     [SerializeField] private HeroInfoPanel[] _heroInfoPanels1H;
@@ -49,10 +51,15 @@ public class UIManager : GenericSingletonClass<UIManager>
     private void Start()
     {
         _inventoriesManager.OnInventoryOpen += OpenInventory;
+
+        _heroInfosScreen.Open += () => currentState = UIState.HeroesInfos;
+        _heroInfosScreen.Close += () => currentState = UIState.Nothing;
     }
 
     private void Update()
     {
+        if (BattleManager.Instance.IsInBattle) return;
+
         switch (currentState)
         {
             case UIState.Nothing:
@@ -96,6 +103,12 @@ public class UIManager : GenericSingletonClass<UIManager>
     public void OpenInventory()
     {
         currentState = UIState.Inventories;
+    }
+
+
+    public void FadeScreen(int duration, int finalValue)
+    {
+        _transitionFadeImage.UFadeImage(duration, finalValue);
     }
 
 

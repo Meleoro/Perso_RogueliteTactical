@@ -15,6 +15,7 @@ public class Hero : Unit
     public Loot[] EquippedLoot { get { return equippedLoot; } }
     public Inventory Inventory { get { return inventory; } }
     public HeroData HeroData { get { return heroData; } }
+    public HeroController Controller { get { return _controller; } }
     public int CurrentLevel { get { return currentLevel; } set { currentLevel = value; OnHeroInfosChange?.Invoke(); } }  
     public int CurrentSkillPoints { get { return currentSkillPoints; } set { currentSkillPoints = value; OnHeroInfosChange?.Invoke(); } }
     public int CurrentMaxSkillPoints { get { return currentMaxSkillPoints; } set { currentMaxSkillPoints = value; OnHeroInfosChange?.Invoke(); } }
@@ -101,7 +102,7 @@ public class Hero : Unit
     {
         base.EnterBattle(startTile);
         _controller.EnterBattle();
-        StartCoroutine(_controller.AutoMoveCoroutine(startTile.transform.position));
+        _controller.AutoMove(startTile.transform.position);
     }
 
     public override void ExitBattle(Hero currentHero)
@@ -184,6 +185,7 @@ public class Hero : Unit
 
 
     #region Others
+
 
     public void SetupHeroInfosPanel(HeroInfoPanel heroInfoPanel)
     {

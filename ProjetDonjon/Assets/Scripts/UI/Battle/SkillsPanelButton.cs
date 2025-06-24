@@ -1,5 +1,7 @@
+using NUnit.Framework;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,6 +26,7 @@ public class SkillsPanelButton : MonoBehaviour
     private Color colorSave;
     private bool canBeUsed;
     private bool isClicked;
+    private float skillAreaSize;
 
     [Header("Public Infos")]
     public SkillData SkillData { get { return skillData; } }
@@ -83,7 +86,16 @@ public class SkillsPanelButton : MonoBehaviour
             OnSkillOverlay.Invoke(skillData);
         }
 
-        BattleManager.Instance.DisplayPossibleSkillTiles(skillData, BattleManager.Instance.CurrentUnit.CurrentTile);
+        List<BattleTile> concernedTiles = BattleManager.Instance.DisplayPossibleSkillTiles(skillData, BattleManager.Instance.CurrentUnit.CurrentTile);
+        float averageDist = 0;
+
+        foreach(BattleTile battleTile in concernedTiles)
+        {
+            averageDist += Vector2.Distance(battleTile.transform.position, BattleManager.Instance.CurrentUnit.transform.position);
+        }
+
+        averageDist /= concernedTiles.Count;
+        CameraManager.Instance.FocusOnTr(BattleManager.Instance.CurrentUnit.transform, averageDist * 2f);
     }
 
     public void QuitOverlayButton(bool noActionCall = false)

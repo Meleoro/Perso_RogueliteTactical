@@ -343,15 +343,15 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.0014245014
-    y: 0.0037974683
-    width: 0.997151
-    height: 0.99240506
+    x: 0
+    y: 0
+    width: 0.45584047
+    height: 0.60759497
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 7.5
+  orthographic size: 6.125
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -753,6 +753,7 @@ MonoBehaviour:
   currentFloor: 0
   _heroesManager: {fileID: 1887892336}
   _spriteLayererManager: {fileID: 1460704115}
+  _roomsParent: {fileID: 1460704110}
 --- !u!114 &1460704114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,6 +1876,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8403111940448072077, guid: 7c1cc99ad1b0cb44e85a9427e7c4a134, type: 3}
+      propertyPath: _heroesManager
+      value: 
+      objectReference: {fileID: 1887892336}
     - target: {fileID: 8456223564765089744, guid: 7c1cc99ad1b0cb44e85a9427e7c4a134, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2065,6 +2070,7 @@ MonoBehaviour:
   debugSpawnPos: {fileID: 1887892335}
   _interactionManager: {fileID: 402190537}
   _inventoryManager: {fileID: 1046422283}
+  _genProScript: {fileID: 1460704113}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf4e25216f199bc41a77737520795259, type: 3}
   m_Name: Sword2
   m_EditorClassIdentifier: 
-  lootName: Cristal Sword
-  lootDescription: Deals 3 damages
+  lootName: CRISTAL SWORD
+  lootDescription: Deals +3 damages
   lootType: 1
-  sprite: {fileID: -1288772121, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  sprite: {fileID: 7607525373114708640, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
   spaceTaken:
   - row: 01
   - row: 01
   equipmentType: 0
-  equipmentSprite: {fileID: 853884269, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  equipmentSprite: {fileID: 1820641201, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 1
   strengthUpgrade: 4
   speedUpgrade: -1

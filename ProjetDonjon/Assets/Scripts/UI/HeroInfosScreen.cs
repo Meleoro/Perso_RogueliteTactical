@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Utilities;
 
@@ -9,6 +11,10 @@ public class HeroInfosScreen : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private float openDuration;
     [SerializeField] private float closeDuration;
+
+    [Header("Actions")]
+    public Action Open;
+    public Action Close;
 
     [Header("Private Infos")]
     private HeroData heroData;
@@ -50,10 +56,10 @@ public class HeroInfosScreen : MonoBehaviour
 
     public void ChangeHero(bool left)
     {
-        if(left) currentHeroIndex = (--currentHeroIndex) % 3;
-        else currentHeroIndex = (++currentHeroIndex) % 3;
+        if(left) currentHeroIndex = (--currentHeroIndex) % _heroesManager.Heroes.Length;
+        else currentHeroIndex = (++currentHeroIndex) % _heroesManager.Heroes.Length;
 
-        if (currentHeroIndex < 0) currentHeroIndex += 3;
+        if (currentHeroIndex < 0) currentHeroIndex += _heroesManager.Heroes.Length;
 
         ActualiseInfoScreen(_heroesManager.Heroes[currentHeroIndex]);
         ActualiseInventory();
@@ -66,6 +72,10 @@ public class HeroInfosScreen : MonoBehaviour
     {
         ActualiseInfoScreen(_heroesManager.Heroes[_heroesManager.CurrentHeroIndex]);
         currentHeroIndex = _heroesManager.CurrentHeroIndex;
+
+        HeroesManager.Instance.Heroes[currentHeroIndex].Controller.StopControl();
+
+        Open.Invoke();
 
         isOpenning = true;
         currentInventory = hero.Inventory;
@@ -87,6 +97,10 @@ public class HeroInfosScreen : MonoBehaviour
     public IEnumerator CloseInfosScreenCoroutine()
     {
         isOpenning = true;
+
+        HeroesManager.Instance.Heroes[HeroesManager.Instance.CurrentHeroIndex].Controller.RestartControl();
+
+        Close.Invoke();
 
         _mainRectParent.UChangePosition(closeDuration, _hiddenInfoScreenPosition.position, CurveType.EaseOutCubic);
         currentInventory.RectTransform.UChangePosition(closeDuration, _hiddenInventoryPosition.position, CurveType.EaseOutCubic);
@@ -159,7 +173,6 @@ public class HeroInfosScreen : MonoBehaviour
     }
 
     #endregion
-
 
 
     public void ActualiseInfoScreen(Hero hero)

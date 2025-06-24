@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf4e25216f199bc41a77737520795259, type: 3}
   m_Name: Boots1
   m_EditorClassIdentifier: 
-  lootName: Add +1 Speed
-  lootDescription: 
+  lootName: WOODEN SHOES
+  lootDescription: Adds +1 Speed
   lootType: 1
-  sprite: {fileID: 1990072176, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  sprite: {fileID: 1707214179, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
   spaceTaken:
   - row: 01
   equipmentType: 3
-  equipmentSprite: {fileID: 1990072176, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  equipmentSprite: {fileID: 1707214179, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 0
   strengthUpgrade: 0
   speedUpgrade: 1

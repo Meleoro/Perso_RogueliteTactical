@@ -33,6 +33,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;
     [SerializeField] private SpriteLayererManager _spriteLayererManager;
+    [SerializeField] private Transform _roomsParent;
     private GenProPathCalculator _pathCalculator;
 
 
@@ -41,6 +42,21 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         GenerateFloor(enviroData);
         _heroesManager.Initialise(null, spawnPos);
         StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.1f));
+    }
+
+
+    public void GenerateNextFloor()
+    {
+        Transform[] roomsToDestroy = _roomsParent.GetComponentsInChildren<Transform>();
+
+        for(int i = 0; i < roomsToDestroy.Length; i++)
+        {
+            if (roomsToDestroy[i] == _roomsParent) continue;
+
+            Destroy(roomsToDestroy[i].gameObject);
+        }
+
+        GenerateFloor(enviroData);
     }
 
 
@@ -67,6 +83,8 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         // Start
         AddRoom(centerPosition, enviroData.possibleStartRooms[Random.Range(0, enviroData.possibleStartRooms.Length)]);
         spawnPos = generatedRooms[0]._heroSpawnerTr.position;
+
+        HeroesManager.Instance.Teleport(spawnPos);
 
         // End
         Vector2Int endPos = new Vector2Int(0, 0);
@@ -149,6 +167,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
             generatedRooms[i].CloseUnusedEntrances(GetNeighborRooms(generatedRooms[i].RoomCoordinates, generatedRooms[i]));
         }
     }
+
 
 
     #region Utility Functions
@@ -267,7 +286,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     private void AddRoom(Vector2Int spawnCoordinates, Room room)
     {
         Room newRoom = Instantiate(room, (Vector2)(spawnCoordinates * roomSizeUnits * new Vector2(2, 1.5f)) + offsetRoomCenter, Quaternion.Euler(0, 0, 0),
-            transform);
+            _roomsParent);
         newRoom.SetupRoom(spawnCoordinates, roomSizeUnits);
         _pathCalculator.AddRoom(newRoom, spawnCoordinates);
         generatedRooms.Add(newRoom);
@@ -347,10 +366,4 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
 
 
     #endregion
-
-
-    private void GenerateSpecialRooms()
-    {
-
-    }
 }

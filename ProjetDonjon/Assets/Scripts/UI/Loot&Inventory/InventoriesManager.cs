@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
@@ -12,6 +13,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [SerializeField] private float openEffectDuration;
     [SerializeField] private float closeEffectDuration;
     public float slotSize;
+    [SerializeField] private Sprite[] inventoryBackSprites;
 
     [Header("Actions")]
     public Action OnInventoryOpen;
@@ -20,21 +22,28 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [Header("Private Infos")]
     private Inventory[] heroesInventories = new Inventory[3];
     private List<InventorySlot> allSlots = new List<InventorySlot>();
+    private int inventoryInstantiatedAmount = 0;
+
+    [Header("Public Infos")]
+    public RectTransform MainLootParent { get { return _mainLootParent; } }
+    public DetailsPanel DetailsPanel { get { return _detailsPanel; } }
 
     [Header("References")]
     [SerializeField] private RectTransform[] _hiddenInventoryPositions;
     [SerializeField] private RectTransform[] _shownInventoryPositions;
     [SerializeField] private RectTransform _mainLootParent;
+    [SerializeField] private RectTransform _hiddenPosition;
+    [SerializeField] private RectTransform _shownPosition;
     [SerializeField] private RectTransform[] _lootParents;
-    public RectTransform MainLootParent { get { return _mainLootParent; } }
     [SerializeField] private RectTransform _inventoriesParent;
     [SerializeField] private Image _backInventoriesImage;
     [SerializeField] private Image _backFadeImage;
+    [SerializeField] private DetailsPanel _detailsPanel;
 
 
     private void Start()
     {
-        _backInventoriesImage.rectTransform.localPosition = _hiddenInventoryPositions[1].localPosition;
+        _backInventoriesImage.rectTransform.position = _hiddenPosition.position;
     }
 
     public Inventory InitialiseInventory(Inventory inventoryPrefab, int index)
@@ -43,9 +52,29 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         heroesInventories[index].SetupPosition(_hiddenInventoryPositions[index], _shownInventoryPositions[index], _lootParents[index]);
         heroesInventories[index].InitialiseInventory();
 
+        _backInventoriesImage.sprite = inventoryBackSprites[index];
+        _backInventoriesImage.SetNativeSize();
+
         allSlots.AddRange(heroesInventories[index].GetSlots());
+        inventoryInstantiatedAmount++;
+
+        _hiddenInventoryPositions[index].gameObject.SetActive(true);
+        _shownInventoryPositions[index].gameObject.SetActive(true);
+
+        StartCoroutine(ResetPosDelayCoroutine());
 
         return heroesInventories[index];
+    }
+
+    private IEnumerator ResetPosDelayCoroutine() 
+    {
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+        for (int i = 0; i < inventoryInstantiatedAmount; i++)
+        {
+            heroesInventories[i].RebootPosition(); 
+        }
     }
 
 
@@ -58,21 +87,25 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         OpenInventories();
     }
 
-    public InventorySlot VerifyIsOverlayingSlot(Vector3 raycastPos)
+    public InventorySlot VerifyIsOverlayingSlot(Vector3 raycastPos, Vector3 centerPos)
     {
-        float maxDist = 0.5f;
+        float maxDist = 75f;
         InventorySlot bestSlot = null;
-        float minDist = Mathf.Infinity;
+        float minDist1 = Mathf.Infinity;
+        List<InventorySlot> possibleSlots = new List<InventorySlot>();
 
         for (int i = 0; i < allSlots.Count; i++)
         {
-            float currentDist = Vector2.Distance(raycastPos, allSlots[i]._rectTr.position);
+            float currentDist = Vector2.Distance(allSlots[i].RectTransform.InverseTransformPoint(raycastPos), Vector3.zero);
             if (currentDist < maxDist)
             {
-                if(currentDist < minDist)
+                currentDist += Vector2.Distance(allSlots[i].RectTransform.InverseTransformPoint(centerPos), Vector3.zero);
+                possibleSlots.Add(allSlots[i]);
+
+                if(currentDist < minDist1)
                 {
                     bestSlot = allSlots[i];
-                    minDist = currentDist;
+                    minDist1 = currentDist;  
                 }
             }
         }
@@ -85,7 +118,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
     public bool VerifyCanOpenCloseInventory()
     {
-        for(int i = 0; i < heroesInventories.Length; i++)
+        for(int i = 0; i < inventoryInstantiatedAmount; i++)
         {
             if (!heroesInventories[i].GetCanOpenOrClose())
                 return false;
@@ -98,31 +131,31 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     {
         OnInventoryOpen?.Invoke();
 
-        _backInventoriesImage.rectTransform.UChangeLocalPosition(openEffectDuration * 0.75f, _shownInventoryPositions[1].localPosition + Vector3.up * 25f, CurveType.EaseOutSin);
+        _backInventoriesImage.rectTransform.UChangePosition(openEffectDuration * 0.75f, _shownPosition.position + Vector3.up * 0.2f, CurveType.EaseOutSin);
         _backFadeImage.UFadeImage(openEffectDuration, 0.5f, CurveType.EaseOutCubic);
 
         await Task.Delay(20);
 
-        for (int i = 0; i < heroesInventories.Length; i++)
+        for (int i = 0; i < inventoryInstantiatedAmount; i++)
         {
             StartCoroutine(heroesInventories[i].OpenInventoryCoroutine(openEffectDuration));
         }
 
         await Task.Delay((int)(openEffectDuration * 0.75f * 1000));
 
-        _backInventoriesImage.rectTransform.UChangeLocalPosition(openEffectDuration * 0.25f, _shownInventoryPositions[1].localPosition, CurveType.EaseInSin);
+        _backInventoriesImage.rectTransform.UChangePosition(openEffectDuration * 0.25f, _shownPosition.position, CurveType.EaseInSin);
     }
 
     public async void CloseInventories()
     {
         OnInventoryClose?.Invoke();
 
-        _backInventoriesImage.rectTransform.UChangeLocalPosition(closeEffectDuration, _hiddenInventoryPositions[1].localPosition, CurveType.EaseOutCubic);
+        _backInventoriesImage.rectTransform.UChangePosition(closeEffectDuration, _hiddenPosition.position, CurveType.EaseOutCubic);
         _backFadeImage.UFadeImage(closeEffectDuration, 0f, CurveType.EaseOutCubic);
 
         await Task.Delay(20);
 
-        for (int i = 0; i < heroesInventories.Length; i++)
+        for (int i = 0; i < inventoryInstantiatedAmount; i++)
         {
             StartCoroutine(heroesInventories[i].CloseInventoryCoroutine(closeEffectDuration));
         }

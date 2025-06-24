@@ -79,6 +79,7 @@ public class EquipmentSlot : MonoBehaviour
 
         _equipmentImage.sprite = addedLoot.LootData.equipmentSprite;
         _equipmentImage.enabled = true;
+        _equipmentImage.SetNativeSize();
 
         equipedLoot = addedLoot;
 

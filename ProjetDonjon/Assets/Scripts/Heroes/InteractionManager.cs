@@ -79,7 +79,7 @@ public class InteractionManager : MonoBehaviour
         for(int i = 1; i < interactiblesAtRange.Count; i++)
         {
             interactiblesAtRange[i].CannotBePicked();
-            float dist = Vector2.Distance(interactiblesAtRange[0].GetTransform().position, currentHeroTransform.position);
+            float dist = Vector2.Distance(interactiblesAtRange[i].GetTransform().position, currentHeroTransform.position);
 
             if(dist < bestDist)
             {

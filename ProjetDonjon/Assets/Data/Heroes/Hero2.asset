@@ -21,7 +21,7 @@ MonoBehaviour:
   baseMovePoints: 3
   maxSkillPoints: 3
   startSkillPoints: 1
-  heroInventoryPrefab: {fileID: 4803297770596504823, guid: af6aeea8f9fec594abb4a1669bf5d411, type: 3}
+  heroInventoryPrefab: {fileID: 4803297770596504823, guid: 73957351403097a46aedc8ddb9ee430c, type: 3}
   heroSkills:
   - skill: {fileID: 11400000, guid: fa97ea0063e522441914677eada810e1, type: 2}
     levelToUnlock: 0

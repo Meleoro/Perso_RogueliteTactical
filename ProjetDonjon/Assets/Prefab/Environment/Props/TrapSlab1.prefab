@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2722665039604591438}
   - component: {fileID: 6318772699704016679}
   - component: {fileID: -7173618977425417997}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TrapSlab1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrowPrefab: {fileID: 8032761663435920681, guid: 5a6b234b1bf64de49b31f2602f2b3ae9, type: 3}
+  dustVFXPrefab: {fileID: 5931802981340801506, guid: a63048bea95d4364f8b8a549d413e281, type: 3}
   arrowSpeed: 18
   arrowDamages: 1
   cooldownDuration: 2

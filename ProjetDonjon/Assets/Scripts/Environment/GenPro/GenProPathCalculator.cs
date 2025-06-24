@@ -96,14 +96,15 @@ public class GenProPathCalculator
 
     private List<Vector2Int> GetFinalPath(Vector2Int startLocation, Vector2Int endLocation, bool includeStart = false, bool includeEnd = false)
     {
+        if (endLocation == startLocation) return new List<Vector2Int>();
+
         List<Vector2Int> finalPath = new List<Vector2Int>();
         GenProTile currentTile = floorGenProTiles[endLocation.x, endLocation.y];
         currentTile = currentTile.previousTile;
 
         if (includeEnd) finalPath.Add(endLocation);
-        if(currentTile == null) return new List<Vector2Int>();
 
-        while(currentTile.tileCoordinates != startLocation)
+        while(currentTile is not null && currentTile.tileCoordinates != startLocation)
         {
             finalPath.Add(currentTile.tileCoordinates);
 

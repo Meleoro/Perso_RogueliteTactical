@@ -20,11 +20,14 @@ public class InventorySlot : MonoBehaviour
 
     [Header("Public Infos")]
     public Vector2Int SlotCoordinates { get { return slotCoordinates; } }
+    public RectTransform RectTransform { get { return _rectTr; } }
 
     [Header("References")]
-    public RectTransform _rectTr;
-    public RectTransform _lootParent;
-    public Image _mainSpriteRenderer;
+    [SerializeField] private RectTransform _rectTr;
+    [SerializeField] public Image _mainImage;
+    private RectTransform _lootParent;
+    private RectTransform _overlayedParent;
+    private RectTransform _baseParent;
 
 
     private void Start()
@@ -37,6 +40,13 @@ public class InventorySlot : MonoBehaviour
     public void SetupCoordinates(Vector2Int coordinates)
     {
         slotCoordinates = coordinates;
+    }
+
+    public void SetupReferences(RectTransform lootPrt, RectTransform basePrt, RectTransform overlayedPrt)
+    {
+        _lootParent = lootPrt;
+        _baseParent = basePrt;  
+        _overlayedParent = overlayedPrt;
     }
 
 
@@ -110,6 +120,7 @@ public class InventorySlot : MonoBehaviour
     public void OverlaySlot()
     {
         transform.localScale = Vector3.one * overlaySize;
+        _rectTr.SetParent(_overlayedParent);
         isOverlayed = true;
         overlayCount = 0;
     }
@@ -117,6 +128,7 @@ public class InventorySlot : MonoBehaviour
     public void QuitOverlaySlot()
     {
         transform.localScale = baseSize;
+        _rectTr.SetParent(_baseParent);
         isOverlayed = false;
     }
 

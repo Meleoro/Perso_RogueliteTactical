@@ -24,7 +24,6 @@ public class Timeline : MonoBehaviour
     private List<TimelineSlot> slots;
     public List<TimelineUnit> timelineUnits;
     public List<TimelineUnit> currentTimelineUnits;
-    private int currentTimelineIndex;
 
     [Header("Public Infos")]
     public List<TimelineSlot> Slots { get { return slots; } }
@@ -47,8 +46,6 @@ public class Timeline : MonoBehaviour
 
         slots = new List<TimelineSlot>();
         timelineUnits = new List<TimelineUnit>();
-
-        currentTimelineIndex = 0;
 
         for (int i = 0; i < units.Count; i++)
         {

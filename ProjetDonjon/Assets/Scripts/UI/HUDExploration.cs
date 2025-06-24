@@ -1,0 +1,88 @@
+using UnityEngine;
+using UnityEngine.UI;
+using Utilities;
+
+public class HUDExploration : MonoBehaviour
+{
+    [Header("Parameters")]
+    [SerializeField] private float overlayEffectDuration;
+
+    [Header("Private Infos")]
+    private bool isDisplayed;
+
+    [Header("References")]
+    [SerializeField] private Image[] _buttonsImages;
+    [SerializeField] private Animator _animator;
+    [SerializeField] private InventoriesManager _inventoryManager;
+    [SerializeField] private HeroInfosScreen _heroInfosScreen;
+
+
+    private void Start()
+    {
+        _heroInfosScreen.Open += Hide;
+        _heroInfosScreen.Close += Show;
+        _inventoryManager.OnInventoryOpen += Hide;
+        _inventoryManager.OnInventoryClose += Show;
+        BattleManager.Instance.OnBattleStart += Hide;
+        BattleManager.Instance.OnBattleEnd += Show;
+
+        foreach(var button in _buttonsImages)
+        {
+            Material material = button.material;
+            Material material2 = new Material(material);
+
+            button.material = material2;
+        }
+
+        Show();
+    }
+
+
+    private void Show()
+    {
+        if (BattleManager.Instance.IsInBattle) return;
+        if (isDisplayed) return;
+        isDisplayed = true;
+
+        _animator.SetBool("IsDisplayed", true);
+    }
+
+    private void Hide()
+    {
+        if (!isDisplayed) return;
+        isDisplayed = false;
+
+        _animator.SetBool("IsDisplayed", false);
+    }
+
+
+    #region Buttons Functions
+
+    public void OverlayButton(int index)
+    {
+        _buttonsImages[index].material.ULerpMaterialFloat(overlayEffectDuration, 1, "_OutlineSize");
+        _buttonsImages[index].rectTransform.UChangeScale(overlayEffectDuration, Vector3.one * 1.1f, CurveType.EaseOutCubic);
+    }
+
+    public void QuitOverlayButton(int index)
+    {
+        _buttonsImages[index].material.ULerpMaterialFloat(overlayEffectDuration, 0, "_OutlineSize");
+        _buttonsImages[index].rectTransform.UChangeScale(overlayEffectDuration, Vector3.one * 1f, CurveType.EaseOutCubic);
+    }
+
+    public void ClickInventory()
+    {
+        if (!isDisplayed) return;
+
+        _inventoryManager.OpenInventories();
+    }
+
+    public void ClickEquipment()
+    {
+        if (!isDisplayed) return;
+
+        StartCoroutine(_heroInfosScreen.OpenInfosScreenCoroutine());
+    }
+
+    #endregion
+}

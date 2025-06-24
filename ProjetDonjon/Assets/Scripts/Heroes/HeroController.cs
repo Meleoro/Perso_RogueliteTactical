@@ -23,10 +23,12 @@ public class HeroController : MonoBehaviour
     [Header("Private Infos")]
     private ControllerState currentControllerState;
     private bool isInBattle;
+    private bool noControl;
     private bool isAutoMoving;
     private Vector2 saveSpriteLocalPos;
     private Vector2 oldPos;
     public List<Vector3> savePositions = new List<Vector3>();
+    private Coroutine autoMoveCoroutine;
 
     [Header("Public Infos")]
     public ControllerState CurrentControllerState { get { return currentControllerState; } }
@@ -58,6 +60,7 @@ public class HeroController : MonoBehaviour
             Move(Vector2.zero);
             return;
         }
+        if (noControl) return;
 
         Move(InputManager.moveDir);
 
@@ -134,7 +137,14 @@ public class HeroController : MonoBehaviour
     }
 
 
-    public IEnumerator AutoMoveCoroutine(Vector3 aimedPos)
+    public void AutoMove(Vector3 aimedPos)
+    {
+        if (isAutoMoving) return;
+
+        autoMoveCoroutine = StartCoroutine(AutoMoveCoroutine(aimedPos));
+    }
+
+    private IEnumerator AutoMoveCoroutine(Vector3 aimedPos)
     {
         isAutoMoving = true;
 
@@ -148,6 +158,16 @@ public class HeroController : MonoBehaviour
         transform.position = aimedPos;
         transform.rotation = Quaternion.Euler(0, 0, 0);
         isAutoMoving = false;
+    }
+
+    public void StopAutoMove()
+    {
+        isAutoMoving = false;
+
+        if(autoMoveCoroutine != null)
+        {
+            StopCoroutine(autoMoveCoroutine);
+        }
     }
 
 
@@ -243,6 +263,8 @@ public class HeroController : MonoBehaviour
     #endregion
 
 
+    #region Others
+
     public IEnumerator FallCoroutine()
     {
         currentControllerState = ControllerState.Fall;
@@ -258,6 +280,25 @@ public class HeroController : MonoBehaviour
     }
 
 
+    public IEnumerator TakeStairsCoroutine()
+    {
+        StartCoroutine(AutoMoveCoroutine(transform.position + new Vector3(0, 2, 0)));
+
+        yield return new WaitForSeconds(1);
+    }
+
+
+    public void StopControl()
+    {
+        noControl = true;
+        _rb.linearVelocity = new Vector3(0, 0, 0);
+    }
+
+    public void RestartControl()
+    {
+        noControl = false;  
+    }
+
     public void EnterBattle()
     {
         isInBattle = true;
@@ -267,4 +308,6 @@ public class HeroController : MonoBehaviour
     {
         isInBattle = false;
     }
+
+    #endregion
 }

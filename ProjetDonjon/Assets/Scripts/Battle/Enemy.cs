@@ -118,7 +118,7 @@ public class AIUnit : Unit
 
         yield return new WaitForSeconds(duration);
 
-        base.Die();
+        Destroy(gameObject);
     }
 
     #endregion
@@ -290,6 +290,10 @@ public class AIUnit : Unit
 
     protected override void Die()
     {
+        currentTile.UnitLeaveTile();
+
+        BattleManager.Instance.RemoveUnit(this);
+
         StartCoroutine(DisappearCoroutine(1f));
     }
 

@@ -76,6 +76,7 @@ public class PlayerActionsMenu : MonoBehaviour
     public void OpenActionsMenu()
     {
         if (currentHero.CurrentActionPoints == 0) return;
+        if (!BattleManager.Instance.IsInBattle) return;
 
         CameraManager.Instance.OnCameraMouseInput += CloseActionsMenu;
         currentHero.OnClickUnit -= OpenActionsMenu;

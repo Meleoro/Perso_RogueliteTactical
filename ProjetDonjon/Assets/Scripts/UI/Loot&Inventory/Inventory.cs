@@ -20,6 +20,7 @@ public class Inventory : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private RectTransform _slotsParent;
+    [SerializeField] private RectTransform _overlayedSlotsParent;
     [SerializeField] private RectTransform _upgrade1SlotsParent;
     [SerializeField] private RectTransform _upgrade2SlotsParent;
     private RectTransform _rectTransform;
@@ -52,8 +53,8 @@ public class Inventory : MonoBehaviour
 
     public void RebootPosition()
     {
-        _rectTransform.localPosition = _hiddenRectTr.localPosition;
-        _lootParent.localPosition = _hiddenRectTr.localPosition;
+        _rectTransform.position = _hiddenRectTr.position;
+        _lootParent.position = _hiddenRectTr.position;
     }
 
 
@@ -67,14 +68,15 @@ public class Inventory : MonoBehaviour
     public IEnumerator OpenInventoryCoroutine(float duration)
     {
         isMoving = true;
+        HeroesManager.Instance.Heroes[HeroesManager.Instance.CurrentHeroIndex].Controller.StopControl();
 
-        _rectTransform.UChangeLocalPosition(duration * 0.75f, _showedRectTr.localPosition + Vector3.up * 25f, CurveType.EaseOutSin);
-        _lootParent.UChangeLocalPosition(duration * 0.75f, _showedRectTr.localPosition + Vector3.up * 25f, CurveType.EaseOutSin);
+        _rectTransform.UChangePosition(duration * 0.75f, _showedRectTr.position + Vector3.up * 0.2f, CurveType.EaseOutSin);
+        _lootParent.UChangePosition(duration * 0.75f, _showedRectTr.position + Vector3.up * 0.2f, CurveType.EaseOutSin);
 
         yield return new WaitForSeconds(duration * 0.75f + Time.deltaTime * 2);
 
-        _rectTransform.UChangeLocalPosition(duration * 0.25f, _showedRectTr.localPosition, CurveType.EaseInSin);
-        _lootParent.UChangeLocalPosition(duration * 0.25f, _showedRectTr.localPosition, CurveType.EaseInSin);
+        _rectTransform.UChangePosition(duration * 0.25f, _showedRectTr.position, CurveType.EaseInSin);
+        _lootParent.UChangePosition(duration * 0.25f, _showedRectTr.position, CurveType.EaseInSin);
 
         yield return new WaitForSeconds(duration * 0.25f);
 
@@ -84,9 +86,10 @@ public class Inventory : MonoBehaviour
     public IEnumerator CloseInventoryCoroutine(float duration)
     {
         isMoving = true;
+        HeroesManager.Instance.Heroes[HeroesManager.Instance.CurrentHeroIndex].Controller.RestartControl();
 
-        _rectTransform.UChangeLocalPosition(duration, _hiddenRectTr.localPosition, CurveType.EaseOutCubic);
-        _lootParent.UChangeLocalPosition(duration, _hiddenRectTr.localPosition, CurveType.EaseOutCubic);
+        _rectTransform.UChangePosition(duration, _hiddenRectTr.position, CurveType.EaseOutCubic);
+        _lootParent.UChangePosition(duration, _hiddenRectTr.position, CurveType.EaseOutCubic);
 
         yield return new WaitForSeconds(duration);
 
@@ -105,7 +108,7 @@ public class Inventory : MonoBehaviour
         _lootParent = lootParent;
 
         _rectTransform = GetComponent<RectTransform>();
-        _rectTransform.localPosition = _hiddenRectTr.localPosition;
+        _rectTransform.position = _hiddenRectTr.position;
     }
 
     public void InitialiseInventory()
@@ -125,18 +128,18 @@ public class Inventory : MonoBehaviour
 
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            inventorySlots[i]._lootParent = _lootParent;
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent);
         }
 
         for (int i = 0; i < upgradeSlots1.Length; i++)
         {
-            upgradeSlots1[i]._lootParent = _lootParent;
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent);
             upgradeSlots1[i].gameObject.SetActive(false);
         }
 
         for (int i = 0; i < upgradeSlots2.Length; i++)
         {
-            upgradeSlots2[i]._lootParent = _lootParent;
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent);
             upgradeSlots2[i].gameObject.SetActive(false);
         }
     }
@@ -144,24 +147,24 @@ public class Inventory : MonoBehaviour
 
     private void SetupSlots()
     {
-        Vector2 bottomLeftPosition = inventorySlots[0]._rectTr.localPosition;
+        Vector2 bottomLeftPosition = inventorySlots[0].RectTransform.localPosition;
 
         // Neighbors + Find bottom left location
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             inventorySlots[i].SetupNeighbors(inventorySlots, distanceBetweenSlots);
 
-            if(inventorySlots[i]._rectTr.localPosition.x < bottomLeftPosition.x)
-                bottomLeftPosition.x = inventorySlots[i]._rectTr.localPosition.x;
+            if(inventorySlots[i].RectTransform.localPosition.x < bottomLeftPosition.x)
+                bottomLeftPosition.x = inventorySlots[i].RectTransform.localPosition.x;
 
-            if (inventorySlots[i]._rectTr.localPosition.y < bottomLeftPosition.y)
-                bottomLeftPosition.y = inventorySlots[i]._rectTr.localPosition.y;
+            if (inventorySlots[i].RectTransform.localPosition.y < bottomLeftPosition.y)
+                bottomLeftPosition.y = inventorySlots[i].RectTransform.localPosition.y;
         }
 
         // Coordinates
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            Vector2 slotOffset = (Vector2)inventorySlots[i]._rectTr.localPosition - bottomLeftPosition;
+            Vector2 slotOffset = (Vector2)inventorySlots[i].RectTransform.localPosition - bottomLeftPosition;
             Vector2Int slotCoordinates = new Vector2Int((int)(slotOffset.x / distanceBetweenSlots), (int)(slotOffset.y / distanceBetweenSlots));
 
             inventorySlots[i].SetupCoordinates(slotCoordinates);

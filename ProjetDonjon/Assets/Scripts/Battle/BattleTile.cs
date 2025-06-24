@@ -327,8 +327,8 @@ public class BattleTile : MonoBehaviour
         _mainSpriteRenderer.UStopSpriteRendererLerpColor();
         _backSpriteRenderer.UStopSpriteRendererLerpColor();
 
-        //_mainSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorOutline, CurveType.EaseInOutCubic);
-        //_backSpriteRenderer.ULerpColorSpriteRenderer(0.1f, currentColorBack, CurveType.EaseInOutCubic);
+        _mainSpriteRenderer.color = currentColorOutline;
+        _backSpriteRenderer.color = currentColorBack;
     }
 
 

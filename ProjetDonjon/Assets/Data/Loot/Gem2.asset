@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf4e25216f199bc41a77737520795259, type: 3}
   m_Name: Gem2
   m_EditorClassIdentifier: 
-  lootName: Cristal
+  lootName: CRISTAL
   lootDescription: Can be sell at good prices
   lootType: 0
-  sprite: {fileID: 1820641201, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  sprite: {fileID: -730577239, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
   spaceTaken:
   - row: 01

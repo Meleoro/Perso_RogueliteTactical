@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf4e25216f199bc41a77737520795259, type: 3}
   m_Name: Breast1
   m_EditorClassIdentifier: 
-  lootName: Add +2 Health
+  lootName: WOODEN ARMOR
   lootDescription: 
   lootType: 1
-  sprite: {fileID: 1707214179, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  sprite: {fileID: -799607783, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
   spaceTaken:
   - row: 0101
   - row: 0101
   equipmentType: 2
-  equipmentSprite: {fileID: -730577239, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
+  equipmentSprite: {fileID: 1990072176, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 2
   strengthUpgrade: 1
   speedUpgrade: 0

@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Utilities;
 
 public class Chest : MonoBehaviour, IInteractible
@@ -14,6 +16,7 @@ public class Chest : MonoBehaviour, IInteractible
     [SerializeField] private Animator _animator;
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private Collider2D _collider;
+    [SerializeField] private Light2D _chestLight;
 
 
     private void Start()
@@ -42,6 +45,27 @@ public class Chest : MonoBehaviour, IInteractible
     }
 
 
+    private IEnumerator InteractCoroutine(float openDuration)
+    {
+        CameraManager.Instance.FocusOnTr(transform, 3f);
+
+        transform.UShakePosition(openDuration * 0.3f, 0.2f, 0.04f);
+
+        yield return new WaitForSeconds(openDuration * 0.3f);
+
+        _animator.SetTrigger("Open");
+
+        yield return new WaitForSeconds(openDuration * 0.25f);
+
+        GenerateLoot();
+        _chestLight.ULerpIntensity(openDuration * 0.03f, 3f);
+
+        yield return new WaitForSeconds(openDuration * 0.03f);
+
+        _chestLight.ULerpIntensity(openDuration * 0.05f, 0f);
+    }
+
+
     #region Interface Functions
 
     public void CanBePicked()
@@ -66,11 +90,10 @@ public class Chest : MonoBehaviour, IInteractible
         if (isOpened) return;
 
         isOpened = true;
-        _animator.SetTrigger("Open");
         _spriteRenderer.material.ULerpMaterialFloat(0.1f, 0f, "_OutlineSize");
         _collider.enabled = false;
 
-        GenerateLoot();
+        StartCoroutine(InteractCoroutine(1.5f));
     }
 
     #endregion
