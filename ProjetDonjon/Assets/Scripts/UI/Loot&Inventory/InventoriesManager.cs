@@ -27,6 +27,8 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [Header("Public Infos")]
     public RectTransform MainLootParent { get { return _mainLootParent; } }
     public DetailsPanel DetailsPanel { get { return _detailsPanel; } }
+    public InventoryActionPanel InventoryActionPanel { get { return _inventoryActionsPanel; } }  
+
 
     [Header("References")]
     [SerializeField] private RectTransform[] _hiddenInventoryPositions;
@@ -34,11 +36,14 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [SerializeField] private RectTransform _mainLootParent;
     [SerializeField] private RectTransform _hiddenPosition;
     [SerializeField] private RectTransform _shownPosition;
+    [SerializeField] private RectTransform _leftHiddenPosition;
+    [SerializeField] private RectTransform _leftShownPosition;
     [SerializeField] private RectTransform[] _lootParents;
     [SerializeField] private RectTransform _inventoriesParent;
     [SerializeField] private Image _backInventoriesImage;
     [SerializeField] private Image _backFadeImage;
     [SerializeField] private DetailsPanel _detailsPanel;
+    [SerializeField] private InventoryActionPanel _inventoryActionsPanel;
 
 
     private void Start()
@@ -46,11 +51,11 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         _backInventoriesImage.rectTransform.position = _hiddenPosition.position;
     }
 
-    public Inventory InitialiseInventory(Inventory inventoryPrefab, int index)
+    public Inventory InitialiseInventory(Inventory inventoryPrefab, int index, Hero hero)
     {
         heroesInventories[index] = Instantiate(inventoryPrefab, _inventoriesParent);
         heroesInventories[index].SetupPosition(_hiddenInventoryPositions[index], _shownInventoryPositions[index], _lootParents[index]);
-        heroesInventories[index].InitialiseInventory();
+        heroesInventories[index].InitialiseInventory(hero);
 
         _backInventoriesImage.sprite = inventoryBackSprites[index];
         _backInventoriesImage.SetNativeSize();
@@ -77,8 +82,6 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         }
     }
 
-
-    #region Public Functions
 
     public void AddItem(Loot loot)
     {
@@ -113,7 +116,8 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         return bestSlot;
     }
 
-    #endregion
+
+    #region Open / Close Functions
 
 
     public bool VerifyCanOpenCloseInventory()
@@ -127,11 +131,28 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         return true;
     }
 
+
+    public IEnumerator OpenInventory(Inventory inventoryToOpen)
+    {
+        StartCoroutine(inventoryToOpen.OpenInventoryCoroutine(openEffectDuration, _leftHiddenPosition, _leftShownPosition));
+
+        yield return new WaitForSeconds(openEffectDuration);
+    }
+
+    public IEnumerator CloseInventory(Inventory inventoryToClose)
+    {
+        StartCoroutine(inventoryToClose.CloseInventoryCoroutine(closeEffectDuration, _leftHiddenPosition));
+
+        yield return new WaitForSeconds(closeEffectDuration);
+    }
+
+
     public async void OpenInventories()
     {
         OnInventoryOpen?.Invoke();
 
-        _backInventoriesImage.rectTransform.UChangePosition(openEffectDuration * 0.75f, _shownPosition.position + Vector3.up * 0.2f, CurveType.EaseOutSin);
+        _backInventoriesImage.rectTransform.UChangeLocalPosition(openEffectDuration * 0.75f, 
+            _backInventoriesImage.rectTransform.parent.InverseTransformPoint(_shownPosition.position + Vector3.up), CurveType.EaseOutSin);
         _backFadeImage.UFadeImage(openEffectDuration, 0.5f, CurveType.EaseOutCubic);
 
         await Task.Delay(20);
@@ -143,14 +164,16 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
         await Task.Delay((int)(openEffectDuration * 0.75f * 1000));
 
-        _backInventoriesImage.rectTransform.UChangePosition(openEffectDuration * 0.25f, _shownPosition.position, CurveType.EaseInSin);
+        _backInventoriesImage.rectTransform.UChangeLocalPosition(openEffectDuration * 0.25f, 
+            _backInventoriesImage.rectTransform.parent.InverseTransformPoint(_shownPosition.position), CurveType.EaseInSin);
     }
 
     public async void CloseInventories()
     {
         OnInventoryClose?.Invoke();
 
-        _backInventoriesImage.rectTransform.UChangePosition(closeEffectDuration, _hiddenPosition.position, CurveType.EaseOutCubic);
+        _backInventoriesImage.rectTransform.UChangeLocalPosition(closeEffectDuration, 
+            _backInventoriesImage.rectTransform.parent.InverseTransformPoint(_hiddenPosition.position), CurveType.EaseOutCubic);
         _backFadeImage.UFadeImage(closeEffectDuration, 0f, CurveType.EaseOutCubic);
 
         await Task.Delay(20);
@@ -160,4 +183,6 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
             StartCoroutine(heroesInventories[i].CloseInventoryCoroutine(closeEffectDuration));
         }
     }
+
+    #endregion
 }

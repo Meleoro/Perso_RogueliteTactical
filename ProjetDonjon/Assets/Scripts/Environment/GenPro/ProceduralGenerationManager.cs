@@ -21,6 +21,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     public EnviroData enviroData;
     [SerializeField] private Vector2Int roomSizeUnits;
     [SerializeField] private Vector2 offsetRoomCenter;
+    [SerializeField] private RoomGlobalCollider roomGlobalColliderPredab;
 
     [Header("Private Infos")]
     private int wantedRoomAmount;
@@ -48,8 +49,9 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     public void GenerateNextFloor()
     {
         Transform[] roomsToDestroy = _roomsParent.GetComponentsInChildren<Transform>();
+        currentFloor++;
 
-        for(int i = 0; i < roomsToDestroy.Length; i++)
+        for (int i = 0; i < roomsToDestroy.Length; i++)
         {
             if (roomsToDestroy[i] == _roomsParent) continue;
 
@@ -75,6 +77,8 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         GenerateDeadEnds(3);
 
         CloseUnusedEntrances();
+
+        UIManager.Instance.Minimap.SetupMinimap(_pathCalculator.floorGenProTiles, _pathCalculator);
     }
 
 
@@ -288,8 +292,13 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         Room newRoom = Instantiate(room, (Vector2)(spawnCoordinates * roomSizeUnits * new Vector2(2, 1.5f)) + offsetRoomCenter, Quaternion.Euler(0, 0, 0),
             _roomsParent);
         newRoom.SetupRoom(spawnCoordinates, roomSizeUnits);
+
         _pathCalculator.AddRoom(newRoom, spawnCoordinates);
         generatedRooms.Add(newRoom);
+
+        RoomGlobalCollider globalCollider = Instantiate(roomGlobalColliderPredab, newRoom.transform);
+        globalCollider.transform.localPosition = Vector3.zero;
+        globalCollider.Setup(newRoom);
     }
 
 

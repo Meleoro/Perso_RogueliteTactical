@@ -24,6 +24,9 @@ public class UIManager : GenericSingletonClass<UIManager>
         } 
     }
     public AlterationDetailsPanel AlterationDetailsPanel { get { return _alterationDetailsPanel; } }
+    public CoinUI CoinUI { get { return _coinUI; } }
+    public Minimap Minimap { get { return _minimap; } }
+    public FloorTransitionText FloorTransitionText { get { return _floorTransitionText; } }
 
     [Header("Actions")]
     public Action OnStartDrag;
@@ -38,6 +41,9 @@ public class UIManager : GenericSingletonClass<UIManager>
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
     [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
     [SerializeField] private Image _transitionFadeImage;
+    [SerializeField] private CoinUI _coinUI;
+    [SerializeField] private Minimap _minimap;
+    [SerializeField] private FloorTransitionText _floorTransitionText;
 
     [Header("References Hero Infos")]
     [SerializeField] private HeroInfoPanel[] _heroInfoPanels1H;
@@ -54,6 +60,9 @@ public class UIManager : GenericSingletonClass<UIManager>
 
         _heroInfosScreen.Open += () => currentState = UIState.HeroesInfos;
         _heroInfosScreen.Close += () => currentState = UIState.Nothing;
+
+        _transitionFadeImage.color = new Color(_transitionFadeImage.color.r, _transitionFadeImage.color.g, _transitionFadeImage.color.b, 1);
+        StartCoroutine(FloorTransitionText.IntroCoroutine(2f));
     }
 
     private void Update()
@@ -106,7 +115,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     }
 
 
-    public void FadeScreen(int duration, int finalValue)
+    public void FadeScreen(float duration, int finalValue)
     {
         _transitionFadeImage.UFadeImage(duration, finalValue);
     }

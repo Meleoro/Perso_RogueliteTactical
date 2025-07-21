@@ -808,7 +808,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4234188939700464704}
   - {fileID: 3417115462837642577}
   - {fileID: 4107558244604924651}
   - {fileID: 511999677635602465}
@@ -817,6 +816,7 @@ Transform:
   - {fileID: 501065535332060198}
   - {fileID: 9008998633706909219}
   - {fileID: 1873880581685707163}
+  - {fileID: 6504293186707172627}
   m_Father: {fileID: 429304273992477958}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1448139712310124912
@@ -1657,6 +1657,7 @@ MonoBehaviour:
   maxDangerAmount: 4
   holeTiles: []
   holePrefab: {fileID: 0}
+  isDebugRoom: 0
   _groundTilemap: {fileID: 3654010563077959481}
   _battleGroundTilemap: {fileID: 8633615801790892311}
   _wallsTilemap: {fileID: 7660288885118121577}
@@ -7924,14 +7925,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: GodRay1
       objectReference: {fileID: 0}
+    - target: {fileID: 8049861545232727863, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 13.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8049861545232727863, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.18
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
---- !u!4 &4234188939700464704 stripped
+--- !u!4 &6504293186707172627 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1096593755386625636, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8049861545232727863, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
   m_PrefabInstance: {fileID: 3888082425846223396}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5761929786262282957

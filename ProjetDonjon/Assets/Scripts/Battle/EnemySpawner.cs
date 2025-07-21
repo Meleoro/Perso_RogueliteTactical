@@ -8,9 +8,6 @@ public class EnemySpawner : MonoBehaviour
         [Range(0, 100)] public int probability;
     }
 
-    [Header("Parameters")]
-    [SerializeField] private AIUnit[] possibleEnemies;
-
     [Header("Debug Parameters")]
     [SerializeField] private bool isDebugSpawer;
     [SerializeField] private Unit spawnedUnit;
@@ -18,22 +15,38 @@ public class EnemySpawner : MonoBehaviour
     [Header("Public Infos")]
     [HideInInspector] public BattleTile associatedTile;
 
-    
-    public Unit GetSpawnedEnemy(int dangerAmountToFill)
+    [Header("Private Infos")]
+    private EnemySpawn[] possibleSpawns;
+
+
+    private void Start()
+    {
+        possibleSpawns = ProceduralGenerationManager.Instance?.enviroData.enemySpawnsPerFloor[ProceduralGenerationManager.Instance.currentFloor].possibleEnemies;
+    }
+
+
+    public EnemySpawn GetSpawnedEnemy(int dangerAmountToFill)
     {
         if (isDebugSpawer)
         {
-            return spawnedUnit;
+            EnemySpawn debugSpawn = new EnemySpawn();
+            debugSpawn.enemyPrefab = spawnedUnit;
+            debugSpawn.minEnemyCountBeforeSpawn = 0;
+            debugSpawn.maxCountPerBattle = 100;
+
+            return debugSpawn;
         }
 
-        int antiCrashCounter = 0;
+        int pickedProba = Random.Range(0, 100);
+        int cumulatedProba = 0;
 
-        while(antiCrashCounter++ < 20)
+        for(int i = 0; i < possibleSpawns.Length; i++)
         {
-            int pickedIndex = Random.Range(0, possibleEnemies.Length);
-
-            if(possibleEnemies[pickedIndex].AIData.dangerLevel <  dangerAmountToFill) 
-                return possibleEnemies[pickedIndex];
+            cumulatedProba += possibleSpawns[i].proba;
+            if(cumulatedProba >= pickedProba)
+            {
+                return possibleSpawns[i];
+            }
         }
 
         return null;

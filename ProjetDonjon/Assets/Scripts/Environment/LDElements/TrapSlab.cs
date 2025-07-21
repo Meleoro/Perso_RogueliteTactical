@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Utilities;
 
 public class TrapSlab : MonoBehaviour
@@ -14,9 +15,11 @@ public class TrapSlab : MonoBehaviour
     
     [Header("Private Infos")]
     private bool isOnCooldown;
+    private bool isDeactivated;
 
     [Header("References")]
     [SerializeField] Transform[] _triggeredArrowDispensers;
+    [SerializeField] Light2D _highlightLight;
     private ParticleSystem[] _dustParticleSystems;
 
 
@@ -33,6 +36,26 @@ public class TrapSlab : MonoBehaviour
     }
 
 
+    #region Chackboard Room
+
+    public void Highlight()
+    {
+        _highlightLight.ULerpIntensity(0.2f, 0.5f);
+    }
+
+    public void StopHighlight()
+    {
+        _highlightLight.ULerpIntensity(0.2f, 0);
+    }
+
+    public void Deactivate()
+    {
+        isDeactivated = true;
+    }
+
+    #endregion
+
+
     private IEnumerator TriggerTrapCoroutine()
     {
         isOnCooldown = true;
@@ -40,6 +63,8 @@ public class TrapSlab : MonoBehaviour
 
         for(int i = 0; i < _triggeredArrowDispensers.Length; i++)
         {
+            if (isDeactivated) break;
+
             Arrow newArrow = Instantiate(arrowPrefab, _triggeredArrowDispensers[i].position, _triggeredArrowDispensers[i].rotation);
             newArrow.InitialiseArrow(arrowSpeed, arrowDamages);
 

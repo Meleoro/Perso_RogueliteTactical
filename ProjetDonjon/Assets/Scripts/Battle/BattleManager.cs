@@ -23,6 +23,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     [Header("Private Infos")]
     private bool isInBattle;
+    private bool isInBattleCutscene;
     private List<Unit> currentHeroes = new();
     private List<Unit> deadHeroes = new();
     private List<AIUnit> currentEnemies = new();
@@ -41,7 +42,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     public bool IsInBattle {  get { return isInBattle; } }
     public MenuType CurrentActionType { get { return _playerActionsMenu.CurrentMenu; } }
     public Tile[] HoleTiles { get { return holeTiles; } }
-
 
     [Header("References")]
     [SerializeField] private Timeline _timeline;
@@ -173,17 +173,15 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     private void EndBattle()
     {
-        isInBattle = false;
+        isInBattleCutscene = false;
 
         battleRoom.EndBattle();
+        OnBattleEnd.Invoke();
 
-        UIManager.Instance.HideHeroInfosPanels();
-        _playerActionsMenu.CloseActionsMenu();
-
-        foreach(Unit hero in deadHeroes)
+        for (int i = deadHeroes.Count() - 1; i >= 0; i--)
         {
-            hero.Heal(1);
-            hero.HideOutline();
+            deadHeroes[i].HideOutline();
+            deadHeroes[i].Heal(1);
         }
         deadHeroes.Clear();
 
@@ -331,6 +329,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     private void ApplySkillOnTile(BattleTile battleTile, SkillData usedSkill, Unit unit)
     {
+        if(usedSkill.VFX != null)
+        {
+            Instantiate(usedSkill.VFX, battleTile.UnitOnTile.transform.position, Quaternion.Euler(0, 0, 0));
+        }
+
         for (int i = 0; i < usedSkill.skillEffects.Length; i++)
         {
             // We verify the effect applies on the unit type on the tile
@@ -422,7 +425,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     #region Tiles Functions
 
-    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool checkReachable = true, bool useDiagonals = false, bool blockedByUnits = false)
+    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool checkReachable = true, bool useDiagonals = false, bool blockedByUnits = false, BattleTile ignoredTile = null)
     {
         List<BattleTile> returnedTiles = new List<BattleTile>();
 
@@ -434,9 +437,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             Vector2Int coordAccordingToCenter = new Vector2Int(currentCoord.x - (int)(paternSize * 0.5f), currentCoord.y - (int)(paternSize * 0.5f));
             BattleTile battleTile = battleRoom.GetBattleTile(paternMiddle + coordAccordingToCenter);
 
-            if (checkReachable && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, useDiagonals)) continue;
+            if (checkReachable && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, useDiagonals, ignoredTile)) continue;
             if (battleTile is null) continue;
-            if (battleTile.UnitOnTile is not null && blockedByUnits) continue;
+            if (battleTile.UnitOnTile is not null && blockedByUnits && ignoredTile != battleTile) continue;
 
             returnedTiles.Add(battleTile);
         }
@@ -627,7 +630,14 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     #region Others
 
+    public void StartBattleEndCutscene() 
+    {
+        isInBattleCutscene = true;
+        isInBattle = false;
 
+        UIManager.Instance.HideHeroInfosPanels();
+        _playerActionsMenu.CloseActionsMenu();
+    }
 
     #endregion
 }

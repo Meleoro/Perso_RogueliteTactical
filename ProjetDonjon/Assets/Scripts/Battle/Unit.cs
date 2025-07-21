@@ -116,6 +116,8 @@ public class Unit : MonoBehaviour
         _ui.ClickAction += ClickUnit;
 
         _ui.ActualiseUI(1, currentHealth, currentStatsModificators);
+
+        _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
     }
 
     public void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints)
@@ -143,6 +145,8 @@ public class Unit : MonoBehaviour
 
             yield return new WaitForSeconds(0.15f);
         }
+
+        BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
     }
 
     public void MoveUnit(BattleTile tile, bool doSquish = false)
@@ -240,7 +244,6 @@ public class Unit : MonoBehaviour
     protected virtual void Die()
     {
         currentTile.UnitLeaveTile();
-
         BattleManager.Instance.RemoveUnit(this);
         Destroy(gameObject);
     }
@@ -248,7 +251,10 @@ public class Unit : MonoBehaviour
 
     public virtual void Heal(int healedAmount)
     {
-        CurrentHealth = Mathf.Clamp(CurrentHealth + healedAmount, 0, CurrentMaxHealth);
+        if (healedAmount != -1)
+            CurrentHealth = Mathf.Clamp(CurrentHealth + healedAmount, 0, CurrentMaxHealth);
+        else
+            CurrentHealth = CurrentMaxHealth;
 
         PlayAlterationVFX(SkillEffectType.Heal);
     }
@@ -463,6 +469,25 @@ public class Unit : MonoBehaviour
     }
 
     #endregion
+
+
+    public void UseItem(LootData itemData)
+    {
+        switch (itemData.consumableType)
+        {
+            case ConsumableType.Heal:
+                Heal(itemData.consumablePower);
+                break;
+
+            case ConsumableType.Focus:
+                (this as Hero).AddSkillPoints(itemData.consumablePower);
+                break;
+
+            case ConsumableType.Action:
+                (this as Hero).AddActionPoints(itemData.consumablePower);
+                break;
+        }
+    }
 
 
     public virtual void StartTurn()

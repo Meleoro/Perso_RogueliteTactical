@@ -29,6 +29,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
     private bool isInitialised;
     private bool isInBattle;
     private bool isShaking;
+    private bool isLocked;
     private float angleBetweenRaycasts;
     private Vector2 bottomLeftLimit;
     private Vector2 upRightLimit;
@@ -57,7 +58,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 
     private void LateUpdate()
     {
-        if (!isInBattle && isInitialised)
+        if (!isInBattle && isInitialised && !isLocked)
         {
             currentWantedPos = followedTransform.position + followOffset;
             currentWantedSize = baseSize + GetEnviroSizeModificator();
@@ -89,6 +90,19 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         }
         
         return Mathf.Lerp(-maxSizeModifierExplo, 0, ((averageDist / raycastAmount) / maxRaycastDistExplo));
+    }
+
+    public void LockCamera(Vector2 position, float size)
+    {
+        currentWantedPos = (Vector3)position - Vector3.forward * 10;
+        currentWantedSize = size;
+
+        isLocked = true;
+    }
+
+    public void UnlockCamera()
+    {
+        isLocked = false;
     }
 
     #endregion
@@ -134,6 +148,8 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 
     public void FocusOnTr(Transform focusedTr, float cameraSize)
     {
+        if (isLocked) return;
+
         currentWantedPos = focusedTr.position + followOffset;
         currentWantedSize = cameraSize;
     }

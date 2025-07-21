@@ -46,7 +46,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3472387540187846659}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
@@ -139,8 +139,7 @@ MonoBehaviour:
   _controller: {fileID: 7159339506722094448}
   _spriteRendererParent: {fileID: 5050220775268981595}
   _heroInfoPanel: {fileID: 0}
-  _colliders:
-  - {fileID: 7280627770563609408}
+  _colliders: []
 --- !u!114 &7159339506722094448
 MonoBehaviour:
   m_ObjectHideFlags: 0

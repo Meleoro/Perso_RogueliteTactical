@@ -28,7 +28,7 @@ public class Hero : Unit
     private bool isDead;
     private Transform currentDisplayedHeroTr;
     private int currentLevel;
-    private int currentSkillPoints;
+    protected int currentSkillPoints;
     private int currentMaxSkillPoints;
     private int currentActionPoints;
 
@@ -186,6 +186,31 @@ public class Hero : Unit
 
     #region Others
 
+    public void AddSkillPoints(int quantity)
+    {
+        if (quantity != -1)
+            CurrentSkillPoints = Mathf.Clamp(CurrentSkillPoints + quantity, 0, currentMaxSkillPoints);
+        else
+            CurrentSkillPoints = currentMaxSkillPoints;
+
+
+    }
+
+
+    public void UseSkillPoints(int quantity)
+    {
+        CurrentSkillPoints = Mathf.Clamp(CurrentSkillPoints - quantity, 0, currentMaxSkillPoints);
+
+
+    }
+
+
+    public void AddActionPoints(int quantity)
+    {
+        currentActionPoints += quantity;
+
+
+    }
 
     public void SetupHeroInfosPanel(HeroInfoPanel heroInfoPanel)
     {

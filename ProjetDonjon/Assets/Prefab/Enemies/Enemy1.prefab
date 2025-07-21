@@ -48,14 +48,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7038c560a1ea54543ab03c7faee25add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnemy: 1
   shieldVFX: {fileID: 4073576334773073123, guid: d3ea12f10502ea84c86aeea07470278a, type: 3}
   healVFX: {fileID: 3493669056963546257, guid: 0ae6680a16c47224daefd2e67649e76f, type: 3}
+  overlayColor: {r: 1, g: 1, b: 1, a: 1}
+  positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  unitsTurnColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _ui: {fileID: 1987359570940192128}
   _spriteRenderer: {fileID: 8929217451348358929}
   _animator: {fileID: 2865990679414596872}
   _unitAnimsInfos: {fileID: 4674991809401278559}
   aiData: {fileID: 11400000, guid: f4df519acb40d5f40810f80772f7fa17, type: 2}
-  isEnemy: 1
+  lootPrefab: {fileID: 6116046027794798314, guid: 8529cd8fcc49e9f4f958669b6e3cdac4, type: 3}
+  coinPrefab: {fileID: 4481646905077759251, guid: 387ecc4f9a2d12c4bbbe25e444bac85e, type: 3}
 --- !u!95 &2865990679414596872
 Animator:
   serializedVersion: 7

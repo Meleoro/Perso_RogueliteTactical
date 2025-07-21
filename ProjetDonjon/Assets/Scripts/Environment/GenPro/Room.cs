@@ -78,8 +78,7 @@ public class Room : MonoBehaviour
 
     private async void Start()
     {
-        await Task.Yield();
-        await Task.Yield();
+        await Task.Delay(200);
 
         SetupBattleTiles();
 
@@ -87,8 +86,8 @@ public class Room : MonoBehaviour
 
         if (isDebugRoom)
         {
-            await Task.Yield();
-            await Task.Yield();
+            await Task.Delay(200);
+
             StartBattle();
         }
     }
@@ -389,8 +388,9 @@ public class Room : MonoBehaviour
 
     private void SetupEnemies()
     {
-        int currentDangerAmount = 0;
+        int currentDangerAmount = 0, currentSpawnedCount = 0;
         int antiCrashCounter = 0;
+        Dictionary<Unit, int> spawnCountPerEnemy = new Dictionary<Unit, int>();
         if (roomEnemySpawners.Count == 0) return;
 
         while(currentDangerAmount < minDangerAmount && antiCrashCounter++ < 100 && roomEnemySpawners.Count > 0)
@@ -398,13 +398,22 @@ public class Room : MonoBehaviour
             int pickedSpawnerIndex = Random.Range(0, roomEnemySpawners.Count);
             EnemySpawner currentSpawner = roomEnemySpawners[pickedSpawnerIndex];
 
-            Unit pickedUnit = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
-            if (pickedUnit is null) continue;
-
-            if(pickedUnit.GetType() == typeof(AIUnit))
+            EnemySpawn wantedUnit = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
+            if (!isDebugRoom)
             {
-                currentDangerAmount += (pickedUnit as AIUnit).AIData.dangerLevel;
-                AIUnit newEnemy = Instantiate(pickedUnit as AIUnit, transform);
+                if (wantedUnit is null) continue;
+                if (wantedUnit.minEnemyCountBeforeSpawn > currentSpawnedCount) continue;
+                if (spawnCountPerEnemy.ContainsKey(wantedUnit.enemyPrefab) && spawnCountPerEnemy[wantedUnit.enemyPrefab] >= wantedUnit.maxCountPerBattle) continue;
+            }
+
+            if(wantedUnit.enemyPrefab.GetType() == typeof(AIUnit))
+            {
+                currentSpawnedCount++;
+                if (spawnCountPerEnemy.ContainsKey(wantedUnit.enemyPrefab)) spawnCountPerEnemy[wantedUnit.enemyPrefab]++;
+                else spawnCountPerEnemy.Add(wantedUnit.enemyPrefab, 1);
+
+                    currentDangerAmount += (wantedUnit.enemyPrefab as AIUnit).AIData.dangerLevel;
+                AIUnit newEnemy = Instantiate(wantedUnit.enemyPrefab as AIUnit, transform);
                 newEnemy.MoveUnit(currentSpawner.associatedTile);
 
                 roomEnemies.Add(newEnemy);
@@ -414,7 +423,7 @@ public class Room : MonoBehaviour
             }
             else
             {
-                Hero newHero = Instantiate(pickedUnit as Hero, transform);
+                Hero newHero = Instantiate(wantedUnit.enemyPrefab as Hero, transform);
                 newHero.MoveUnit(currentSpawner.associatedTile);
 
                 roomEnemySpawners.Remove(currentSpawner);

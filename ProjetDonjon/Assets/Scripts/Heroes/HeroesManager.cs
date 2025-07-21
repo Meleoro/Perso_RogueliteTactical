@@ -41,7 +41,7 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
         for (int i = 0; i < heroesPrefabs.Length; i++)
         {
             heroes[i] = Instantiate(heroesPrefabs[i], spawnPos, Quaternion.Euler(0, 0, 0), transform);
-            heroes[i].SetupInventory(_inventoryManager.InitialiseInventory(heroes[i].HeroData.heroInventoryPrefab, i));
+            heroes[i].SetupInventory(_inventoryManager.InitialiseInventory(heroes[i].HeroData.heroInventoryPrefab, i, heroes[i]));
         }
 
         _interactionManager.ActualiseCurrentHeroTransform(heroes[0].transform);
@@ -102,12 +102,13 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
         heroes[currentHeroIndex].Controller.AutoMove(heroes[currentHeroIndex].transform.position + Vector3.up * 2f);
 
         UIManager.Instance.FadeScreen(1, 1);
+        StartCoroutine(UIManager.Instance.FloorTransitionText.ChangeFloorCoroutine(_genProScript.currentFloor + 2, 2.5f));
 
         yield return new WaitForSeconds(1);
 
         _genProScript.GenerateNextFloor();
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(1f);
 
         UIManager.Instance.FadeScreen(1, 0);
 

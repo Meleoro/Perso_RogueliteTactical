@@ -5685,7 +5685,7 @@
         "plus"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": true,
+    "m_PreviewExpanded": false,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -6046,8 +6046,8 @@
     "m_ObjectId": "a9aed8958fe241e8826ac46c2f4925f2",
     "m_Title": "Shine Effect",
     "m_Position": {
-        "x": -5128.666015625,
-        "y": -646.0000610351563
+        "x": -5128.66650390625,
+        "y": -646.0
     }
 }
 

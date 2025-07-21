@@ -7,6 +7,7 @@ public class Chest : MonoBehaviour, IInteractible
 {
     [Header("Parameters")]
     [SerializeField] private Loot lootPrefab;
+    [SerializeField] private Coin coinPrefab;
 
     [Header("Private Infos")]
     private bool isOpened;
@@ -21,6 +22,7 @@ public class Chest : MonoBehaviour, IInteractible
 
     private void Start()
     {
+        _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
         possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].chestPossibleLoots;
     }
 
@@ -41,6 +43,15 @@ public class Chest : MonoBehaviour, IInteractible
 
                 break;
             }
+        }
+
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].minChestCoins,
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].maxChestCoins);
+
+        for(int i = 0; i < pickedCoinsAmount; i++)
+        {
+            Coin coin = Instantiate(coinPrefab, transform.position, Quaternion.Euler(0, 0, 0), UIManager.Instance.CoinUI.transform);
+            coin.transform.position = transform.position;
         }
     }
 

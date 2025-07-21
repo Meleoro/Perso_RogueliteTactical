@@ -27,6 +27,7 @@ public class UnitUI : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI _healthText;
+    [SerializeField] private TextMeshProUGUI _changePaternText;
     [SerializeField] private Image _healthFillableImage;
     [SerializeField] private Image _healthFillableImage2;
     [SerializeField] private Image _hearthImage;
@@ -142,6 +143,31 @@ public class UnitUI : MonoBehaviour
         yield return new WaitForSeconds(duration * 0.2f);
 
         _damageText.rectTransform.localPosition = saveDamageTextPos;
+
+    }
+
+    public IEnumerator DoChangePaternEffectCoroutine(float duration)
+    {
+        _changePaternText.rectTransform.localPosition = saveDamageTextPos;
+
+        _changePaternText.rectTransform.UChangeScale(duration * 0.1f, new Vector3(1.3f, 0.9f, 1.0f), CurveType.EaseInOutCubic);
+        _changePaternText.rectTransform.UChangeLocalPosition(duration, saveDamageTextPos + Vector3.up * 25f, CurveType.EaseOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.1f);
+
+        _changePaternText.rectTransform.UChangeScale(duration * 0.2f, new Vector3(0.85f, 1.15f, 1.0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.2f);
+
+        _changePaternText.rectTransform.UChangeScale(duration * 0.1f, new Vector3(1f, 1f, 1.0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.5f);
+
+        _changePaternText.rectTransform.UChangeScale(duration * 0.2f, new Vector3(0f, 0f, 0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.2f);
+
+        _changePaternText.rectTransform.localPosition = saveDamageTextPos;
 
     }
 

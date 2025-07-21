@@ -52,7 +52,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -66,7 +66,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -118,19 +118,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 3
-        width: 31
-        height: 25
+        x: 0
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 553e0b1e0caef13f0800000000000000
+      spriteID: 095b7003dc040c5478866f0dea96d073
       internalID: -927764884073946283
       vertices: []
       indices: 
@@ -140,19 +140,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_1
       rect:
         serializedVersion: 2
-        x: 33
-        y: 3
-        width: 31
-        height: 25
+        x: 32
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 128da1d34b9c7af30800000000000000
+      spriteID: a7b4092efe18d3646ae638d66a57e7c0
       internalID: 4586856521456605217
       vertices: []
       indices: 
@@ -162,19 +162,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_2
       rect:
         serializedVersion: 2
-        x: 65
-        y: 3
-        width: 31
-        height: 27
+        x: 64
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: f9cfae3770756d930800000000000000
+      spriteID: 660d079bbb2009548b85e7b32a233c9b
       internalID: 4167614194699140255
       vertices: []
       indices: 
@@ -184,19 +184,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_3
       rect:
         serializedVersion: 2
-        x: 97
-        y: 3
-        width: 31
-        height: 28
+        x: 96
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 4624603fd68b4ab00800000000000000
+      spriteID: ab6ad89fb0581f34b86e955fc35bc218
       internalID: 838998212965974628
       vertices: []
       indices: 
@@ -206,19 +206,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_4
       rect:
         serializedVersion: 2
-        x: 129
-        y: 3
-        width: 31
-        height: 29
+        x: 128
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: d950c52139ef7d610800000000000000
+      spriteID: 19838977c130eca4f887aacc4bbd474e
       internalID: 1646064096448873885
       vertices: []
       indices: 
@@ -228,19 +228,19 @@ TextureImporter:
       name: ChallengeChest-Sheet_5
       rect:
         serializedVersion: 2
-        x: 161
-        y: 3
-        width: 31
-        height: 28
+        x: 160
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 8d731a9c827e16420800000000000000
+      spriteID: 0d02bc06a92b5e948a952df338f523d3
       internalID: 2621630620473833432
       vertices: []
       indices: 
@@ -250,7 +250,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 2720898ea162c354da97de29b228cee6
     internalID: 0
     vertices: []
     indices: 
@@ -259,7 +259,13 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      ChallengeChest-Sheet_0: -927764884073946283
+      ChallengeChest-Sheet_1: 4586856521456605217
+      ChallengeChest-Sheet_2: 4167614194699140255
+      ChallengeChest-Sheet_3: 838998212965974628
+      ChallengeChest-Sheet_4: 1646064096448873885
+      ChallengeChest-Sheet_5: 2621630620473833432
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

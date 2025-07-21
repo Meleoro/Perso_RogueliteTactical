@@ -31,9 +31,10 @@ public class Loot : MonoBehaviour, IInteractible
     [SerializeField] private float minAppearAddedX, maxAppearAddedX;
     [SerializeField] private float appearDuration;
 
-
     [Header("Public Infos")]
     public LootData LootData { get { return lootData; } }
+    public Image Image { get { return _image; } }
+    public Hero AssociatedHero { get { return associatedHero; } }
 
     [Header("Private Infos")]
     private bool isDragged;
@@ -47,6 +48,7 @@ public class Loot : MonoBehaviour, IInteractible
     private Vector3 dragWantedPos;
     private Vector3 saveSize;
     private Coroutine inventoryBounceCoroutine;
+    private Hero associatedHero;
 
     [Header("References")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
@@ -66,6 +68,7 @@ public class Loot : MonoBehaviour, IInteractible
             Initialise(lootData);
 
         saveSize = Vector3.one * 0.75f;
+        _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
     }
 
     private void Update()
@@ -174,6 +177,20 @@ public class Loot : MonoBehaviour, IInteractible
         isSquishing = false;
     }
 
+
+    public void DestroyItem()
+    {
+        InventoriesManager.Instance.OnInventoryClose -= BecomeWorldItem;
+
+        for (int i = 0; i < slotsOccupied.Length; i++)
+        {
+            slotsOccupied[i].RemoveLoot();
+        }
+
+        Destroy(_imageBackground.gameObject);
+        Destroy(gameObject);
+    }
+
     #endregion
 
 
@@ -273,6 +290,8 @@ public class Loot : MonoBehaviour, IInteractible
         isPlacedInInventory = true;
         overlayedEquipmentSlot = null;
 
+        associatedHero = overlayedSlots[0].AssociatedInventory.AssociatedHero;
+
         _imageBackground.material.SetColor("_ShineColor", Color.black);
         _image.material.SetColor("_ShineColor", Color.black);
         _imageBackground.rectTransform.UBounceScale(0.05f, Vector3.one * 0.6f, 0.15f, Vector3.one * 0.74f, CurveType.EaseInOutSin);
@@ -315,6 +334,13 @@ public class Loot : MonoBehaviour, IInteractible
         _imageBackground.rectTransform.UChangeScale(0.2f, saveSize, CurveType.EaseOutCubic);
 
         InventoriesManager.Instance.DetailsPanel.CloseDetails();
+    }
+
+    public void ClickLoot()
+    {
+        InventoriesManager.Instance.DetailsPanel.CloseDetails();
+
+        InventoriesManager.Instance.InventoryActionPanel.OpenPanel(this);
     }
 
     #endregion

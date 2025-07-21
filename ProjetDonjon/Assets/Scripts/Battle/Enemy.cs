@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using Utilities;
 
@@ -15,12 +16,15 @@ public class AIUnit : Unit
 {
     [Header("Parameters")]
     [SerializeField] private AIData aiData;
+    [SerializeField] private Loot lootPrefab;
+    [SerializeField] private Coin coinPrefab;
 
     [Header("Private Infos")]
     private BattleTile[] aimedTiles;
     private BattleTile[] avoidedTiles;
     private SkillData currentSkillData;
     private PreviewType currentPreviewType;
+    private int currentSkillIndex;
 
     [Header("Public Infos")]
     public AIData AIData { get { return aiData; } }
@@ -33,6 +37,7 @@ public class AIUnit : Unit
     {
         unitData = AIData;
         currentSkillData = AIData.skills[0];
+        currentSkillIndex = 0;
 
         currentPreviewType = PreviewType.Move;
 
@@ -57,6 +62,7 @@ public class AIUnit : Unit
             {
                 aimedTiles = new BattleTile[BattleManager.Instance.CurrentEnemies.Count];
                 for (int i = 0; i < BattleManager.Instance.CurrentEnemies.Count; i++) {
+                    if (BattleManager.Instance.CurrentEnemies[i].CurrentTile == currentTile) continue;
                     aimedTiles[i] = BattleManager.Instance.CurrentEnemies[i].CurrentTile;
                 }
             }
@@ -89,6 +95,7 @@ public class AIUnit : Unit
             {
                 aimedTiles = new BattleTile[BattleManager.Instance.CurrentEnemies.Count];
                 for (int i = 0; i < BattleManager.Instance.CurrentEnemies.Count; i++) {
+                    if (BattleManager.Instance.CurrentEnemies[i].CurrentTile == currentTile) continue;
                     aimedTiles[i] = BattleManager.Instance.CurrentEnemies[i].CurrentTile;
                 }
             }
@@ -112,8 +119,53 @@ public class AIUnit : Unit
         yield return new WaitForSeconds(duration);  
     }
 
+    private IEnumerator LastEnemyDisappearCoroutine(float duration)
+    {
+        CameraManager.Instance.FocusOnTr(transform, 3f);
+        transform.UShakePosition(duration * 0.75f, 0.2f, 0.03f);
+
+        BattleManager.Instance.StartBattleEndCutscene();
+
+        yield return new WaitForSeconds(duration * 0.75f);
+
+        // loot generation
+        PossibleLootData[] possibleLoots = 
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].battleEndPossibleLoots;
+
+        int pickedPercentage = Random.Range(0, 100);
+        int currentSum = 0;
+
+        for (int i = 0; i < possibleLoots.Length; i++)
+        {
+            currentSum += possibleLoots[i].probability;
+
+            if (currentSum > pickedPercentage)
+            {
+                if (possibleLoots[i].loot is null) break;
+
+                Loot newLoot = Instantiate(lootPrefab, transform.position, Quaternion.Euler(0, 0, 0));
+                newLoot.Initialise(possibleLoots[i].loot);
+
+                break;
+            }
+        }
+
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].minBattleCoins,
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].maxBattleCoins);
+
+        for (int i = 0; i < pickedCoinsAmount; i++)
+        {
+            Coin coin = Instantiate(coinPrefab, transform.position, Quaternion.Euler(0, 0, 0), UIManager.Instance.CoinUI.transform);
+            coin.transform.position = transform.position;
+        }
+
+
+        StartCoroutine(DisappearCoroutine(duration * 0.25f));
+    }
+
     private IEnumerator DisappearCoroutine(float duration)
     {
+        BattleManager.Instance.RemoveUnit(this);
         _spriteRenderer.material.ULerpMaterialFloat(duration, -0.5f, "_DitherProgress");
 
         yield return new WaitForSeconds(duration);
@@ -162,7 +214,16 @@ public class AIUnit : Unit
 
             yield return new WaitForSeconds(0.5f);
 
-            //BattleManager.Instance.OnSkillApplied += EndTurn;
+            if(aiData.skills.Length > 0)
+            {
+                StartCoroutine(_ui.DoChangePaternEffectCoroutine(1.5f));
+                currentSkillIndex = (currentSkillIndex + 1) % aiData.skills.Length;
+                currentSkillData = aiData.skills[currentSkillIndex];
+
+                yield return new WaitForSeconds(1.5f);
+            }
+
+            yield return new WaitForSeconds(0.5f);
         }
         else
         {
@@ -188,6 +249,7 @@ public class AIUnit : Unit
                 if (possibleMoves[i].UnitOnTile != this) continue;
             }
 
+            // If we can move
             if(depth < maxDepth)
             {
                 BattleTile currentMoveTile = null;
@@ -195,23 +257,27 @@ public class AIUnit : Unit
 
                 (currentMoveTile, currentSkillTile) = GetBestMove(possibleMoves[i], depth+1, maxDepth);
 
+                // If we didn't find any usable skill tile we skip
                 if (currentSkillTile is null) continue;
                 if (currentSkillTile.UnitOnTile is null) continue;
+                if (currentSkillTile.UnitOnTile == this) continue;
                 if (!aimedTiles.Contains(currentSkillTile)) continue;
 
+                // If we can hit a target, we verify if the move has a good enough grade to be selected
                 int moveGrade = GetMoveGrade(currentMoveTile.TileCoordinates, currentSkillTile.TileCoordinates, depth);
-
                 if (moveGrade < bestGrade) continue;
 
                 bestGrade = moveGrade;
                 pickedMoveTile = possibleMoves[i];
                 pickedSkillTile = currentSkillTile;
             }
-            else
+
+            // If we need to test skills
+            else 
             {
                 BattleTile[] possibleSkillTiles = 
                     BattleManager.Instance.GetPaternTiles(possibleMoves[i].TileCoordinates, currentSkillData.skillPatern, 
-                    (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true).ToArray();
+                        (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true, false, false, currentTile).ToArray();
 
                 for (int j = 0; j < possibleSkillTiles.Length; j++)
                 {
@@ -238,9 +304,9 @@ public class AIUnit : Unit
         int finalGrade = -5 * depth;
 
         // Move grade
-        for (int i = 0; i < aimedTiles.Length; i++)
+        for (int i = 0; i < avoidedTiles.Length; i++)
         {
-            int currentDist = (int)Vector2Int.Distance(testedMovePos, aimedTiles[i].TileCoordinates);
+            int currentDist = (int)Vector2Int.Distance(testedMovePos, avoidedTiles[i].TileCoordinates);
 
             switch (AIData.AI)
             {
@@ -255,13 +321,31 @@ public class AIUnit : Unit
         }
 
         // Skill Grade
-        BattleTile[] skillDangerTiles = BattleManager.Instance.GetPaternTiles(testedSkillPos, currentSkillData.skillAOEPatern, (int)Mathf.Sqrt(currentSkillData.skillAOEPatern.Length)).ToArray();
+        BattleTile[] skillDangerTiles;
+        if (currentSkillData.useOrientatedAOE)
+        {
+            Vector2Int coordinateDif = testedSkillPos - CurrentTile.TileCoordinates;
+
+            if (coordinateDif.y != 0)
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(testedSkillPos, currentSkillData.skillAOEPaternVertical, 
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternVertical.Length), false).ToArray();
+
+            else
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(testedSkillPos, currentSkillData.skillAOEPaternHorizontal, 
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternHorizontal.Length), false).ToArray();
+        }
+        else
+        {
+            skillDangerTiles = BattleManager.Instance.GetPaternTiles(testedSkillPos,
+                currentSkillData.skillAOEPatern, (int)Mathf.Sqrt(currentSkillData.skillAOEPatern.Length)).ToArray();
+        }
+
 
         for (int i = 0; i < skillDangerTiles.Length; i++)
         {
             if (!aimedTiles.Contains(skillDangerTiles[i])) continue;
 
-            finalGrade += 20;
+            finalGrade += 10;
         }
 
         return finalGrade;
@@ -292,9 +376,14 @@ public class AIUnit : Unit
     {
         currentTile.UnitLeaveTile();
 
-        BattleManager.Instance.RemoveUnit(this);
-
-        StartCoroutine(DisappearCoroutine(1f));
+        if(BattleManager.Instance.CurrentEnemies.Count == 1)
+        {
+            StartCoroutine(LastEnemyDisappearCoroutine(2f));
+        }
+        else
+        {
+            StartCoroutine(DisappearCoroutine(1f));
+        }
     }
 
     #endregion

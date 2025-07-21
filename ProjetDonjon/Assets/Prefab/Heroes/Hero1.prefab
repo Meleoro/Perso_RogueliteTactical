@@ -139,8 +139,7 @@ MonoBehaviour:
   _controller: {fileID: 7159339506722094448}
   _spriteRendererParent: {fileID: 5050220775268981595}
   _heroInfoPanel: {fileID: 0}
-  _colliders:
-  - {fileID: 7280627770563609408}
+  _colliders: []
 --- !u!114 &7159339506722094448
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,6 +18,15 @@ public enum EquipmentType
     Ring
 }
 
+public enum ConsumableType
+{
+    Heal,
+    Focus,
+    Action,
+    Strength,
+    Move
+}
+
 
 [CreateAssetMenu(fileName = "LootData", menuName = "Scriptable Objects/LootData")]
 public class LootData : ScriptableObject
@@ -37,6 +46,10 @@ public class LootData : ScriptableObject
     public int strengthUpgrade;
     public int speedUpgrade;
     public int luckUpgrade;
+
+    [Header("Consumable Infos")]
+    public ConsumableType consumableType;
+    public int consumablePower;
 }
 
 [Serializable]

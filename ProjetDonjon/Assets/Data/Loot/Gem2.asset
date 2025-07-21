@@ -25,3 +25,5 @@ MonoBehaviour:
   strengthUpgrade: 3
   speedUpgrade: 1
   luckUpgrade: -1
+  consumableType: 0
+  consumablePower: 0

@@ -221,7 +221,7 @@ public class PathCalculator
 
 
 
-    public bool VerifyIsReachable(Vector2Int start, Vector2Int end, bool useDiagonals)
+    public bool VerifyIsReachable(Vector2Int start, Vector2Int end, bool useDiagonals, BattleTile ignoredTile)
     {
         Vector2Int dir = end - start;
 
@@ -244,13 +244,22 @@ public class PathCalculator
         }
 
         PathCalculatorTile currentTile = pathCalculatorTiles[start.x + dir.x, start.y + dir.y];
+        Vector2Int currentCoord;
         while(currentTile.tilePos != end)
         {
-            if (currentTile.battleTile is null) return false;
-            if (currentTile.isBlocked) return false;
-            if (currentTile.battleTile.IsHole) return false;
+            if(currentTile.battleTile != ignoredTile)
+            {
+                if (currentTile.battleTile is null) return false;
+                if (currentTile.isBlocked) return false;
+                if (currentTile.battleTile.IsHole) return false;
+            }
 
-            currentTile = pathCalculatorTiles[currentTile.tilePos.x + dir.x, currentTile.tilePos.y + dir.y];
+            currentCoord = currentTile.tilePos + dir;
+
+            if (currentCoord.x < 0 || currentCoord.x >= pathCalculatorTiles.GetLength(0) ||
+                currentCoord.y < 0 || currentCoord.y >= pathCalculatorTiles.GetLength(1)) return false;
+
+            currentTile = pathCalculatorTiles[currentCoord.x, currentCoord.y];
         }
 
         return true;

@@ -22,8 +22,11 @@ MonoBehaviour:
   - {fileID: 2917294264406634095, guid: 0ce6309a5c1defe4cacf6938dc39b307, type: 3}
   - {fileID: 2917294264406634095, guid: 4667598ee5cbfca4d9b29ca669afdd36, type: 3}
   - {fileID: 2917294264406634095, guid: ddb26f0363c8f6e4da95b3031e6e07bf, type: 3}
+  - {fileID: 6937991569428506517, guid: 469b1836312c23945b3c56712c887aa5, type: 3}
   possibleCorridorRooms:
   - {fileID: 2917294264406634095, guid: 3fb2efc6eb1d84c4e9c70404e1922f11, type: 3}
+  - {fileID: 1856086751064925117, guid: 7abfbe6e3f513954494e647f8b38976c, type: 3}
+  - {fileID: 1856086751064925117, guid: b92b98f296c70324cae3224e36091707, type: 3}
   possibleCorridorTrapRooms:
   - {fileID: 2917294264406634095, guid: d0712f18a6c113748a718bea172b2827, type: 3}
   - {fileID: 2917294264406634095, guid: fe3cf7f00058be14ab178e75e85752fe, type: 3}
@@ -52,25 +55,127 @@ MonoBehaviour:
   possibleBossRooms: []
   lootPerFloors:
   - chestPossibleLoots:
-    - probability: 25
+    - probability: 15
       loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
-    - probability: 25
+    - probability: 15
+      loot: {fileID: 11400000, guid: 8c619ec65573b5b4b89ce41ad5d53ee7, type: 2}
+    - probability: 20
       loot: {fileID: 11400000, guid: 7256e143e98fdac43bba6a109d0b0f9c, type: 2}
-    - probability: 25
+    - probability: 20
       loot: {fileID: 11400000, guid: 97278269c2f0bdf48a7abf0cf71093c6, type: 2}
-    - probability: 25
+    - probability: 20
       loot: {fileID: 11400000, guid: 489ce2b2d4640574e8be925a9007ddd8, type: 2}
+    - probability: 10
+      loot: {fileID: 11400000, guid: e7257f000b5a63d40b3ec08d33568288, type: 2}
+    minChestCoins: 3
+    maxChestCoins: 6
     battleEndPossibleLoots:
-    - probability: 50
+    - probability: 10
       loot: {fileID: 11400000, guid: e5beb7085b7e3404d829c9ff66aceb3a, type: 2}
-    - probability: 25
+    - probability: 10
+      loot: {fileID: 11400000, guid: e7257f000b5a63d40b3ec08d33568288, type: 2}
+    - probability: 10
+      loot: {fileID: 11400000, guid: b34ba33fc8826fd44a2ea8b0b5747196, type: 2}
+    - probability: 10
+      loot: {fileID: 11400000, guid: 6a19da2e9de63b94d98a3dfd2959074d, type: 2}
+    - probability: 5
       loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
+    - probability: 5
+      loot: {fileID: 11400000, guid: 8c619ec65573b5b4b89ce41ad5d53ee7, type: 2}
     - probability: 0
       loot: {fileID: 0}
-    challengeEndPossibleLoots: []
+    minBattleCoins: 1
+    maxBattleCoins: 3
+    challengeEndPossibleLoots:
+    - probability: 15
+      loot: {fileID: 11400000, guid: 958a5b169ab7298438b75a782fd839da, type: 2}
+    - probability: 15
+      loot: {fileID: 11400000, guid: c7110c3f65a3990439bc0df0bb4015ee, type: 2}
+    - probability: 10
+      loot: {fileID: 11400000, guid: e4e24e6630b1e0b499ad2a63baf6ad35, type: 2}
+    - probability: 20
+      loot: {fileID: 11400000, guid: d35ccc5368a3afb4f935d839db5247a2, type: 2}
+    - probability: 20
+      loot: {fileID: 11400000, guid: 5ef1cddf51852764e97f12bc0f4be436, type: 2}
+    - probability: 20
+      loot: {fileID: 11400000, guid: 3cccb3983fb8db745a87a167e4d2931a, type: 2}
+    minChallengeCoins: 4
+    maxChallengeCoins: 7
   - chestPossibleLoots: []
+    minChestCoins: 4
+    maxChestCoins: 7
     battleEndPossibleLoots: []
+    minBattleCoins: 2
+    maxBattleCoins: 4
     challengeEndPossibleLoots: []
+    minChallengeCoins: 5
+    maxChallengeCoins: 8
   - chestPossibleLoots: []
+    minChestCoins: 5
+    maxChestCoins: 8
     battleEndPossibleLoots: []
+    minBattleCoins: 3
+    maxBattleCoins: 6
     challengeEndPossibleLoots: []
+    minChallengeCoins: 6
+    maxChallengeCoins: 9
+  enemySpawnsPerFloor:
+  - possibleEnemies:
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
+      proba: 50
+      maxCountPerBattle: 5
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
+      proba: 30
+      maxCountPerBattle: 3
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
+      proba: 15
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 1
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
+      proba: 5
+      maxCountPerBattle: 1
+      minEnemyCountBeforeSpawn: 1
+  - possibleEnemies:
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
+      proba: 25
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
+      proba: 35
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
+      proba: 15
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 2
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
+      proba: 25
+      maxCountPerBattle: 5
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
+      proba: 10
+      maxCountPerBattle: 1
+      minEnemyCountBeforeSpawn: 0
+  - possibleEnemies:
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
+      proba: 10
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
+      proba: 15
+      maxCountPerBattle: 2
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
+      proba: 20
+      maxCountPerBattle: 3
+      minEnemyCountBeforeSpawn: 2
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
+      proba: 35
+      maxCountPerBattle: 5
+      minEnemyCountBeforeSpawn: 0
+    - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
+      proba: 20
+      maxCountPerBattle: 3
+      minEnemyCountBeforeSpawn: 0

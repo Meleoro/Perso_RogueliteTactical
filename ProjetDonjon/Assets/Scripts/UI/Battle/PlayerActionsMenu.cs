@@ -117,7 +117,8 @@ public class PlayerActionsMenu : MonoBehaviour
     public void CloseActionsMenu()
     {
         CameraManager.Instance.OnCameraMouseInput -= CloseActionsMenu;
-        currentHero.OnClickUnit += OpenActionsMenu;
+
+        if(currentMenu != MenuType.Skills) currentHero.OnClickUnit += OpenActionsMenu;
 
         _animator.SetBool("IsOpenned", false);
         isOpened = false;
@@ -148,7 +149,10 @@ public class PlayerActionsMenu : MonoBehaviour
 
     public void StartUseObjectAction()
     {
+        currentMenu = MenuType.UseItems;
 
+        StartCoroutine(InventoriesManager.Instance.OpenInventory(currentHero.Inventory));
+        CloseActionsMenu();
     }
 
     public void EndTurnAction()
@@ -224,6 +228,11 @@ public class PlayerActionsMenu : MonoBehaviour
                 {
                     OpenActionsMenu();
                 }
+                break;
+
+            case MenuType.UseItems:
+                OpenActionsMenu();
+                StartCoroutine(InventoriesManager.Instance.CloseInventory(currentHero.Inventory));
                 break;
         }
     }

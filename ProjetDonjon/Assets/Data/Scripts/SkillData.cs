@@ -31,6 +31,7 @@ public enum SkillEffectType
     Push,
     Provoke,
     Hinder,
+    Vulnerable,
     Summon
 }
 
@@ -39,6 +40,7 @@ public struct SkillEffect
 {
     public SkillEffectType skillEffectType;
     public SkillEffectTargetType skillEffectTargetType;
+    public AlterationData appliedAlteration;
 
     public int additivePower;
     public float multipliedPower;
@@ -59,6 +61,7 @@ public class SkillData : ScriptableObject
 
     public SkillType skillType;
     public SkillEffect[] skillEffects;
+    public GameObject VFX;
 
     public bool useOrientatedAOE;
     public bool[] skillPatern = new bool[15 * 15];

@@ -16,11 +16,12 @@ public class InventorySlot : MonoBehaviour
     private bool isOverlayed;
     private int overlayCount;
     private Loot attachedLoot;
-
+    private Inventory associatedInventory;
 
     [Header("Public Infos")]
     public Vector2Int SlotCoordinates { get { return slotCoordinates; } }
     public RectTransform RectTransform { get { return _rectTr; } }
+    public Inventory AssociatedInventory { get { return associatedInventory; } }
 
     [Header("References")]
     [SerializeField] private RectTransform _rectTr;
@@ -42,11 +43,12 @@ public class InventorySlot : MonoBehaviour
         slotCoordinates = coordinates;
     }
 
-    public void SetupReferences(RectTransform lootPrt, RectTransform basePrt, RectTransform overlayedPrt)
+    public void SetupReferences(RectTransform lootPrt, RectTransform basePrt, RectTransform overlayedPrt, Inventory inventory)
     {
         _lootParent = lootPrt;
         _baseParent = basePrt;  
         _overlayedParent = overlayedPrt;
+        associatedInventory = inventory;
     }
 
 

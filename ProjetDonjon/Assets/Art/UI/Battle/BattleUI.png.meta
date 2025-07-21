@@ -1396,6 +1396,50 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: BattleUI_58
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 183
+        width: 47
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 389c8c8692e3c5f4392288204e05165a
+      internalID: -667013499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUI_59
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 175
+        width: 47
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc55058ae59ef6842af55a3b998964ee
+      internalID: 795483498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -1464,6 +1508,8 @@ TextureImporter:
       BattleUI_55: 344531264
       BattleUI_56: -510781426
       BattleUI_57: 7319871
+      BattleUI_58: -667013499
+      BattleUI_59: 795483498
       BattleUI_6: 2406384179955048029
       BattleUI_7: -9208451722614865051
       BattleUI_8: -1267329788
