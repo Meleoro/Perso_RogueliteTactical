@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Boss1
   m_EditorClassIdentifier: 
   unitName: The Brute
-  unitImage: {fileID: -1923735627, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  unitImage: {fileID: -1188208051, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   baseHealth: 15
   baseStrength: 3
   baseSpeed: 2

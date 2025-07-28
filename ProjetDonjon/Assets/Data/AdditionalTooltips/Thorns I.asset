@@ -9,13 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27dbdbd1fa00c0946929de6036460233, type: 3}
-  m_Name: Shield
+  m_Script: {fileID: 11500000, guid: 01b31fe12b73a4048a1c970fcbbb687a, type: 3}
+  m_Name: Thorns I
   m_EditorClassIdentifier: 
-  alterationName: Shield
-  alterationDescription: Shields will tank damages before the health
-  alterationType: 5
-  isPositive: 1
-  isInfinite: 1
-  duration: 0
-  strength: 0
+  tooltipName: THORNS I
+  tooltipDescription: DEALS 1 DAMAGE TO THE ENEMY WHO ATTACKS THIS UNIT

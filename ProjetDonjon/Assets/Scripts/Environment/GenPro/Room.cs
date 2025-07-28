@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ public class Room : MonoBehaviour
     [SerializeField] private Tile[] holeTiles;
     [SerializeField] private Hole holePrefab;
     [SerializeField] private bool isDebugRoom;
+    [SerializeField] private bool isBossRoom;
 
     [Header("Private Infos")]
     private Vector2Int roomCoordinates;
@@ -66,6 +68,7 @@ public class Room : MonoBehaviour
     [SerializeField] private Tilemap _bottomWallsTilemap;
     [SerializeField] private RoomBlockableEntranceStruct[] _blockableEntrances;
     [SerializeField] private Transform _spawnersParentTr;
+    [SerializeField] private EnemySpawner _bossSpawner;
 
     [Header("Other References")]
     public Transform _heroSpawnerTr;
@@ -348,17 +351,18 @@ public class Room : MonoBehaviour
         }
     }
 
+
     private void SetupSpawners(Hero[] heroes)
     {
         roomEnemySpawners = _spawnersParentTr.GetComponentsInChildren<EnemySpawner>().ToList();
 
         for (int i = roomEnemySpawners.Count - 1; i >= 0; i--)
         {
-            roomEnemySpawners[i].associatedTile = GetNearestBattleTile(roomEnemySpawners[i].transform.position);
+            roomEnemySpawners[i].AssociatedTile = GetNearestBattleTile(roomEnemySpawners[i].transform.position);
 
             for (int j = 0; j < heroes.Length; j++) 
             {
-                int dist = (int)Vector2Int.Distance(heroes[j].CurrentTile.TileCoordinates, roomEnemySpawners[i].associatedTile.TileCoordinates);
+                int dist = (int)Vector2Int.Distance(heroes[j].CurrentTile.TileCoordinates, roomEnemySpawners[i].AssociatedTile.TileCoordinates);
                 if (dist <= 2) 
                 { 
                     roomEnemySpawners.RemoveAt(i);
@@ -367,6 +371,36 @@ public class Room : MonoBehaviour
             }
         }
     }
+
+
+    public IEnumerator DoBossIntroCoroutine()
+    {
+        BattleManager.Instance.StartBattle(battleTiles, transform.position, startCameraSize, this, 5.5f);
+        SetupSpawners(HeroesManager.Instance.Heroes);
+
+        // We spawn the boss
+        EnemySpawn boss = _bossSpawner.GetSpawnedEnemy(maxDangerAmount);
+        AIUnit newEnemy = Instantiate(boss.enemyPrefab as AIUnit, transform);
+        newEnemy.MoveUnit(_bossSpawner.AssociatedTile);
+
+        roomEnemies.Add(newEnemy);
+        roomEnemySpawners.Remove(_bossSpawner);
+        BattleManager.Instance.AddUnit(newEnemy);
+        newEnemy.EnterBattle(newEnemy.CurrentTile);
+
+        yield return new WaitForSeconds(1f);
+
+
+        // Camera Movement + Boss Anim
+        CameraManager.Instance.FocusOnTr(newEnemy.transform, 3);
+        newEnemy._animator.SetTrigger("Intro");
+
+        yield return new WaitForSeconds(4f);
+
+        CameraManager.Instance.FocusOnPosition(transform.position, startCameraSize);
+        SetupEnemies();
+    }
+
 
     private BattleTile GetNearestBattleTile(Vector2 position)
     {
@@ -412,9 +446,9 @@ public class Room : MonoBehaviour
                 if (spawnCountPerEnemy.ContainsKey(wantedUnit.enemyPrefab)) spawnCountPerEnemy[wantedUnit.enemyPrefab]++;
                 else spawnCountPerEnemy.Add(wantedUnit.enemyPrefab, 1);
 
-                    currentDangerAmount += (wantedUnit.enemyPrefab as AIUnit).AIData.dangerLevel;
+                currentDangerAmount += (wantedUnit.enemyPrefab as AIUnit).AIData.dangerLevel;
                 AIUnit newEnemy = Instantiate(wantedUnit.enemyPrefab as AIUnit, transform);
-                newEnemy.MoveUnit(currentSpawner.associatedTile);
+                newEnemy.MoveUnit(currentSpawner.AssociatedTile);
 
                 roomEnemies.Add(newEnemy);
                 roomEnemySpawners.Remove(currentSpawner);
@@ -424,7 +458,7 @@ public class Room : MonoBehaviour
             else
             {
                 Hero newHero = Instantiate(wantedUnit.enemyPrefab as Hero, transform);
-                newHero.MoveUnit(currentSpawner.associatedTile);
+                newHero.MoveUnit(currentSpawner.AssociatedTile);
 
                 roomEnemySpawners.Remove(currentSpawner);
                 BattleManager.Instance.AddUnit(newHero);
@@ -452,10 +486,15 @@ public class Room : MonoBehaviour
     public void StartBattle()
     {
         battleIsDone = true;
-        BattleManager.Instance.StartBattle(battleTiles, transform.position, startCameraSize, this);
 
-        SetupSpawners(HeroesManager.Instance.Heroes);
-        SetupEnemies();
+        if (!isBossRoom)
+        {
+            BattleManager.Instance.StartBattle(battleTiles, transform.position, startCameraSize, this);
+            SetupSpawners(HeroesManager.Instance.Heroes);
+            SetupEnemies();
+        }
+        else
+            StartCoroutine(DoBossIntroCoroutine());
 
         for (int i = 0; i < battleTiles.Count; i++)
         {

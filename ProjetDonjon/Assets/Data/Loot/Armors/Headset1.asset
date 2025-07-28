@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Headset1
   m_EditorClassIdentifier: 
   lootName: WOODEN HEADSET
-  lootDescription: 
+  lootDescription: Does nothing special
   lootType: 1
   sprite: {fileID: -1288772121, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
@@ -24,4 +24,6 @@ MonoBehaviour:
   healthUpgrade: 1
   strengthUpgrade: 0
   speedUpgrade: 0
-  luckUpgrade: 0
+  luckUpgrade: 1
+  consumableType: 0
+  consumablePower: 0

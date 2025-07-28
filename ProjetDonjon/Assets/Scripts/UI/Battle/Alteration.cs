@@ -15,55 +15,20 @@ public class Alteration : MonoBehaviour
     [SerializeField] private Sprite debuffSprite;
 
     [Header("Private Infos")]
-    private StatModificatorStruct currentData;
+    private AlterationStruct currentData;
     private bool isDisplayed;
 
     [Header("References")]
     [SerializeField] private Image _image;
 
 
-    private void Setup(StatModificatorStruct info)
+    private void Setup(AlterationStruct info)
     {
         currentData = info;
 
-        switch (info.modificatorType)
-        {
-            case SkillEffectType.Damage:
-                _image.sprite = attackSprite;
-                break;
+        _image.sprite = info.alteration.alterationIcon;
 
-            case SkillEffectType.ModifyStrength:
-                _image.sprite = attackSprite;
-                break;
-
-            case SkillEffectType.ModifySpeed:
-                if (info.modificatorAdditiveStrength > 0 || info.modificatorMultipliedStrength > 0)
-                    _image.sprite = buffSprite;
-                else
-                    _image.sprite = debuffSprite;
-                break;
-
-            case SkillEffectType.ModifyLuck:
-                if (info.modificatorAdditiveStrength > 0 || info.modificatorMultipliedStrength > 0)
-                    _image.sprite = buffSprite;
-                else
-                    _image.sprite = debuffSprite;
-                break;
-
-            case SkillEffectType.ModifyMove:
-                _image.sprite = speedSprite;
-                break;
-
-            case SkillEffectType.AddShield:
-                _image.sprite = shieldSprite;
-                break;
-
-            case SkillEffectType.Provoke:
-                _image.sprite = provocationSprite;
-                break;
-        }
-
-        if(info.modificatorAdditiveStrength > 0 || info.modificatorMultipliedStrength > 0)
+        if (info.alteration.isPositive)
         {
             _image.color = buffColor;
         }
@@ -76,7 +41,7 @@ public class Alteration : MonoBehaviour
 
     #region Appear / Disappear
 
-    public void Appear(StatModificatorStruct info)
+    public void Appear(AlterationStruct info)
     {
         Setup(info);
         _image.enabled = true;

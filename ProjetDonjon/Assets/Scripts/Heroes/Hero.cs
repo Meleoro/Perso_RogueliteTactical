@@ -2,11 +2,13 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Hero : Unit
     {
-    [Header("Parameters")]
+    [Header("Hero Parameters")]
     [SerializeField] private HeroData heroData;
+    public LootData[] startLoot;
 
     [Header("Actions")]
     public Action OnClickUnit;
@@ -32,7 +34,7 @@ public class Hero : Unit
     private int currentMaxSkillPoints;
     private int currentActionPoints;
 
-    [Header("References")]
+    [Header("Hero References")]
     [SerializeField] private HeroController _controller;
     [SerializeField] private Transform _spriteRendererParent;
     [SerializeField] private HeroInfoPanel _heroInfoPanel;
@@ -64,7 +66,7 @@ public class Hero : Unit
 
     #region Hide / Show Functions
 
-    public void ShowHero()
+    public void ShowHero(bool isFromHeroSwitch = false)
     {
         isHidden = false;
 
@@ -72,7 +74,8 @@ public class Hero : Unit
 
         for (int i = 0; i < _colliders.Length; i++)
         {
-            _colliders[i].enabled = true;
+            if (_colliders[i].isTrigger || isFromHeroSwitch)
+                _colliders[i].enabled = true;
         }
     }
 
@@ -103,6 +106,14 @@ public class Hero : Unit
         base.EnterBattle(startTile);
         _controller.EnterBattle();
         _controller.AutoMove(startTile.transform.position);
+
+        foreach(Loot equipment in equippedLoot)
+        {
+            if (equipment is null) continue;
+            if (equipment.LootData.equipmentEffectType != SpecialEquipmentEffectType.Alteration) continue;
+
+            AddAlteration(equipment.LootData.equipmentEffectAlteration, this);
+        }
     }
 
     public override void ExitBattle(Hero currentHero)
@@ -128,6 +139,31 @@ public class Hero : Unit
     public void DoAction()
     {
         currentActionPoints--;
+    }
+
+    public override void TakeDamage(int damageAmount, Unit originUnit)
+    {
+        base.TakeDamage(damageAmount, originUnit);
+
+        LootData[] hitLootEffects = GetEquippedLootOfEffectType(SpecialEquipmentEffectType.HitAlteration);
+
+        for(int i = 0; i < hitLootEffects.Length; i++)
+        {
+            if (hitLootEffects[i].equipmentEffectAlteration.isPositive)
+            {
+                int pickedProba = Random.Range(0, 100);
+                if (pickedProba > hitLootEffects[i].equipmentEffectPower) continue;
+
+                AddAlteration(hitLootEffects[i].equipmentEffectAlteration, this);
+            }
+            else
+            {
+                int pickedProba = Random.Range(0, 100);
+                if (pickedProba > hitLootEffects[i].equipmentEffectPower) continue;
+
+                originUnit.AddAlteration(hitLootEffects[i].equipmentEffectAlteration, this);
+            }
+        }
     }
 
     protected override void Die()
@@ -179,6 +215,21 @@ public class Hero : Unit
     public void RemoveEquipment(Loot removedLoot, int unequipSlotIndex)
     {
         equippedLoot[unequipSlotIndex] = null;
+    }
+
+    public LootData[] GetEquippedLootOfEffectType(SpecialEquipmentEffectType effectType)
+    {
+        List<LootData> result = new List<LootData>();
+
+        for(int i = 0; i < 6; i++)
+        {
+            if (equippedLoot[i] is null) continue;
+            if (equippedLoot[i].LootData.equipmentEffectType != effectType) continue;
+
+            result.Add(equippedLoot[i].LootData);
+        }
+
+        return result.ToArray();
     }
 
     #endregion

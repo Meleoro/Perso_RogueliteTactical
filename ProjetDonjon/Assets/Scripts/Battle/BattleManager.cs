@@ -114,13 +114,14 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 currentHeroes.Remove(unit);
                 currentAllies.Remove((AIUnit)unit);
             }
+
+            if (currentEnemies.Count == 0 || ((AIUnit)unit).IsBoss)
+            {
+                EndBattle();
+            }
         }
 
-        if(currentEnemies.Count == 0)
-        {
-            EndBattle();
-        }
-        else if(currentHeroes.Count == 0)
+        if(currentHeroes.Count == 0)
         {
             //GameOver
         }
@@ -131,7 +132,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     #region Start / End Battle
 
-    public void StartBattle(List<BattleTile> possibleTiles, Vector3 battleCenterPos, float cameraSize, Room battleRoom)
+    public void StartBattle(List<BattleTile> possibleTiles, Vector3 battleCenterPos, float cameraSize, Room battleRoom, float delay = 0)
     {
         currentUnits.Clear();
         currentHeroes.Clear();
@@ -159,12 +160,12 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         UIManager.Instance.ShowHeroInfosPanels();
 
-        StartCoroutine(StartBattleCoroutine());
+        StartCoroutine(StartBattleCoroutine(delay));
     }
 
-    private IEnumerator StartBattleCoroutine()
+    private IEnumerator StartBattleCoroutine(float delay)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f + delay);
 
         _timeline.InitialiseTimeline(currentUnits);
 
@@ -187,7 +188,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         for (int i = 0; i < currentAllies.Count; i++)
         {
-            currentAllies[i].TakeDamage(1000);
+            currentAllies[i].TakeDamage(1000, null);
         }
 
         CameraManager.Instance.ExitBattle();
@@ -269,17 +270,50 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     }
 
 
+    public Unit[] GetConcernedUnits(BattleTile[] tiles, SkillData skill, Unit baseUnit)
+    {
+        List<Unit> result = new List<Unit>();
+
+        foreach(BattleTile tile in tiles)
+        {
+            if (tile.UnitOnTile is null) continue;
+
+            switch (skill.skillEffects[0].skillEffectTargetType)
+            {
+                case SkillEffectTargetType.Enemies:
+                    if (baseUnit.GetType() != tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
+                    break;
+
+                case SkillEffectTargetType.Allies:
+                    if (baseUnit.GetType() == tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
+                    break;
+            }
+        }
+
+        return result.ToArray();
+    }
+
     public IEnumerator UseSkillCoroutine(SkillData usedSkill)
     {
-        if (usedSkill == null)
-            usedSkill = currentSkill;
-
+        if (usedSkill == null) usedSkill = currentSkill;
         OnSkillUsed.Invoke();
 
         BattleTile[] skillBattleTiles = GetAllSkillTiles().ToArray();
-        StartCoroutine(CameraManager.Instance.DoAttackFeelCoroutine(CurrentUnit._unitAnimsInfos));
+
+        // We verify is the attack is crit
+        bool isCrit = false;
+        if (currentUnit.GetType() == typeof(Hero) && currentSkill.skillEffects[0].skillEffectType == SkillEffectType.Damage)
+        {
+            Unit[] attackUnits = GetConcernedUnits(skillBattleTiles, usedSkill, CurrentUnit);
+            isCrit = currentUnit.VerifyCrit(attackUnits);
+        }
+
+        // We launch the animations / others effects
+        StartCoroutine(CameraManager.Instance.DoAttackFeelCoroutine(CurrentUnit._unitAnimsInfos, isCrit));
+        CurrentUnit._animator.SetBool("IsCrit", isCrit);
         CurrentUnit._animator.SetTrigger(usedSkill.animName);
 
+        // We wait the moment the skill applies it's effect
         while (true)
         {
             yield return new WaitForEndOfFrame();
@@ -288,15 +322,19 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 break;
         }
 
+        // We apply the skill effect
         for (int i = 0; i < skillBattleTiles.Length; i++)
         {
-            ApplySkillOnTile(skillBattleTiles[i], usedSkill, currentUnit);
+            ApplySkillOnTile(skillBattleTiles[i], usedSkill, currentUnit, isCrit);
         }
 
         ResetTiles();
 
+        // We verify if the turn ends
         if(currentUnit.GetType() == typeof(Hero))
         {
+            (currentUnit as Hero).CurrentSkillPoints -= usedSkill.skillPointCost;
+
             (currentUnit as Hero).DoAction();
             if ((currentUnit as Hero).CurrentActionPoints > 0)
             {
@@ -327,7 +365,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     }
 
 
-    private void ApplySkillOnTile(BattleTile battleTile, SkillData usedSkill, Unit unit)
+    private void ApplySkillOnTile(BattleTile battleTile, SkillData usedSkill, Unit unit, bool isCrit)
     {
         if(usedSkill.VFX != null)
         {
@@ -359,47 +397,27 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                     break;
             }
 
+            if (usedSkill.skillEffects[i].appliedAlteration != null)
+            {
+                battleTile.UnitOnTile.AddAlteration(usedSkill.skillEffects[i].appliedAlteration, unit);
+            }
+
             // We apply the effect
             switch (usedSkill.skillEffects[i].skillEffectType)
             {
                 case SkillEffectType.Damage:
-                    battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower * unit.CurrentStrength));
+                    // Thorn
+                    if (isCrit) battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower 
+                        * unit.CurrentStrength * unit.CurrentCritMultiplier), unit);
+                    else battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower * unit.CurrentStrength), unit);
                     break;
 
                 case SkillEffectType.Heal:
                     battleTile.UnitOnTile.Heal(usedSkill.skillEffects[i].additivePower);
                     break;
 
-                case SkillEffectType.AddShield:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, 100, currentUnit);
-                    break;
-
-                case SkillEffectType.ModifyMove:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
-                    break;
-
-                case SkillEffectType.ModifySpeed:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
-                    break;
-
-                case SkillEffectType.ModifyStrength:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
-                    break;
-
-                case SkillEffectType.ModifyLuck:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
-                    break;
-
                 case SkillEffectType.Push:
                     battleTile.UnitOnTile.PushUnit(battleTile.TileCoordinates - currentUnit.CurrentTile.TileCoordinates, usedSkill.skillEffects[i].additivePower);
-                    break;
-
-                case SkillEffectType.Provoke:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
-                    break;
-
-                case SkillEffectType.Hinder:
-                    battleTile.UnitOnTile.AddStatsModificator(usedSkill.skillEffects[i].skillEffectType, usedSkill.skillEffects[i].additivePower, usedSkill.skillEffects[i].multipliedPower, usedSkill.skillEffects[i].duration, currentUnit);
                     break;
 
                 case SkillEffectType.Summon:

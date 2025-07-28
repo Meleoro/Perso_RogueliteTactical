@@ -17,10 +17,13 @@ MonoBehaviour:
   animName: Skill2
   skillPointCost: 1
   skillIcon: {fileID: 1514996999, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  additionalTooltipDatas:
+  - {fileID: 11400000, guid: a3a2ae7d22be7624f8654ebb623e18a1, type: 2}
   skillType: 1
   skillEffects:
-  - skillEffectType: 10
+  - skillEffectType: 0
     skillEffectTargetType: 2
+    appliedAlteration: {fileID: 11400000, guid: 90b47bb6b429ed34aa18b3e0a5c5b0e5, type: 2}
     additivePower: 1
     multipliedPower: 0
     duration: 1

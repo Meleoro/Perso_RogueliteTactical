@@ -46,6 +46,8 @@ public class UnitUI : MonoBehaviour
 
         saveDamageTextPos = _damageText.rectTransform.localPosition;
         _damageText.rectTransform.localScale = Vector3.zero;
+
+        _changePaternText.rectTransform.localScale = Vector3.zero;
     }
 
     private void Update()
@@ -62,10 +64,8 @@ public class UnitUI : MonoBehaviour
         _animator.SetBool("IsShowned", false);
     }
 
-    public async void ShowUnitUI()
+    public void ShowUnitUI()
     {
-        await Task.Yield();
-
         _animator.SetBool("IsShowned", true);
     }
 
@@ -94,7 +94,7 @@ public class UnitUI : MonoBehaviour
 
     #region Others
 
-    public void ActualiseUI(float currentHealthRatio, int currentHealth, List<StatModificatorStruct> currentStatModificators)
+    public void ActualiseUI(float currentHealthRatio, int currentHealth, List<AlterationStruct> currentAlterations)
     {
         if(currentAimedRatio != currentHealthRatio && currentAimedRatio != 0)
         {
@@ -111,12 +111,12 @@ public class UnitUI : MonoBehaviour
 
         for (int i = 0; i < _alterations.Length; i++)
         {
-            if(i >= currentStatModificators.Count)
+            if(i >= currentAlterations.Count)
             {
                 _alterations[i].Disappear();
                 continue;
             }
-            _alterations[i].Appear(currentStatModificators[i]);
+            _alterations[i].Appear(currentAlterations[i]);
         }
     }
 

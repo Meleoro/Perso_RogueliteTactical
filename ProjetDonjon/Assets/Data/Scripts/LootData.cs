@@ -27,6 +27,15 @@ public enum ConsumableType
     Move
 }
 
+public enum SpecialEquipmentEffectType
+{
+    None,
+    Alteration,
+    HitAlteration,
+    AttackAlteration,
+    CritUpgrade
+}
+
 
 [CreateAssetMenu(fileName = "LootData", menuName = "Scriptable Objects/LootData")]
 public class LootData : ScriptableObject
@@ -47,9 +56,17 @@ public class LootData : ScriptableObject
     public int speedUpgrade;
     public int luckUpgrade;
 
+    [Header("Equipment Special Effect Infos")]
+    public SpecialEquipmentEffectType equipmentEffectType;
+    public AlterationData equipmentEffectAlteration;
+    public float equipmentEffectPower;
+
     [Header("Consumable Infos")]
     public ConsumableType consumableType;
     public int consumablePower;
+
+    [Header("Others")]
+    public AdditionalTooltipData[] additionalTooltipDatas;
 }
 
 [Serializable]

@@ -1,4 +1,6 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
 
@@ -13,7 +15,7 @@ public class Inventory : MonoBehaviour
     public Hero AssociatedHero { get { return associatedHero; } }
 
     [Header("Private Infos")]
-    private InventorySlot[,] orderedInventorySlots = new InventorySlot[0, 0];
+    private InventorySlot[,] inventorySlotsTab = new InventorySlot[0, 0];
     private InventorySlot[] inventorySlots;
     private InventorySlot[] upgradeSlots1;
     private InventorySlot[] upgradeSlots2;
@@ -159,11 +161,11 @@ public class Inventory : MonoBehaviour
         SetupSlots();
 
         Vector2Int inventoryDimensions = GetInventoryDimensions();
-        orderedInventorySlots = new InventorySlot[inventoryDimensions.x + 1, inventoryDimensions.y + 1];
+        inventorySlotsTab = new InventorySlot[inventoryDimensions.x + 1, inventoryDimensions.y + 1];
 
         for(int i = 0; i < inventorySlots.Length; i++) 
         {
-            orderedInventorySlots[inventorySlots[i].SlotCoordinates.x, inventorySlots[i].SlotCoordinates.y] = inventorySlots[i];
+            inventorySlotsTab[inventorySlots[i].SlotCoordinates.x, inventorySlots[i].SlotCoordinates.y] = inventorySlots[i];
         }
 
         for (int i = 0; i < inventorySlots.Length; i++)
@@ -212,4 +214,44 @@ public class Inventory : MonoBehaviour
     }
 
     #endregion
+
+
+    public void AutoPlaceItem(Loot item)
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            List<InventorySlot> overlayedSlots = GetOverlayedCoordinates(inventorySlots[i].SlotCoordinates, item.LootData.spaceTaken);
+            if (overlayedSlots is null) continue;
+
+            item.PlaceInInventory(overlayedSlots);
+            return;
+        }
+    }
+
+    private List<InventorySlot> GetOverlayedCoordinates(Vector2Int bottomLeftCoord, SpaceTakenRow[] spaceTaken)
+    {
+        List<InventorySlot> validSlots = new List<InventorySlot>();
+
+        for (int y = 0; y < spaceTaken.Length; y++)
+        {
+            for (int x = 0; x < spaceTaken[y].row.Length; x++)
+            {
+                Vector2Int currentCoord = bottomLeftCoord + new Vector2Int(x, y);
+                InventorySlot currentSlot = GetSlotAtCoord(currentCoord);
+
+                if (currentSlot is null) return null;    // If the placement isn't valid
+                if (currentSlot.VerifyHasLoot()) return null;
+                validSlots.Add(currentSlot);             // If the placement is valid
+            }
+        }
+
+        return validSlots;
+    }
+
+    private InventorySlot GetSlotAtCoord(Vector2Int coord)
+    {
+        if(coord.x < 0 || coord.y < 0) return null;
+        if (coord.x >= inventorySlotsTab.GetLength(0) || coord.x >= inventorySlotsTab.GetLength(1)) return null;
+        return inventorySlotsTab[coord.x, coord.y];
+    }
 }

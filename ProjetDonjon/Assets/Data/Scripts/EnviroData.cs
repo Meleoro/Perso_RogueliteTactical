@@ -24,7 +24,8 @@ public class EnviroData : ScriptableObject
     [Header("Special Rooms")]
     public Room[] possibleStartRooms;
     public Room[] possibleStairsRooms;
-    public Room[] possibleBossRooms;
+    public Room[] possibleFirstBossRooms;
+    public Room[] possibleSecondBossRooms;
 
     [Header("Loot")]
     public FloorLootData[] lootPerFloors;

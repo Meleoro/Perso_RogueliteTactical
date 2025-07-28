@@ -27,6 +27,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     public CoinUI CoinUI { get { return _coinUI; } }
     public Minimap Minimap { get { return _minimap; } }
     public FloorTransitionText FloorTransitionText { get { return _floorTransitionText; } }
+    public HeroInfosScreen HeroInfosScreen { get { return _heroInfosScreen; } }
 
     [Header("Actions")]
     public Action OnStartDrag;

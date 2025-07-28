@@ -52,7 +52,9 @@ MonoBehaviour:
   - {fileID: 2917294264406634095, guid: 581c2856ecf5e4f4987601aa19cdea79, type: 3}
   possibleStairsRooms:
   - {fileID: 2917294264406634095, guid: 7f1c262d991c12f48bffac1db4436036, type: 3}
-  possibleBossRooms: []
+  possibleFirstBossRooms:
+  - {fileID: 2917294264406634095, guid: 5cbe374aae63ec84195d013e30bd5ad4, type: 3}
+  possibleSecondBossRooms: []
   lootPerFloors:
   - chestPossibleLoots:
     - probability: 15

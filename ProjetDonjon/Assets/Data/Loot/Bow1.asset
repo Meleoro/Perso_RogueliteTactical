@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bow1
   m_EditorClassIdentifier: 
   lootName: CLASSIC BOW
-  lootDescription: Deals +1 damages
+  lootDescription: Does nothing special
   lootType: 1
   sprite: {fileID: -2035620461, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 10
@@ -24,7 +24,11 @@ MonoBehaviour:
   equipmentSprite: {fileID: 2102498540, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 0
   strengthUpgrade: 1
-  speedUpgrade: 0
+  speedUpgrade: 1
   luckUpgrade: 0
+  equipmentEffectType: 0
+  equipmentEffectAlteration: {fileID: 0}
+  equipmentEffectPower: 0
   consumableType: 0
   consumablePower: 0
+  additionalTooltipDatas: []

@@ -42,7 +42,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     {
         GenerateFloor(enviroData);
         _heroesManager.Initialise(null, spawnPos);
-        StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.1f));
+        StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.15f));
     }
 
 
@@ -58,7 +58,9 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
             Destroy(roomsToDestroy[i].gameObject);
         }
 
-        GenerateFloor(enviroData);
+        if (currentFloor == 2) GenerateBossFloor(true);
+        else if (currentFloor == 5) GenerateBossFloor(false);
+        else GenerateFloor(enviroData);
     }
 
 
@@ -75,6 +77,22 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         GenerateStartAndEnd(new Vector2Int(wantedRoomAmount, wantedRoomAmount));
         GenerateAlternativePathes(2);
         GenerateDeadEnds(3);
+
+        CloseUnusedEntrances();
+
+        UIManager.Instance.Minimap.SetupMinimap(_pathCalculator.floorGenProTiles, _pathCalculator);
+    }
+
+    public void GenerateBossFloor(bool isFirstBoss)
+    {
+        Room[] possibleBossRooms = isFirstBoss ? enviroData.possibleFirstBossRooms : enviroData.possibleSecondBossRooms;
+
+        AddRoom(new Vector2Int(4, 4), enviroData.possibleStartRooms[Random.Range(0, enviroData.possibleStartRooms.Length)]);
+        spawnPos = generatedRooms[0]._heroSpawnerTr.position;
+        HeroesManager.Instance.Teleport(spawnPos);
+
+        AddRoom(new Vector2Int(4, 5), possibleBossRooms[Random.Range(0, possibleBossRooms.Length)]);
+        AddRoom(new Vector2Int(4, 6), enviroData.possibleStairsRooms[Random.Range(0, enviroData.possibleStairsRooms.Length)]);
 
         CloseUnusedEntrances();
 

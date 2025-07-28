@@ -14,12 +14,20 @@ public class SpriteLayerer : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private Transform _heroParentTr;   // Needed to avoid to apply the update on the reference sprite
 
 
     public void Initialise(Transform referenceTr)
     {
         this.referenceTr = referenceTr;
         isInitialised = true;
+
+        if(_heroParentTr is not null && referenceTr == _heroParentTr)
+        {
+            _spriteRenderer.sortingOrder = 100;
+
+            isInitialised = false;
+        }
     }
 
 

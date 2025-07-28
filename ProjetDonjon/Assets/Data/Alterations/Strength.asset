@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Strength
   m_EditorClassIdentifier: 
   alterationName: Strength
-  alterationDescription: This unit deals 50% more damages
+  alterationDescription: The unit deals 50% more damages
+  alterationIcon: {fileID: -388375028, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 1
   isPositive: 1
   isInfinite: 0
+  isStackable: 0
   duration: 3
-  strength: 50
+  strength: 0.5

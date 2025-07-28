@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class SkillsPanel : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private SkillsPanelButton[] _skillButtons;
+    [SerializeField] private AdditionalTooltip[] _additionalTooltips;
     [SerializeField] private TextMeshProUGUI _skillNameText;
     [SerializeField] private TextMeshProUGUI _skillDescriptionText;
     private Animator _animator;
@@ -88,6 +90,15 @@ public class SkillsPanel : MonoBehaviour
     {
         _skillNameText.text = skillData.skillName;
         _skillDescriptionText.text = skillData.skillDescription;
+
+        for (int i = 0; i < _additionalTooltips.Length; i++)
+        {
+            if(i < skillData.additionalTooltipDatas.Length)
+                _additionalTooltips[i].Show(skillData.additionalTooltipDatas[i]);
+
+            else
+                _additionalTooltips[i].Hide();
+        }
     }
 
     private void UnlaodSkillDetails()

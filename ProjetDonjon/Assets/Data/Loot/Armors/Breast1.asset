@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Breast1
   m_EditorClassIdentifier: 
   lootName: WOODEN ARMOR
-  lootDescription: 
+  lootDescription: Does nothing special
   lootType: 1
   sprite: {fileID: -799607783, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
@@ -25,4 +25,6 @@ MonoBehaviour:
   healthUpgrade: 2
   strengthUpgrade: 1
   speedUpgrade: 0
-  luckUpgrade: 0
+  luckUpgrade: 1
+  consumableType: 0
+  consumablePower: 0

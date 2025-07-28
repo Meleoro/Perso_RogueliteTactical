@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class SpriteLayererManager : MonoBehaviour
 {
-    public void InitiliseAll()
+    public void InitialiseAll()
     {
-        SpriteLayerer[] spriteLayerers = FindObjectsByType<SpriteLayerer>(FindObjectsSortMode.None);
+        SpriteLayerer[] spriteLayerers = FindObjectsByType<SpriteLayerer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         for(int i = 0; i < spriteLayerers.Length; i++)
         {
@@ -17,6 +17,6 @@ public class SpriteLayererManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        InitiliseAll();
+        InitialiseAll();
     }
 }

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alterationName: Vulnerable
   alterationDescription: This unit takes 50% more damages
+  alterationIcon: {fileID: 980239215, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 2
   isPositive: 0
   isInfinite: 0
+  isStackable: 0
   duration: 3
-  strength: 50
+  strength: 0.5

@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Knight
   unitImage: {fileID: -5014593385331915717, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
-  baseHealth: 4
+  baseHealth: 5
   baseStrength: 3
-  baseSpeed: 2
-  baseLuck: 1
+  baseSpeed: 3
+  baseLuck: 2
   baseMovePoints: 3
   maxSkillPoints: 3
   startSkillPoints: 1

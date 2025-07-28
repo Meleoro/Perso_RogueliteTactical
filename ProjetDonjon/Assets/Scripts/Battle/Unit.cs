@@ -5,22 +5,23 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using UnityEngine;
 using Utilities;
-public struct StatModificatorStruct
+using Random = UnityEngine.Random;
+
+
+public struct AlterationStruct
 {
-    public StatModificatorStruct(SkillEffectType type, int addStrength, float multStrength, int duration, Unit origin)
+    public AlterationStruct(AlterationData alteration, int duration, float strength, Unit origin)
     {
-        modificatorType = type;
-        modificatorAdditiveStrength = addStrength;
-        modificatorMultipliedStrength = multStrength;
-        modificatorTurnsLeft = duration;
-        modificatorOrigin = origin;
+        this.alteration = alteration;
+        this.duration = duration;
+        this.currentStrength = strength;
+        this.origin = origin;
     }
 
-    public SkillEffectType modificatorType;
-    public int modificatorAdditiveStrength;
-    public float modificatorMultipliedStrength;
-    public int modificatorTurnsLeft;
-    public Unit modificatorOrigin;
+    public AlterationData alteration;
+    public int duration;
+    public float currentStrength;
+    public Unit origin;
 }
 
 public class Unit : MonoBehaviour
@@ -56,7 +57,8 @@ public class Unit : MonoBehaviour
     private int speedModificatorAdditive;
     private int luckModificatorAdditive;
     private int movePointsModificatorAdditive;
-    private List<StatModificatorStruct> currentStatsModificators = new List<StatModificatorStruct>(); 
+    private float critModificatorAdditive;
+    private List<AlterationStruct> currentAlterations = new List<AlterationStruct>(); 
 
     [Header("Protected Other Infos")]
     protected BattleTile currentTile;
@@ -68,22 +70,23 @@ public class Unit : MonoBehaviour
 
     [Header("Public Infos")]
     public int CurrentHealth { get { return currentHealth; } set { currentHealth = value; 
-            _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentStatsModificators); OnHeroInfosChange?.Invoke(); } }
+            _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations); OnHeroInfosChange?.Invoke(); } }
     public int CurrentShield { get { return currentShield; } set { currentShield = value; } }
     public int CurrentMaxHealth { get { return currentMaxHealth; } }
     public int CurrentStrength { get { return currentStrength + strengthModificatorAdditive; } }
     public int CurrentSpeed { get { return currentSpeed + speedModificatorAdditive; } }
     public int CurrentLuck { get { return currentLuck + luckModificatorAdditive; } }
     public int CurrentMovePoints { get { return currentMovePoints + movePointsModificatorAdditive; } }
+    public float CurrentCritMultiplier { get { return 2 + critModificatorAdditive; } }
     public UnitData UnitData { get { return unitData; } }
     public BattleTile CurrentTile { get { return currentTile; } }
     public bool IsEnemy { get { return isEnemy; } }
 
     public bool IsHindered { get {
             bool result = false;
-            foreach(StatModificatorStruct modificator in currentStatsModificators)
+            foreach(AlterationStruct altStruct in currentAlterations)
             {
-                if(modificator.modificatorType == SkillEffectType.Hinder)
+                if(altStruct.alteration.alterationType == AlterationType.Hindered)
                 {
                     result = true;
                 }
@@ -115,21 +118,24 @@ public class Unit : MonoBehaviour
         _ui.UnHoverAction += UnHoverUnit;
         _ui.ClickAction += ClickUnit;
 
-        _ui.ActualiseUI(1, currentHealth, currentStatsModificators);
+        _ui.ActualiseUI(1, currentHealth, currentAlterations);
 
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
     }
 
     public void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints)
     {
+        int currentDamages = currentMaxHealth - currentHealth;
+
         currentMaxHealth = newMaxHealth;
+        currentHealth = currentMaxHealth - currentDamages;
         currentStrength = newStrength;
         currentSpeed = newSpeed;
         currentLuck = newLuck;
 
         currentMovePoints = newMovePoints;
 
-        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentStatsModificators);
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
     }
 
     #endregion 
@@ -225,15 +231,42 @@ public class Unit : MonoBehaviour
 
     #region Use / Apply Skills
 
-    public void TakeDamage(int damageAmount)
+    public bool VerifyCrit(Unit[] attackedUnits)
+    {
+        int averageLuck = 0;
+        for(int i = 0; i < attackedUnits.Length; i++)
+        {
+            averageLuck += attackedUnits[i].CurrentLuck;
+        }
+        averageLuck /= attackedUnits.Length;
+
+        int critProba = ((CurrentLuck - averageLuck) + 3) * 3;
+        int pickedProba = Random.Range(0, 100);
+
+        return pickedProba < critProba;
+    }
+
+    public virtual void TakeDamage(int damageAmount, Unit originUnit)
     {
         _animator.SetTrigger("Damage");
-
         CameraManager.Instance.DoCameraShake(0.25f, Mathf.Lerp(0.2f, 0.5f, damageAmount / 10f), 0.025f);
+
+        // Thorn
+        if (originUnit)
+        {
+            AlterationData thornAlt = VerifyHasAlteration(AlterationType.Thorn);
+            if (thornAlt) originUnit.TakeDamage((int)thornAlt.strength, null);
+        }
+
+        // Weakened
+        AlterationData weakenedAlt = VerifyHasAlteration(AlterationType.Vulnerable);
+        if (weakenedAlt) damageAmount = (int)(damageAmount * weakenedAlt.strength);
 
         int shieldDamages = Mathf.Clamp(damageAmount, 0, CurrentShield);
         int healthDamages = damageAmount - shieldDamages;
-    
+
+        if (shieldDamages == CurrentShield && CurrentShield > 0) RemoveAlteration(AlterationType.Shield);
+
         CurrentShield -= shieldDamages;
         CurrentHealth -= healthDamages;
 
@@ -255,57 +288,83 @@ public class Unit : MonoBehaviour
             CurrentHealth = Mathf.Clamp(CurrentHealth + healedAmount, 0, CurrentMaxHealth);
         else
             CurrentHealth = CurrentMaxHealth;
-
-        PlayAlterationVFX(SkillEffectType.Heal);
     }
 
+    #endregion
 
-    public void AddStatsModificator(SkillEffectType buffType, int additiveStrength, float multipliedStrength, int duration, Unit origin)
+
+    #region Alterations
+
+    public void AddAlteration(AlterationData alteration, Unit origin)
     {
         bool alreadyApplied = false;
 
-        for(int i = 0; i < currentStatsModificators.Count; i++)
+        for (int i = 0; i < currentAlterations.Count; i++)
         {
-            if (currentStatsModificators[i].modificatorType == buffType && 
-                ((additiveStrength > 0 && currentStatsModificators[i].modificatorAdditiveStrength > 0) || 
-                (additiveStrength < 0 && currentStatsModificators[i].modificatorAdditiveStrength < 0)))
+            if (currentAlterations[i].alteration.alterationType == alteration.alterationType)
             {
                 alreadyApplied = true;
 
-                StatModificatorStruct current = currentStatsModificators[i];
+                AlterationStruct current = currentAlterations[i];
 
-                current.modificatorTurnsLeft = duration > currentStatsModificators[i].modificatorTurnsLeft ?
-                    duration : currentStatsModificators[i].modificatorTurnsLeft;
+                current.duration = alteration.duration > currentAlterations[i].duration ?
+                    alteration.duration : currentAlterations[i].duration;
 
-                current.modificatorAdditiveStrength = additiveStrength > currentStatsModificators[i].modificatorAdditiveStrength ?
-                    additiveStrength : currentStatsModificators[i].modificatorAdditiveStrength;
+                if (alteration.isStackable)
+                {
+                    current.currentStrength += alteration.strength;
+                }
 
-                currentStatsModificators[i] = current;
+                currentAlterations[i] = current;
             }
         }
 
         if (!alreadyApplied)
         {
-            currentStatsModificators.Add(new StatModificatorStruct(buffType, additiveStrength, multipliedStrength, duration, origin));
+            currentAlterations.Add(new AlterationStruct(alteration, alteration.duration, alteration.strength, origin));
         }
 
-        PlayAlterationVFX(buffType);
+        PlayAlterationVFX(alteration.alterationType);
         ActualiseBuffsAndDebuffs(false);
     }
 
 
-    private void PlayAlterationVFX(SkillEffectType type)
+    public AlterationData VerifyHasAlteration(AlterationType type)
+    {
+        foreach (AlterationStruct altStruct in currentAlterations)
+        {
+            if (altStruct.alteration.alterationType == type)
+            {
+                return altStruct.alteration;
+            }
+        }
+        return null;
+    }
+
+
+    private void PlayAlterationVFX(AlterationType type)
     {
         switch (type)
         {
-            case SkillEffectType.AddShield:
+            case AlterationType.Shield:
                 Destroy(Instantiate(shieldVFX, transform.position, Quaternion.Euler(0, 0, 0)), 2f);
                 break;
-
-            case SkillEffectType.Heal:
-                Destroy(Instantiate(healVFX, transform.position, Quaternion.Euler(0, 0, 0)), 2f);
-                break;
         }
+    }
+
+
+    private void RemoveAlteration(AlterationType type)
+    {
+        for (int i = currentAlterations.Count - 1; i >= 0; i--)
+        {
+            if (currentAlterations[i].alteration.alterationType == type)
+            {
+                currentAlterations.RemoveAt(i);
+                break;
+            }
+        }
+
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
     }
 
 
@@ -313,15 +372,18 @@ public class Unit : MonoBehaviour
     {
         if (endTurn)
         {
-            for (int i = currentStatsModificators.Count - 1; i >= 0; i--)
+            for (int i = currentAlterations.Count - 1; i >= 0; i--)
             {
-                StatModificatorStruct current = currentStatsModificators[i];
-                current.modificatorTurnsLeft--;
-                currentStatsModificators[i] = current;
+                AlterationStruct current = currentAlterations[i];
 
-                if (currentStatsModificators[i].modificatorTurnsLeft <= 0)
+                if (!current.alteration.isInfinite)
+                    current.duration--;
+
+                currentAlterations[i] = current;
+
+                if (currentAlterations[i].duration <= 0 && !currentAlterations[i].alteration.isInfinite)
                 {
-                    currentStatsModificators.RemoveAt(i);
+                    currentAlterations.RemoveAt(i);
                 }
             }
         }
@@ -330,39 +392,40 @@ public class Unit : MonoBehaviour
         strengthModificatorAdditive = 0;
         speedModificatorAdditive = 0;
         luckModificatorAdditive = 0;
-        provocationTarget = null; 
+        currentShield = 0;
+        provocationTarget = null;
 
-        for(int i = 0; i < currentStatsModificators.Count; i++)
+        for (int i = 0; i < currentAlterations.Count; i++)
         {
-            switch(currentStatsModificators[i].modificatorType)
+            switch (currentAlterations[i].alteration.alterationType)
             {
-                case SkillEffectType.ModifyMove:
-                    movePointsModificatorAdditive += currentStatsModificators[i].modificatorAdditiveStrength;
+                case AlterationType.Strength:
+                    strengthModificatorAdditive += (int)(currentStrength * currentAlterations[i].currentStrength);
                     break;
 
-                case SkillEffectType.ModifyStrength:
-                    strengthModificatorAdditive += currentStatsModificators[i].modificatorAdditiveStrength;
+                case AlterationType.Weakened:
+                    strengthModificatorAdditive -= (int)(currentStrength * currentAlterations[i].currentStrength);
                     break;
 
-                case SkillEffectType.ModifyLuck:
-                    luckModificatorAdditive += currentStatsModificators[i].modificatorAdditiveStrength;
+                case AlterationType.Provocked:
+                    provocationTarget = currentAlterations[i].origin;
                     break;
 
-                case SkillEffectType.ModifySpeed:
-                    speedModificatorAdditive += currentStatsModificators[i].modificatorAdditiveStrength;
+                case AlterationType.Shield:
+                    CurrentShield += (int)currentAlterations[i].currentStrength;
                     break;
 
-                case SkillEffectType.Provoke:
-                    provocationTarget = currentStatsModificators[i].modificatorOrigin;
+                case AlterationType.Lucky:
+                    luckModificatorAdditive += (int)(currentLuck * currentAlterations[i].currentStrength);
                     break;
 
-                case SkillEffectType.AddShield:
-                    CurrentShield = currentStatsModificators[i].modificatorAdditiveStrength;
+                case AlterationType.Unlucky:
+                    luckModificatorAdditive -= (int)(currentLuck * currentAlterations[i].currentStrength);
                     break;
             }
         }
 
-        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentStatsModificators);
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
     }
 
     #endregion

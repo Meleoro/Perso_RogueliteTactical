@@ -495,7 +495,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   appearEffectSpeed: 1
   _healthText: {fileID: 5545815504003649844}
-  _changePaternText: {fileID: 0}
+  _changePaternText: {fileID: 3579530860025808927}
   _healthFillableImage: {fileID: 1802846172979731994}
   _healthFillableImage2: {fileID: 7804729909459564551}
   _hearthImage: {fileID: 7100056971018909778}

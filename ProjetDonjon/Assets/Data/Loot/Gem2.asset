@@ -22,8 +22,8 @@ MonoBehaviour:
   equipmentType: 0
   equipmentSprite: {fileID: 7607525373114708640, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 0
-  strengthUpgrade: 3
-  speedUpgrade: 1
-  luckUpgrade: -1
+  strengthUpgrade: 0
+  speedUpgrade: 0
+  luckUpgrade: 0
   consumableType: 0
   consumablePower: 0

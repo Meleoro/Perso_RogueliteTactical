@@ -19,13 +19,73 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
     private Hero[] heroes = new Hero[0];
     private int currentHeroIndex;
     private bool isInitialised;
+    private bool isInvincible;
 
     [Header("References")]
     [SerializeField] private InteractionManager _interactionManager;
     [SerializeField] private InventoriesManager _inventoryManager;
     [SerializeField] private ProceduralGenerationManager _genProScript;
+    [SerializeField] private SpriteLayererManager _spriteLayererManager;
 
 
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            SwitchHero();
+        }
+    }
+
+
+    private void SwitchHero()
+    {
+        currentHeroIndex = ++currentHeroIndex % heroes.Length;
+
+        _spriteLayererManager.InitialiseAll();
+        ActualiseDisplayedHero();
+    }
+
+
+    private void ActualiseDisplayedHero()
+    {
+        for (int i = 0; i < heroes.Length; i++)
+        {
+            heroes[i].ActualiseCurrentDisplayedHero(heroes[currentHeroIndex].transform);
+
+            if (currentHeroIndex == i)
+            {
+                heroes[i].ShowHero(true);
+            }
+            else
+            {
+                heroes[i].HideHero();
+            }
+        }
+    }
+
+
+    public void TakeDamage(int damagesAmount)
+    {
+        if (isInvincible) return;
+
+        heroes[currentHeroIndex].TakeDamage(damagesAmount, null);
+
+        StartCoroutine(DamageInvincibilityCoroutine());
+    }
+
+    private IEnumerator DamageInvincibilityCoroutine()
+    {
+        isInvincible = true;
+
+        yield return new WaitForSeconds(1);
+
+        isInvincible = false;
+    }
+
+
+    #region Initialisation / Environment Related
 
     public void Initialise(Hero[] heroesPrefabs, Vector2 spawnPos)
     {
@@ -60,38 +120,6 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
     }
 
 
-    private void SwitchHero()
-    {
-        currentHeroIndex = ++currentHeroIndex % heroes.Length;
-
-        ActualiseDisplayedHero();
-    }
-
-
-    private void ActualiseDisplayedHero()
-    {
-        for (int i = 0; i < heroes.Length; i++)
-        {
-            heroes[i].ActualiseCurrentDisplayedHero(heroes[currentHeroIndex].transform);
-
-            if (currentHeroIndex == i)
-            {
-                heroes[i].ShowHero();
-            }
-            else
-            {
-                heroes[i].HideHero();
-            }
-        }
-    }
-
-
-    public void TakeDamage(int damagesAmount)
-    {
-        heroes[currentHeroIndex].TakeDamage(damagesAmount);
-    }
-
-
     public void TakeStairs()
     {
         StartCoroutine(TakeStairsCoroutine());
@@ -114,6 +142,8 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
 
         heroes[currentHeroIndex].Controller.StopAutoMove();
     }
+
+    #endregion
 
 
     #region Battle Functions

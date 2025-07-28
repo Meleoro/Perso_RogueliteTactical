@@ -5,6 +5,9 @@ using UnityEngine.InputSystem;
 
 public class InteractionManager : MonoBehaviour
 {
+    [Header("Parameters")]
+    [SerializeField] private float yOffset;
+
     [Header("Private Infos")]
     private List<IInteractible> interactiblesAtRange = new List<IInteractible>();
     private IInteractible closestInteractible;
@@ -31,7 +34,7 @@ public class InteractionManager : MonoBehaviour
     {
         if (!isSetup) return;
 
-        transform.position = currentHeroTransform.position;
+        transform.position = currentHeroTransform.position + new Vector3(0, yOffset, 0);
 
         if (closestInteractible is null) return;
         if (InputManager.wantsToInteract)

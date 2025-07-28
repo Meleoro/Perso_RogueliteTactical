@@ -22,38 +22,38 @@ public class AlterationDetailsPanel : MonoBehaviour
     [SerializeField] private RectTransform _parentRectTr;
 
 
-    public void OpenDetails(Vector2 position, StatModificatorStruct infos)
+    public void OpenDetails(Vector2 position, AlterationStruct infos)
     {
         _animator.SetBool("IsOpened", true);
         transform.position = position + offset;
 
-        switch (infos.modificatorType)
+        _nameText.text = infos.alteration.alterationName;
+        _descriptionText.text = infos.alteration.alterationDescription;
+
+        switch (infos.alteration.alterationType)
         {
-            case SkillEffectType.AddShield:
-                _nameText.text = shieldAlterationName;
-                _descriptionText.text = shieldAlterationDescr;
-                _counterText.text = infos.modificatorAdditiveStrength.ToString();
+            case AlterationType.Shield:
+                _counterText.text = infos.alteration.strength.ToString();
                 break;
 
-            case SkillEffectType.Provoke:
-                _nameText.text = provocationAlterationName;
-                _descriptionText.text = provocationAlterationDescr;
-                _counterText.text = infos.modificatorTurnsLeft.ToString();
+            case AlterationType.Strength:
+                _counterText.text = infos.duration.ToString();
                 break;
 
-            case SkillEffectType.ModifyStrength:
-                if(infos.modificatorAdditiveStrength < 0)
-                {
-                    _nameText.text = weakenedAlterationName;
-                    _descriptionText.text = weakenedAlterationDescr;
-                }
-                _counterText.text = infos.modificatorTurnsLeft.ToString();
+            case AlterationType.Weakened:
+                _counterText.text = infos.duration.ToString();
                 break;
 
-            case SkillEffectType.Hinder:
-                _nameText.text = hinderedAlterationName;
-                _descriptionText.text = hinderedAlterationDescr;
-                _counterText.text = infos.modificatorTurnsLeft.ToString();
+            case AlterationType.Hindered:
+                _counterText.text = infos.duration.ToString();
+                break;
+
+            case AlterationType.Provocked:
+                _counterText.text = infos.duration.ToString();
+                break;
+
+            case AlterationType.Vulnerable:
+                _counterText.text = infos.duration.ToString();
                 break;
         }
     }

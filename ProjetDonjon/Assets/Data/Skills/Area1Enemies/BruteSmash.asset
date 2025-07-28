@@ -19,8 +19,9 @@ MonoBehaviour:
   skillIcon: {fileID: 0}
   skillType: 1
   skillEffects:
-  - skillEffectType: 0
+  - skillEffectType: 1
     skillEffectTargetType: 2
+    appliedAlteration: {fileID: 0}
     additivePower: 0
     multipliedPower: 1
     duration: 0

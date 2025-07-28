@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword2
   m_EditorClassIdentifier: 
   lootName: CRISTAL SWORD
-  lootDescription: Deals +3 damages
+  lootDescription: Your critical attacks deal +50% damages
   lootType: 1
   sprite: {fileID: 7607525373114708640, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 15
@@ -22,7 +22,13 @@ MonoBehaviour:
   - row: 01
   equipmentType: 0
   equipmentSprite: {fileID: 1820641201, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
-  healthUpgrade: 1
-  strengthUpgrade: 4
-  speedUpgrade: -1
-  luckUpgrade: 0
+  healthUpgrade: 0
+  strengthUpgrade: 1
+  speedUpgrade: 0
+  luckUpgrade: 3
+  equipmentEffectType: 4
+  equipmentEffectAlteration: {fileID: 0}
+  equipmentEffectPower: 1.5
+  consumableType: 0
+  consumablePower: 0
+  additionalTooltipDatas: []

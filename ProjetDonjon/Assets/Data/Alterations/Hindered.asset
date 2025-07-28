@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Hindered
   m_EditorClassIdentifier: 
   alterationName: Hindered
-  alterationDescription: 'This unit can''t move '
+  alterationDescription: 'The unit can''t move '
+  alterationIcon: {fileID: 1957530432, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 4
   isPositive: 0
   isInfinite: 0
+  isStackable: 0
   duration: 1
   strength: 0

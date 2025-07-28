@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Bow2
   m_EditorClassIdentifier: 
   lootName: CRISTAL BOW
-  lootDescription: 
+  lootDescription: Your critical attacks deal +50% damages
   lootType: 1
   sprite: {fileID: -459295791, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 10
@@ -23,8 +23,12 @@ MonoBehaviour:
   equipmentType: 0
   equipmentSprite: {fileID: 30311379, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 0
-  strengthUpgrade: 2
+  strengthUpgrade: 1
   speedUpgrade: 0
-  luckUpgrade: 2
+  luckUpgrade: 3
+  equipmentEffectType: 4
+  equipmentEffectAlteration: {fileID: 0}
+  equipmentEffectPower: 1.5
   consumableType: 0
   consumablePower: 0
+  additionalTooltipDatas: []

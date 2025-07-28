@@ -20,18 +20,11 @@ public enum SkillEffectTargetType
 
 public enum SkillEffectType
 {
+    None,
     Damage,
     Heal,
-    ModifyStrength,
-    ModifySpeed,
-    ModifyLuck,
-    ModifyMove,
-    AddShield,
     AddEnergy,
     Push,
-    Provoke,
-    Hinder,
-    Vulnerable,
     Summon
 }
 
@@ -53,16 +46,20 @@ public struct SkillEffect
 [CreateAssetMenu(fileName = "SkillData", menuName = "Scriptable Objects/SkillData")]
 public class SkillData : ScriptableObject
 {
+    [Header("Main")]
     public string skillName;
     public string skillDescription;
     public string animName;
     public int skillPointCost;
     public Sprite skillIcon;
+    public AdditionalTooltipData[] additionalTooltipDatas;
 
+    [Header("Effects")]
     public SkillType skillType;
     public SkillEffect[] skillEffects;
     public GameObject VFX;
 
+    [Header("Paterns")]
     public bool useOrientatedAOE;
     public bool[] skillPatern = new bool[15 * 15];
     public bool[] skillAOEPatern = new bool[9 * 9];

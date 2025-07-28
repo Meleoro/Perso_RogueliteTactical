@@ -355,7 +355,7 @@ TextureImporter:
         width: 146
         height: 66
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -377,7 +377,7 @@ TextureImporter:
         width: 13
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -399,7 +399,7 @@ TextureImporter:
         width: 13
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -421,7 +421,7 @@ TextureImporter:
         width: 15
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -443,7 +443,7 @@ TextureImporter:
         width: 15
         height: 13
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -452,6 +452,50 @@ TextureImporter:
       bones: []
       spriteID: ee559b0d73c2ea84189527d43dc55ec5
       internalID: 3737199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: InventorySpritesV2_15
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 458
+        width: 64
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b443107c531ac7e44a0f9ccfc3c0e389
+      internalID: -370270558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: InventorySpritesV2_16
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 458
+        width: 64
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80d3ce2ffeee710418f143728b60eacd
+      internalID: -1343552598
       vertices: []
       indices: 
       edges: []
@@ -477,6 +521,8 @@ TextureImporter:
       InventorySpritesV2_12: -1699287204
       InventorySpritesV2_13: -1052538103
       InventorySpritesV2_14: 3737199
+      InventorySpritesV2_15: -370270558
+      InventorySpritesV2_16: -1343552598
       InventorySpritesV2_2: -6174585982209360121
       InventorySpritesV2_3: -3765119502541032652
       InventorySpritesV2_4: -7462308826667701173

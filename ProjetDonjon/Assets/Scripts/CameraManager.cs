@@ -174,7 +174,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         currentWantedSize = cameraSize;
     }
 
-    public IEnumerator DoAttackFeelCoroutine(UnitAnimsInfos animInfos)
+    public IEnumerator DoAttackFeelCoroutine(UnitAnimsInfos animInfos, bool isCrit)
     {
         currentWantedSize = 4f;
 

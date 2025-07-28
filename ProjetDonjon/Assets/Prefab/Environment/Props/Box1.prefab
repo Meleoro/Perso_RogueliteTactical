@@ -103,3 +103,4 @@ MonoBehaviour:
   offset: 0
   publicOffset: 0
   _spriteRenderer: {fileID: 9042613300403173725}
+  _heroParentTr: {fileID: 0}

@@ -19,6 +19,7 @@ public class DetailsPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
     [SerializeField] private RectTransform _parentRectTr;
+    [SerializeField] private AdditionalTooltip[] _additionalTooltips;
 
 
     private void Start()
@@ -55,6 +56,15 @@ public class DetailsPanel : MonoBehaviour
 
         _nameText.text = data.lootName;
         _descriptionText.text = data.lootDescription;
+
+        for(int i = 0; i < _additionalTooltips.Length; i++)
+        {
+            if (i < data.additionalTooltipDatas.Length)
+                _additionalTooltips[i].Show(data.additionalTooltipDatas[i]);
+
+            else
+                _additionalTooltips[i].Hide();
+        }
 
         if(currentCoroutine != null)
         {

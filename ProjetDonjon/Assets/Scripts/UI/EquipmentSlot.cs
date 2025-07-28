@@ -19,6 +19,7 @@ public class EquipmentSlot : MonoBehaviour
 
     [Header("Public Infos")]
     public EquipmentType EquipmentType { get { return equipmentType; } }
+    public Loot EquipedLoot { get { return equipedLoot; } } 
 
     [Header("Private Infos")]
     private Loot equipedLoot;

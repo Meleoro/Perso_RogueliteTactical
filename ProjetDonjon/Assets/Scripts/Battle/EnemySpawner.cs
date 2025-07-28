@@ -13,7 +13,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Unit spawnedUnit;
 
     [Header("Public Infos")]
-    [HideInInspector] public BattleTile associatedTile;
+    [HideInInspector] public BattleTile AssociatedTile;
 
     [Header("Private Infos")]
     private EnemySpawn[] possibleSpawns;

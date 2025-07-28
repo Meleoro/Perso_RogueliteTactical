@@ -20,10 +20,10 @@ MonoBehaviour:
   spaceTaken:
   - row: 01
   equipmentType: 0
-  equipmentSprite: {fileID: 1820641201, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
-  healthUpgrade: 1
-  strengthUpgrade: 4
-  speedUpgrade: -1
+  equipmentSprite: {fileID: 0}
+  healthUpgrade: 0
+  strengthUpgrade: 0
+  speedUpgrade: 0
   luckUpgrade: 0
   consumableType: 1
   consumablePower: 2

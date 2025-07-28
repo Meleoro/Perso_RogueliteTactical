@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Sword1
   m_EditorClassIdentifier: 
   lootName: CLASSIC SWORD
-  lootDescription: Deals +1 damages
+  lootDescription: Does nothing special
   lootType: 1
   sprite: {fileID: -8969279410694380580, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   value: 10
@@ -23,6 +23,10 @@ MonoBehaviour:
   equipmentType: 0
   equipmentSprite: {fileID: 853884269, guid: 16de10eb8fea91941a2ac66a7f57eefc, type: 3}
   healthUpgrade: 0
-  strengthUpgrade: 3
+  strengthUpgrade: 1
   speedUpgrade: 1
-  luckUpgrade: -1
+  luckUpgrade: 0
+  consumableType: 0
+  consumablePower: 0
+  additionalTooltipDatas:
+  - {fileID: 11400000, guid: 2240da7ae1324d1408e0140b3d3cb302, type: 2}

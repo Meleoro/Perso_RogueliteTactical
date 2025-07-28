@@ -175,6 +175,26 @@ public class HeroInfosScreen : MonoBehaviour
     #endregion
 
 
+    public EquipmentSlot GetAppropriateEquipmentSlot(EquipmentType type)
+    {
+        EquipmentSlot result = null;
+
+        for (int i = 0; i < _equipmentSlots.Length; i++)
+        {
+            if (_equipmentSlots[i].EquipmentType == type && _equipmentSlots[i].EquipedLoot is null)
+            {
+                return _equipmentSlots[i];
+            }
+            else if(_equipmentSlots[i].EquipmentType == type)
+            {
+                result = _equipmentSlots[i];
+            }
+        }
+
+        return result;
+    }
+
+
     public void ActualiseInfoScreen(Hero hero)
     {
         this.heroData = hero.HeroData;

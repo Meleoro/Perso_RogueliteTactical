@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: Provocked
   m_EditorClassIdentifier: 
   alterationName: Provocked
-  alterationDescription: This unit can only attack the unit who provocked it
+  alterationDescription: The unit can only attack the unit who provocked it
+  alterationIcon: {fileID: 1292833013, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 3
   isPositive: 0
   isInfinite: 0
+  isStackable: 0
   duration: 3
   strength: 0

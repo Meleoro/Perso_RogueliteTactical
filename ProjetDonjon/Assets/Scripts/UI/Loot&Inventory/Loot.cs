@@ -88,7 +88,7 @@ public class Loot : MonoBehaviour, IInteractible
     }
 
 
-    public void Initialise(LootData data)
+    public void Initialise(LootData data, bool noAppear = false)
     {
         lootData = data;
         _spriteRenderer.sprite = lootData.sprite;
@@ -98,13 +98,13 @@ public class Loot : MonoBehaviour, IInteractible
         _nameText.enabled = false;
         _secondaryText.enabled = false;
 
-        StartCoroutine(AppearCoroutine());
+        if(!noAppear) StartCoroutine(AppearCoroutine());
     }
 
 
     #region Become / Quit Inventory
 
-    private void BecomeInventoryItem()
+    public void BecomeInventoryItem(bool isStart = false)
     {
         _image.enabled = true;
         _imageBackground.enabled = true;
@@ -136,6 +136,8 @@ public class Loot : MonoBehaviour, IInteractible
 
         _imageBackground.material.SetColor("_ShineColor", Color.white);
         _image.material.SetColor("_ShineColor", Color.white);
+
+        if (isStart) return;
 
         _imageBackground.rectTransform.localScale = Vector3.zero;
         
@@ -175,6 +177,23 @@ public class Loot : MonoBehaviour, IInteractible
         yield return new WaitForSeconds(duration * 0.25f);
 
         isSquishing = false;
+    }
+
+
+    public void Equip(EquipmentSlot slot)
+    {
+        if(slot is null)
+        {
+            slot = UIManager.Instance.HeroInfosScreen.GetAppropriateEquipmentSlot(LootData.equipmentType);
+        }
+
+        overlayedEquipmentSlot = slot;
+        overlayedEquipmentSlot.AddEquipment(this, true);
+    }
+
+    public void Unequip()
+    {
+        overlayedEquipmentSlot.RemoveEquipment(true);
     }
 
 
@@ -284,20 +303,10 @@ public class Loot : MonoBehaviour, IInteractible
             slotsOccupied[i].RemoveLoot();
         }
 
-        SetupObjectPosition(overlayedSlots);
-
-        InventoriesManager.Instance.OnInventoryClose -= BecomeWorldItem;
-        isPlacedInInventory = true;
-        overlayedEquipmentSlot = null;
-
-        associatedHero = overlayedSlots[0].AssociatedInventory.AssociatedHero;
-
-        _imageBackground.material.SetColor("_ShineColor", Color.black);
-        _image.material.SetColor("_ShineColor", Color.black);
-        _imageBackground.rectTransform.UBounceScale(0.05f, Vector3.one * 0.6f, 0.15f, Vector3.one * 0.74f, CurveType.EaseInOutSin);
+        PlaceInInventory(overlayedSlots);
     }
 
-    private void SetupObjectPosition(List<InventorySlot> overlayedSlots)
+    public void PlaceInInventory(List<InventorySlot> overlayedSlots)
     {
         Vector3 position = Vector2.zero;
         slotsOccupied = new InventorySlot[overlayedSlots.Count];
@@ -312,6 +321,16 @@ public class Loot : MonoBehaviour, IInteractible
         position /= overlayedSlots.Count;
         _imageBackground.rectTransform.position = position;
         dragWantedPos = position;
+
+        InventoriesManager.Instance.OnInventoryClose -= BecomeWorldItem;
+        isPlacedInInventory = true;
+        overlayedEquipmentSlot = null;
+
+        associatedHero = overlayedSlots[0].AssociatedInventory.AssociatedHero;
+
+        _imageBackground.material.SetColor("_ShineColor", Color.black);
+        _image.material.SetColor("_ShineColor", Color.black);
+        _imageBackground.rectTransform.UBounceScale(0.05f, Vector3.one * 0.6f, 0.15f, Vector3.one * 0.74f, CurveType.EaseInOutSin);
     }
 
     #endregion

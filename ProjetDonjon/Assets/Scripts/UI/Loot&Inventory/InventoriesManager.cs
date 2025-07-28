@@ -14,6 +14,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [SerializeField] private float closeEffectDuration;
     public float slotSize;
     [SerializeField] private Sprite[] inventoryBackSprites;
+    [SerializeField] private Loot lootPrefab;
 
     [Header("Actions")]
     public Action OnInventoryOpen;
@@ -68,8 +69,11 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
         StartCoroutine(ResetPosDelayCoroutine());
 
+        StartCoroutine(SetupStartItemsCoroutine(heroesInventories[index], hero));
+
         return heroesInventories[index];
     }
+
 
     private IEnumerator ResetPosDelayCoroutine() 
     {
@@ -143,6 +147,8 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     {
         StartCoroutine(inventoryToClose.CloseInventoryCoroutine(closeEffectDuration, _leftHiddenPosition));
 
+        _inventoryActionsPanel.ClosePanel();
+
         yield return new WaitForSeconds(closeEffectDuration);
     }
 
@@ -172,6 +178,8 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     {
         OnInventoryClose?.Invoke();
 
+        _inventoryActionsPanel.ClosePanel();
+
         _backInventoriesImage.rectTransform.UChangeLocalPosition(closeEffectDuration, 
             _backInventoriesImage.rectTransform.parent.InverseTransformPoint(_hiddenPosition.position), CurveType.EaseOutCubic);
         _backFadeImage.UFadeImage(closeEffectDuration, 0f, CurveType.EaseOutCubic);
@@ -183,6 +191,26 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
             StartCoroutine(heroesInventories[i].CloseInventoryCoroutine(closeEffectDuration));
         }
     }
+
+    #endregion
+
+
+    #region Others
+
+    private IEnumerator SetupStartItemsCoroutine(Inventory inventoryPrefab, Hero hero)
+    {
+        yield return new WaitForSeconds(0.2f);
+
+        for (int i = 0; i < hero.startLoot.Length; i++)
+        {
+            Loot item = Instantiate(lootPrefab);
+            item.Initialise(hero.startLoot[i]);
+            item.BecomeInventoryItem(false);
+
+            inventoryPrefab.AutoPlaceItem(item);
+        }
+    }
+
 
     #endregion
 }
