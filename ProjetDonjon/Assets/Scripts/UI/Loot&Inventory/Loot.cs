@@ -35,6 +35,7 @@ public class Loot : MonoBehaviour, IInteractible
     public LootData LootData { get { return lootData; } }
     public Image Image { get { return _image; } }
     public Hero AssociatedHero { get { return associatedHero; } }
+    public bool IsEquipped { get { return isEquipped; } }
 
     [Header("Private Infos")]
     private bool isDragged;
@@ -42,9 +43,11 @@ public class Loot : MonoBehaviour, IInteractible
     private bool isPlacedInInventory;
     private bool isSquishing;
     private bool isOverlayed;
+    private bool isEquipped;
     private Vector3 addedSize;
     private InventorySlot[] slotsOccupied;
     private EquipmentSlot overlayedEquipmentSlot;
+    private EquipmentSlot equipmentSlot;
     private Vector3 dragWantedPos;
     private Vector3 saveSize;
     private Coroutine inventoryBounceCoroutine;
@@ -59,6 +62,7 @@ public class Loot : MonoBehaviour, IInteractible
     [SerializeField] private TextMeshProUGUI _secondaryText;
     [SerializeField] private SpriteRenderer _rays1SpriteRenderer;
     [SerializeField] private SpriteRenderer _rays2SpriteRenderer;
+    [SerializeField] private Image _equippedImage;
 
 
 
@@ -145,7 +149,7 @@ public class Loot : MonoBehaviour, IInteractible
         inventoryBounceCoroutine = StartCoroutine(InventoryBounceCoroutine(1.25f, 0.15f));
     }
 
-    private void BecomeWorldItem()
+    public void BecomeWorldItem()
     {
         InventoriesManager.Instance.OnInventoryClose -= BecomeWorldItem;
 
@@ -154,8 +158,17 @@ public class Loot : MonoBehaviour, IInteractible
             slotsOccupied[i].RemoveLoot();
         }
 
+        if (isEquipped)
+        {
+            Unequip();
+        }
+
+        transform.position = HeroesManager.Instance.Heroes[HeroesManager.Instance.CurrentHeroIndex].transform.position;
+        StartCoroutine(AppearCoroutine());
+
         _image.enabled = false;
         _imageBackground.enabled = false;
+        _equippedImage.enabled = false;
         _spriteRenderer.enabled = true;
         _collider.enabled = true;
     }
@@ -187,13 +200,26 @@ public class Loot : MonoBehaviour, IInteractible
             slot = UIManager.Instance.HeroInfosScreen.GetAppropriateEquipmentSlot(LootData.equipmentType);
         }
 
-        overlayedEquipmentSlot = slot;
-        overlayedEquipmentSlot.AddEquipment(this, true);
+        isEquipped = true;
+
+        equipmentSlot = slot;
+        equipmentSlot.AddEquipment(this, true);
+
+        float slotSize = InventoriesManager.Instance.slotSize;
+        _equippedImage.rectTransform.localPosition = new Vector3(-_imageBackground.rectTransform.rect.width * 0.5f + 20, 
+            -_imageBackground.rectTransform.rect.height * 0.5f + 20);
+        _equippedImage.enabled = true;
     }
 
     public void Unequip()
     {
-        overlayedEquipmentSlot.RemoveEquipment(true);
+        if (!isEquipped) return;
+
+        isEquipped = false;
+
+        _equippedImage.enabled = false;
+        equipmentSlot.RemoveEquipment(true);
+        equipmentSlot = null;
     }
 
 
@@ -268,7 +294,7 @@ public class Loot : MonoBehaviour, IInteractible
         // If we dropped the loot on an equipment slot
         if (overlayedEquipmentSlot is not null) 
         {
-            overlayedEquipmentSlot.AddEquipment(this, true); 
+            Equip(overlayedEquipmentSlot);
         }
 
         List<InventorySlot> overlayedSlots = GetOverlayedSlots();

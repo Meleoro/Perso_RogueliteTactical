@@ -45,7 +45,11 @@ MonoBehaviour:
   possibleTrapRooms:
   - {fileID: 2917294264406634095, guid: e19b037d6cb7802489ab86828f7b52e1, type: 3}
   - {fileID: 2917294264406634095, guid: 0dc7e514750cd7548a917b3cf49001aa, type: 3}
-  possiblePuzzleRooms: []
+  possiblePuzzleRooms:
+  - {fileID: 2917294264406634095, guid: 4e1c9c053424a984d814e594755a3ded, type: 3}
+  - {fileID: 2917294264406634095, guid: 156a46d7ea7d6124b802ffed2bfe3346, type: 3}
+  - {fileID: 2917294264406634095, guid: c826b453fc43a35478cd1fd3ac4eb250, type: 3}
+  - {fileID: 2917294264406634095, guid: df77dd622b9431f4294e6b2221fa6a9b, type: 3}
   possibleChallengeRooms:
   - {fileID: 2917294264406634095, guid: afdc936cb1b93bc4e9a5506e0c4428a1, type: 3}
   possibleStartRooms:
@@ -123,61 +127,75 @@ MonoBehaviour:
     maxChallengeCoins: 9
   enemySpawnsPerFloor:
   - possibleEnemies:
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
+    - enemyPrefab: {fileID: 6891918063441368020, guid: 50d4c8138a1b1e447b396e82934cfb76, type: 3}
       proba: 50
+      eliteProba: 0
       maxCountPerBattle: 5
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
       proba: 30
+      eliteProba: 0
       maxCountPerBattle: 3
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
       proba: 15
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 1
     - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
       proba: 5
+      eliteProba: 0
       maxCountPerBattle: 1
       minEnemyCountBeforeSpawn: 1
   - possibleEnemies:
     - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
       proba: 25
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
       proba: 35
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
       proba: 15
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 2
     - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
       proba: 25
+      eliteProba: 0
       maxCountPerBattle: 5
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
       proba: 10
+      eliteProba: 0
       maxCountPerBattle: 1
       minEnemyCountBeforeSpawn: 0
   - possibleEnemies:
     - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
       proba: 10
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
       proba: 15
+      eliteProba: 0
       maxCountPerBattle: 2
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
       proba: 20
+      eliteProba: 0
       maxCountPerBattle: 3
       minEnemyCountBeforeSpawn: 2
     - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
       proba: 35
+      eliteProba: 0
       maxCountPerBattle: 5
       minEnemyCountBeforeSpawn: 0
     - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
       proba: 20
+      eliteProba: 0
       maxCountPerBattle: 3
       minEnemyCountBeforeSpawn: 0

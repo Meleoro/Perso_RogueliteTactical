@@ -208,7 +208,7 @@ public class HeroInfosScreen : MonoBehaviour
 
         for(int i = 0; i < hero.EquippedLoot.Length; i++)
         {
-            _equipmentSlots[i].RemoveEquipment(false);
+            //_equipmentSlots[i].RemoveEquipment(false);
 
             if (hero.EquippedLoot[i] is null) continue;
 
@@ -217,7 +217,7 @@ public class HeroInfosScreen : MonoBehaviour
             currentSpeed += hero.EquippedLoot[i].LootData.speedUpgrade;
             currentLuck += hero.EquippedLoot[i].LootData.luckUpgrade;
 
-            _equipmentSlots[i].AddEquipment(hero.EquippedLoot[i], false);
+            //_equipmentSlots[i].AddEquipment(hero.EquippedLoot[i], false);
         }
 
         _statsTexts[0].text = currentHealth.ToString();

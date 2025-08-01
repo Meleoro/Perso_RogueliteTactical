@@ -629,7 +629,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 201
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -1528,7 +1528,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 202
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -1716,11 +1716,11 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5540377862314197933}
   - {fileID: 4737895328415396467}
   - {fileID: 8484469705257243494}
   - {fileID: 3874227788474365432}
   - {fileID: 5070482458002736723}
+  - {fileID: 5540377862314197933}
   - {fileID: 2841067158652927985}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1744,6 +1744,7 @@ MonoBehaviour:
   holeTiles: []
   holePrefab: {fileID: 0}
   isDebugRoom: 0
+  isBossRoom: 0
   _groundTilemap: {fileID: 3654010563077959481}
   _battleGroundTilemap: {fileID: 8633615801790892311}
   _wallsTilemap: {fileID: 7660288885118121577}
@@ -1762,6 +1763,7 @@ MonoBehaviour:
     towardEntranceDir: {x: 1, y: 0}
     entranceWidth: 2
   _spawnersParentTr: {fileID: 2841067158652927985}
+  _bossSpawner: {fileID: 0}
   _heroSpawnerTr: {fileID: 0}
   _upLeftCornerTilemap: {fileID: 4562259534042809081}
   _upRightCornerTilemap: {fileID: 3113446649804763974}
@@ -3262,7 +3264,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 202
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -4287,7 +4289,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 202
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -4723,7 +4725,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 202
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -5729,7 +5731,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 200
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -7646,7 +7648,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 201
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16
@@ -8458,7 +8460,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 201
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0.5, y: 0.25, z: 0}
   m_MaxChunkCount: 16

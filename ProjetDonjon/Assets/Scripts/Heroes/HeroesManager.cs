@@ -130,7 +130,7 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>
         heroes[currentHeroIndex].Controller.AutoMove(heroes[currentHeroIndex].transform.position + Vector3.up * 2f);
 
         UIManager.Instance.FadeScreen(1, 1);
-        StartCoroutine(UIManager.Instance.FloorTransitionText.ChangeFloorCoroutine(_genProScript.currentFloor + 2, 2.5f));
+        StartCoroutine(UIManager.Instance.FloorTransitionText.ChangeFloorCoroutine(_genProScript.CurrentFloor + 2, 2.5f));
 
         yield return new WaitForSeconds(1);
 

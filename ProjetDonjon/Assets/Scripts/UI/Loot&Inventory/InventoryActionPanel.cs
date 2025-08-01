@@ -38,7 +38,8 @@ public class InventoryActionPanel : MonoBehaviour
         {
             case LootType.Equipment:
                 _buttonsRectTr[0].gameObject.SetActive(true);
-                _buttonsTexts[0].text = "EQUIP";
+                if(associatedLoot.IsEquipped) _buttonsTexts[0].text = "UNEQUIP";
+                else _buttonsTexts[0].text = "EQUIP";
                 break;
 
             case LootType.Consumable:
@@ -74,11 +75,11 @@ public class InventoryActionPanel : MonoBehaviour
 
     public void PressUse()
     {
-
         switch (currentLoot.LootData.lootType)
         {
             case LootType.Equipment:
-                currentLoot.Equip(null);
+                if (currentLoot.IsEquipped) currentLoot.Unequip();
+                else currentLoot.Equip(null);
                 break;
 
             case LootType.Consumable:
@@ -92,6 +93,7 @@ public class InventoryActionPanel : MonoBehaviour
 
     public void PressThrow()
     {
+        currentLoot.BecomeWorldItem();
 
         ClosePanel();
     }

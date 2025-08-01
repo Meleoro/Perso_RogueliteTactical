@@ -37,7 +37,7 @@ Transform:
   - {fileID: 6248952256148108701}
   - {fileID: 6203335447538175413}
   - {fileID: 4924580443245616690}
-  - {fileID: 2182549514251290095}
+  - {fileID: 9135764467411387580}
   m_Father: {fileID: 429304273992477958}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1512412271124885491
@@ -221,7 +221,9 @@ MonoBehaviour:
   minDangerAmount: 2
   maxDangerAmount: 4
   holeTiles: []
-  holePrefab: {fileID: 0}
+  holePrefab: {fileID: 6778788659100814078, guid: b0b1c71c206fe0044b1e5344701ebe76, type: 3}
+  isDebugRoom: 0
+  isBossRoom: 0
   _groundTilemap: {fileID: 3654010563077959481}
   _battleGroundTilemap: {fileID: 8633615801790892311}
   _wallsTilemap: {fileID: 7660288885118121577}
@@ -231,7 +233,12 @@ MonoBehaviour:
     towardEntranceDir: {x: -1, y: 0}
     entranceWidth: 2
   _spawnersParentTr: {fileID: 2841067158652927985}
+  _bossSpawner: {fileID: 0}
   _heroSpawnerTr: {fileID: 0}
+  _upLeftCornerTilemap: {fileID: 0}
+  _upRightCornerTilemap: {fileID: 0}
+  _bottomLeftCornerTilemap: {fileID: 0}
+  _bottomRightCornerTilemap: {fileID: 0}
 --- !u!1 &4737435576684895036
 GameObject:
   m_ObjectHideFlags: 0
@@ -4037,9 +4044,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
---- !u!4 &2182549514251290095 stripped
+--- !u!4 &9135764467411387580 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 1096593755386625636, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8049861545232727863, guid: 22bb0ef9c757d5248b8a88240913f195, type: 3}
   m_PrefabInstance: {fileID: 1260474691867212683}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2658263262331378382

@@ -379,8 +379,9 @@ public class Room : MonoBehaviour
         SetupSpawners(HeroesManager.Instance.Heroes);
 
         // We spawn the boss
-        EnemySpawn boss = _bossSpawner.GetSpawnedEnemy(maxDangerAmount);
+        (EnemySpawn boss, bool isElite) = _bossSpawner.GetSpawnedEnemy(maxDangerAmount);
         AIUnit newEnemy = Instantiate(boss.enemyPrefab as AIUnit, transform);
+        newEnemy.Initialise(isElite);
         newEnemy.MoveUnit(_bossSpawner.AssociatedTile);
 
         roomEnemies.Add(newEnemy);
@@ -432,7 +433,7 @@ public class Room : MonoBehaviour
             int pickedSpawnerIndex = Random.Range(0, roomEnemySpawners.Count);
             EnemySpawner currentSpawner = roomEnemySpawners[pickedSpawnerIndex];
 
-            EnemySpawn wantedUnit = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
+            (EnemySpawn wantedUnit, bool isElite) = currentSpawner.GetSpawnedEnemy(maxDangerAmount - currentDangerAmount);
             if (!isDebugRoom)
             {
                 if (wantedUnit is null) continue;
@@ -446,9 +447,11 @@ public class Room : MonoBehaviour
                 if (spawnCountPerEnemy.ContainsKey(wantedUnit.enemyPrefab)) spawnCountPerEnemy[wantedUnit.enemyPrefab]++;
                 else spawnCountPerEnemy.Add(wantedUnit.enemyPrefab, 1);
 
-                currentDangerAmount += (wantedUnit.enemyPrefab as AIUnit).AIData.dangerLevel;
                 AIUnit newEnemy = Instantiate(wantedUnit.enemyPrefab as AIUnit, transform);
+                newEnemy.Initialise(isElite);
                 newEnemy.MoveUnit(currentSpawner.AssociatedTile);
+
+                currentDangerAmount += (wantedUnit.enemyPrefab as AIUnit).AIData.dangerLevel;
 
                 roomEnemies.Add(newEnemy);
                 roomEnemySpawners.Remove(currentSpawner);

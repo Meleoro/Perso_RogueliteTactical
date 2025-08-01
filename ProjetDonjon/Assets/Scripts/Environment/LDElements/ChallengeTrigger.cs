@@ -25,7 +25,7 @@ public class ChallengeTrigger : MonoBehaviour, IInteractible
     private void Start()
     {
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
-        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].chestPossibleLoots;
+        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
     }
 
     private void GenerateLoot()

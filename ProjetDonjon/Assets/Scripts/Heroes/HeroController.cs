@@ -204,6 +204,8 @@ public class HeroController : MonoBehaviour
         _rbSprite.linearVelocity = Vector2.zero;
         _rbSprite.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 
+        _animator.ResetTrigger("JumpNext");
+
         _animator.SetTrigger("Jump");
         _walkParticleSystem.Stop();
 

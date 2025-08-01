@@ -813,8 +813,9 @@ MonoBehaviour:
   minDangerAmount: 3
   maxDangerAmount: 5
   holeTiles: []
-  holePrefab: {fileID: 0}
+  holePrefab: {fileID: 6778788659100814078, guid: b0b1c71c206fe0044b1e5344701ebe76, type: 3}
   isDebugRoom: 0
+  isBossRoom: 0
   _groundTilemap: {fileID: 3654010563077959481}
   _battleGroundTilemap: {fileID: 8633615801790892311}
   _wallsTilemap: {fileID: 7660288885118121577}
@@ -833,6 +834,7 @@ MonoBehaviour:
     towardEntranceDir: {x: 1, y: 0}
     entranceWidth: 2
   _spawnersParentTr: {fileID: 2841067158652927985}
+  _bossSpawner: {fileID: 0}
   _heroSpawnerTr: {fileID: 0}
   _upLeftCornerTilemap: {fileID: 0}
   _upRightCornerTilemap: {fileID: 0}

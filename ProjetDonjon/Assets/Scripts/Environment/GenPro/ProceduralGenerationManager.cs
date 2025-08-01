@@ -14,7 +14,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         Trap,
         Jump,
         Challenge,
-        Puzzle
+        Trial
     }
 
     [Header("Parameters")]
@@ -27,9 +27,11 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     private int wantedRoomAmount;
     private List<Room> generatedRooms;
     private Vector3 spawnPos;
+    private int currentFloor;
+    public int[] trailFloorsIndexes;
 
     [Header("Public Infos")]
-    public int currentFloor;
+    public int CurrentFloor { get { return currentFloor; } }
 
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;
@@ -40,6 +42,10 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
 
     private void Start()
     {
+        trailFloorsIndexes = new int[2];
+        trailFloorsIndexes[0] = Random.Range(0, 2);
+        trailFloorsIndexes[1] = Random.Range(3, 5);
+
         GenerateFloor(enviroData);
         _heroesManager.Initialise(null, spawnPos);
         StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.15f));
@@ -77,6 +83,11 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         GenerateStartAndEnd(new Vector2Int(wantedRoomAmount, wantedRoomAmount));
         GenerateAlternativePathes(2);
         GenerateDeadEnds(3);
+
+        if(currentFloor == trailFloorsIndexes[0] || currentFloor == trailFloorsIndexes[1])
+        {
+            GenerateTrialRoom();
+        }
 
         CloseUnusedEntrances();
 
@@ -178,8 +189,26 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
 
             AddRoom(roomCoordinates, newRoom);
         }
+    }
 
+    private void GenerateTrialRoom()
+    {
+        Room baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+        Room newRoom = GetRoomFromType(RoomType.Trial);
+        Vector2Int roomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+        newRoom.SetupRoom(roomCoordinates, roomSizeUnits);
+        int antiCrash = 0;
 
+        while ((_pathCalculator.floorGenProTiles[roomCoordinates.x, roomCoordinates.y].tileRoom != null ||
+            !baseRoom.VerifyHasDoorToward(roomCoordinates) || !newRoom.VerifyHasDoorToward(baseRoom.RoomCoordinates)) && antiCrash++ < 200)
+        {
+            baseRoom = generatedRooms[Random.Range(0, generatedRooms.Count)];
+            newRoom = GetRoomFromType(RoomType.Trial);
+            roomCoordinates = baseRoom.RoomCoordinates + GetRandomDirection();
+            newRoom.SetupRoom(roomCoordinates, roomSizeUnits);
+        }
+
+        AddRoom(roomCoordinates, newRoom);
     }
 
     private void CloseUnusedEntrances()
@@ -262,7 +291,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
             case RoomType.Challenge:
                 return enviroData.possibleChallengeRooms[Random.Range(0, enviroData.possibleChallengeRooms.Length)];
 
-            case RoomType.Puzzle:
+            case RoomType.Trial:
                 return enviroData.possiblePuzzleRooms[Random.Range(0, enviroData.possiblePuzzleRooms.Length)];
         }
 

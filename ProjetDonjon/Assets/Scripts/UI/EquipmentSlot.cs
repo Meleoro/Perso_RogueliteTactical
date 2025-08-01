@@ -92,7 +92,10 @@ public class EquipmentSlot : MonoBehaviour
         _equipmentImage.sprite = null;
         _equipmentImage.enabled = false;
 
-        if(callAction) OnEquipmentRemove?.Invoke(equipedLoot, slotIndex);
+        if(equipedLoot)
+            equipedLoot.Unequip();
+
+        if (callAction) OnEquipmentRemove?.Invoke(equipedLoot, slotIndex);
         equipedLoot = null;
     }
 

@@ -23,7 +23,7 @@ public class Chest : MonoBehaviour, IInteractible
     private void Start()
     {
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
-        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].chestPossibleLoots;
+        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
     }
 
 
@@ -45,8 +45,8 @@ public class Chest : MonoBehaviour, IInteractible
             }
         }
 
-        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].minChestCoins,
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].maxChestCoins);
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minChestCoins,
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxChestCoins);
 
         for(int i = 0; i < pickedCoinsAmount; i++)
         {

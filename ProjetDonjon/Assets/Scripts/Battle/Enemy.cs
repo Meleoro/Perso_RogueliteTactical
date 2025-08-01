@@ -16,6 +16,7 @@ public class AIUnit : Unit
 {
     [Header("Parameters")]
     [SerializeField] private AIData aiData;
+    [SerializeField] private AIData aiEliteData;
     [SerializeField] private Loot lootPrefab;
     [SerializeField] private Coin coinPrefab;
     [SerializeField] private bool isBoss;
@@ -26,25 +27,44 @@ public class AIUnit : Unit
     private SkillData currentSkillData;
     private PreviewType currentPreviewType;
     private int currentSkillIndex;
+    private AIData currentData;
+    private bool isElite;
 
     [Header("Public Infos")]
-    public AIData AIData { get { return aiData; } }
+    public AIData AIData { get { return isElite ? aiEliteData : aiData; } }
     public SkillData CurrentSkillData { get { return currentSkillData; } }
     public PreviewType CurrentPreviewType { get { return currentPreviewType; } }
-    public bool IsBoss { get { return isBoss; } }   
+    public bool IsBoss { get { return isBoss; } }
+
+    [Header("Enemy References")]
+    [SerializeField] private ParticleSystem _eliteVFX;
 
 
     #region Setup
 
-    private void Start()
+    public void Initialise(bool isElite)
     {
-        unitData = AIData;
-        currentSkillData = AIData.skills[0];
+        this.isElite = isElite;
+        if (isElite)
+        {
+            currentData = aiEliteData;
+            _eliteVFX.Play();
+        }
+        else
+        {
+            currentData = aiData;
+
+            _spriteRenderer.material.SetFloat("_EliteEffectStrength", 0);
+            _spriteRenderer.material.SetFloat("_EliteEffectNoiseStrength", 0);
+        }
+
+        unitData = currentData;
+        currentSkillData = currentData.skills[0];
         currentSkillIndex = 0;
 
         currentPreviewType = PreviewType.Move;
 
-        InitialiseUnitInfos(AIData.baseHealth, AIData.baseStrength, AIData.baseSpeed, AIData.baseLuck, 0);
+        InitialiseUnitInfos(currentData.baseHealth, currentData.baseStrength, currentData.baseSpeed, currentData.baseLuck, 0);
         StartCoroutine(AppearCoroutine(1f));
     }
 
@@ -70,6 +90,11 @@ public class AIUnit : Unit
                 }
             }
 
+            else if (currentSkillData.skillEffects[0].skillEffectTargetType == SkillEffectTargetType.Empty)
+            {
+                aimedTiles = BattleManager.Instance.BattleRoom.BattleTiles.ToArray();
+            }
+
             else
             {
                 aimedTiles = new BattleTile[BattleManager.Instance.CurrentHeroes.Count];
@@ -92,6 +117,11 @@ public class AIUnit : Unit
                 for (int i = 0; i < BattleManager.Instance.CurrentHeroes.Count; i++) {
                     aimedTiles[i] = BattleManager.Instance.CurrentHeroes[i].CurrentTile;
                 }
+            }
+
+            else if(currentSkillData.skillEffects[0].skillEffectTargetType == SkillEffectTargetType.Empty)
+            {
+                aimedTiles = BattleManager.Instance.BattleRoom.BattleTiles.ToArray();
             }
 
             else
@@ -125,7 +155,7 @@ public class AIUnit : Unit
     private void SpawnLoot()
     {
         PossibleLootData[] possibleLoots =
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].battleEndPossibleLoots;
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].battleEndPossibleLoots;
 
         int pickedPercentage = Random.Range(0, 100);
         int currentSum = 0;
@@ -163,8 +193,8 @@ public class AIUnit : Unit
             SpawnLoot();
         }
 
-        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].minBattleCoins,
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.currentFloor].maxBattleCoins);
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minBattleCoins,
+            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxBattleCoins);
 
         for (int i = 0; i < pickedCoinsAmount; i++)
         {
@@ -226,11 +256,11 @@ public class AIUnit : Unit
 
             yield return new WaitForSeconds(0.5f);
 
-            if(aiData.skills.Length > 1)
+            if(currentData.skills.Length > 1)
             {
                 StartCoroutine(_ui.DoChangePaternEffectCoroutine(1.5f));
-                currentSkillIndex = (currentSkillIndex + 1) % aiData.skills.Length;
-                currentSkillData = aiData.skills[currentSkillIndex];
+                currentSkillIndex = (currentSkillIndex + 1) % currentData.skills.Length;
+                currentSkillData = currentData.skills[currentSkillIndex];
 
                 yield return new WaitForSeconds(1.5f);
             }

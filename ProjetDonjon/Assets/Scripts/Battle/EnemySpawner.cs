@@ -21,11 +21,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        possibleSpawns = ProceduralGenerationManager.Instance?.enviroData.enemySpawnsPerFloor[ProceduralGenerationManager.Instance.currentFloor].possibleEnemies;
+        possibleSpawns = ProceduralGenerationManager.Instance?.enviroData.enemySpawnsPerFloor[ProceduralGenerationManager.Instance.CurrentFloor].possibleEnemies;
     }
 
 
-    public EnemySpawn GetSpawnedEnemy(int dangerAmountToFill)
+    public (EnemySpawn, bool) GetSpawnedEnemy(int dangerAmountToFill)
     {
         if (isDebugSpawer)
         {
@@ -34,7 +34,7 @@ public class EnemySpawner : MonoBehaviour
             debugSpawn.minEnemyCountBeforeSpawn = 0;
             debugSpawn.maxCountPerBattle = 100;
 
-            return debugSpawn;
+            return (debugSpawn, false);
         }
 
         int pickedProba = Random.Range(0, 100);
@@ -45,11 +45,11 @@ public class EnemySpawner : MonoBehaviour
             cumulatedProba += possibleSpawns[i].proba;
             if(cumulatedProba >= pickedProba)
             {
-                return possibleSpawns[i];
+                return (possibleSpawns[i], Random.Range(0, 100) < possibleSpawns[i].eliteProba);
             }
         }
 
-        return null;
+        return (null, false);
     }
 
     private void OnDrawGizmos()
