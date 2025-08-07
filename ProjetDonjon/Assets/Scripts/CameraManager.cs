@@ -50,7 +50,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         isInitialised = true;
 
         this.followedTransform = followedTransform;
-        baseSize = _camera.orthographicSize;
+        baseSize = baseSizeExplo;
 
         angleBetweenRaycasts = 360f / raycastAmount;
     }

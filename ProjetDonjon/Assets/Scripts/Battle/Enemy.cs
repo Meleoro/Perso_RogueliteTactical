@@ -147,9 +147,13 @@ public class AIUnit : Unit
 
     private IEnumerator AppearCoroutine(float duration)
     {
+        _spriteRenderer.material.SetFloat("_DitherProgress", -2);
+
         _spriteRenderer.material.ULerpMaterialFloat(duration, 3.5f, "_DitherProgress");
 
-        yield return new WaitForSeconds(duration);  
+        yield return new WaitForSeconds(duration);
+
+        _ui.ShowUnitUI();
     }
 
     private void SpawnLoot()
