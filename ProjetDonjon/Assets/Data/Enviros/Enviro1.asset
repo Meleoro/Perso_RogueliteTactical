@@ -60,142 +60,16 @@ MonoBehaviour:
   - {fileID: 2917294264406634095, guid: 5cbe374aae63ec84195d013e30bd5ad4, type: 3}
   possibleSecondBossRooms: []
   lootPerFloors:
-  - chestPossibleLoots:
-    - probability: 15
-      loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
-    - probability: 15
-      loot: {fileID: 11400000, guid: 8c619ec65573b5b4b89ce41ad5d53ee7, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: 7256e143e98fdac43bba6a109d0b0f9c, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: 97278269c2f0bdf48a7abf0cf71093c6, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: 489ce2b2d4640574e8be925a9007ddd8, type: 2}
-    - probability: 10
-      loot: {fileID: 11400000, guid: e7257f000b5a63d40b3ec08d33568288, type: 2}
-    minChestCoins: 3
-    maxChestCoins: 6
-    battleEndPossibleLoots:
-    - probability: 10
-      loot: {fileID: 11400000, guid: e5beb7085b7e3404d829c9ff66aceb3a, type: 2}
-    - probability: 10
-      loot: {fileID: 11400000, guid: e7257f000b5a63d40b3ec08d33568288, type: 2}
-    - probability: 10
-      loot: {fileID: 11400000, guid: b34ba33fc8826fd44a2ea8b0b5747196, type: 2}
-    - probability: 10
-      loot: {fileID: 11400000, guid: 6a19da2e9de63b94d98a3dfd2959074d, type: 2}
-    - probability: 5
-      loot: {fileID: 11400000, guid: 6f0aa61029427f444b8a275c8060a241, type: 2}
-    - probability: 5
-      loot: {fileID: 11400000, guid: 8c619ec65573b5b4b89ce41ad5d53ee7, type: 2}
-    - probability: 0
-      loot: {fileID: 0}
-    minBattleCoins: 1
-    maxBattleCoins: 3
-    challengeEndPossibleLoots:
-    - probability: 15
-      loot: {fileID: 11400000, guid: 958a5b169ab7298438b75a782fd839da, type: 2}
-    - probability: 15
-      loot: {fileID: 11400000, guid: c7110c3f65a3990439bc0df0bb4015ee, type: 2}
-    - probability: 10
-      loot: {fileID: 11400000, guid: e4e24e6630b1e0b499ad2a63baf6ad35, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: d35ccc5368a3afb4f935d839db5247a2, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: 5ef1cddf51852764e97f12bc0f4be436, type: 2}
-    - probability: 20
-      loot: {fileID: 11400000, guid: 3cccb3983fb8db745a87a167e4d2931a, type: 2}
-    minChallengeCoins: 4
-    maxChallengeCoins: 7
-  - chestPossibleLoots: []
-    minChestCoins: 4
-    maxChestCoins: 7
-    battleEndPossibleLoots: []
-    minBattleCoins: 2
-    maxBattleCoins: 4
-    challengeEndPossibleLoots: []
-    minChallengeCoins: 5
-    maxChallengeCoins: 8
-  - chestPossibleLoots: []
-    minChestCoins: 5
-    maxChestCoins: 8
-    battleEndPossibleLoots: []
-    minBattleCoins: 3
-    maxBattleCoins: 6
-    challengeEndPossibleLoots: []
-    minChallengeCoins: 6
-    maxChallengeCoins: 9
+  - {fileID: 11400000, guid: 552fdf40ba613ba4798b39159b339ca9, type: 2}
+  - {fileID: 11400000, guid: c2e6cfa2e8d18214ea3f908b7db5ebd6, type: 2}
+  - {fileID: 11400000, guid: 7456501236f695146b33097042b37c4b, type: 2}
+  - {fileID: 11400000, guid: 9c07328acd89c8040b6d866114eaaf12, type: 2}
+  - {fileID: 11400000, guid: dec5c41635ad061418926eccd860a28f, type: 2}
+  - {fileID: 11400000, guid: 7077cbaea47420645918febcb3ee1463, type: 2}
   enemySpawnsPerFloor:
-  - possibleEnemies:
-    - enemyPrefab: {fileID: 6891918063441368020, guid: 50d4c8138a1b1e447b396e82934cfb76, type: 3}
-      proba: 50
-      eliteProba: 0
-      maxCountPerBattle: 5
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
-      proba: 30
-      eliteProba: 0
-      maxCountPerBattle: 3
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
-      proba: 15
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 1
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
-      proba: 5
-      eliteProba: 0
-      maxCountPerBattle: 1
-      minEnemyCountBeforeSpawn: 1
-  - possibleEnemies:
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
-      proba: 25
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
-      proba: 35
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
-      proba: 15
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 2
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
-      proba: 25
-      eliteProba: 0
-      maxCountPerBattle: 5
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
-      proba: 10
-      eliteProba: 0
-      maxCountPerBattle: 1
-      minEnemyCountBeforeSpawn: 0
-  - possibleEnemies:
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
-      proba: 10
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}
-      proba: 15
-      eliteProba: 0
-      maxCountPerBattle: 2
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: d59a313854ee6834ea9851116f4d7131, type: 3}
-      proba: 20
-      eliteProba: 0
-      maxCountPerBattle: 3
-      minEnemyCountBeforeSpawn: 2
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
-      proba: 35
-      eliteProba: 0
-      maxCountPerBattle: 5
-      minEnemyCountBeforeSpawn: 0
-    - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
-      proba: 20
-      eliteProba: 0
-      maxCountPerBattle: 3
-      minEnemyCountBeforeSpawn: 0
+  - {fileID: 11400000, guid: 67936368a301ebf4aa43f0d3184247d5, type: 2}
+  - {fileID: 11400000, guid: a751178e5de40aa4a8d8fbe6f743b8ff, type: 2}
+  - {fileID: 11400000, guid: a86e230126572f245a9f589e9f504163, type: 2}
+  - {fileID: 11400000, guid: e66d0b04f75115443869519f98a37726, type: 2}
+  - {fileID: 11400000, guid: efb18c40d988cfe4781d6cf5b2e39cec, type: 2}
+  - {fileID: 11400000, guid: 222ba2f9b981e884c86a8d1e695ad698, type: 2}

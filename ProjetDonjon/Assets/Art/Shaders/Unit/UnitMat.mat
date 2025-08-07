@@ -54,18 +54,23 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _DisplayEliteEffect: 0
     - _DitherProgress: 3
     - _DitherRotation: -45
     - _DitherScale: 8
     - _EliteEffectFPS: 5
-    - _EliteEffectNoiseStrength: -0.01
+    - _EliteEffectNoiseScale: 50
+    - _EliteEffectNoiseSpeed: 0.05
+    - _EliteEffectNoiseStrength: -0.003
     - _EliteEffectStrength: -1
     - _NoiseScale: 5
     - _OutlineSize: 1
     - _UseNoise: 0
     m_Colors:
     - _AddedColor: {r: 9.298026, g: 0, b: 0, a: 1}
+    - _EliteEffectColor1: {r: 3.9999995, g: 0.10875719, b: 0, a: 0}
+    - _EliteEffectColor2: {r: 4.0251555, g: 0, b: 0.121767014, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 0}
-    - _TextureSize: {r: 512, g: 128, b: 0, a: 0}
+    - _TextureSize: {r: 512, g: 320, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

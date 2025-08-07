@@ -445,7 +445,7 @@ public class Unit : MonoBehaviour
 
     protected virtual async void ClickUnit()
     {
-        await Task.Yield(); 
+        await Task.Delay((int)(Time.deltaTime * 1000));
 
         if (InputManager.wantsToRightClick) return;
 

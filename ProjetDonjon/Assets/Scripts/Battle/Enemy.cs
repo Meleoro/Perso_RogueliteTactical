@@ -49,13 +49,12 @@ public class AIUnit : Unit
         {
             currentData = aiEliteData;
             _eliteVFX.Play();
+
+            _spriteRenderer.material.SetInt("_DisplayEliteEffect", 1);
         }
         else
         {
             currentData = aiData;
-
-            _spriteRenderer.material.SetFloat("_EliteEffectStrength", 0);
-            _spriteRenderer.material.SetFloat("_EliteEffectNoiseStrength", 0);
         }
 
         unitData = currentData;
@@ -419,7 +418,7 @@ public class AIUnit : Unit
 
     protected override async void ClickUnit()
     {
-        await Task.Yield();
+        await Task.Delay((int)(Time.deltaTime * 1000));
         if (InputManager.wantsToRightClick) return;
 
         int newPreviewIndex = ((int)currentPreviewType + 1) % 3;

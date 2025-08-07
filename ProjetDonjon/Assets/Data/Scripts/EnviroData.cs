@@ -29,45 +29,5 @@ public class EnviroData : ScriptableObject
 
     [Header("Loot")]
     public FloorLootData[] lootPerFloors;
-    public EnemySpawnsPerFloor[] enemySpawnsPerFloor;
-}
-
-[Serializable]
-public class FloorLootData
-{
-    public PossibleLootData[] chestPossibleLoots;
-    public int minChestCoins;
-    public int maxChestCoins;
-
-    public PossibleLootData[] battleEndPossibleLoots;
-    public int minBattleCoins;
-    public int maxBattleCoins;
-
-    public PossibleLootData[] challengeEndPossibleLoots;
-    public int minChallengeCoins;
-    public int maxChallengeCoins;
-}
-
-[Serializable]
-public class PossibleLootData
-{
-    [Range(0, 100)] public int probability;
-    public LootData loot;
-}
-
-
-[Serializable]
-public class EnemySpawnsPerFloor
-{
-    public EnemySpawn[] possibleEnemies;
-}
-
-[Serializable]
-public class EnemySpawn
-{
-    public Unit enemyPrefab;
-    [Range(0, 100)] public int proba;
-    [Range(0, 100)] public int eliteProba;
-    public int maxCountPerBattle;
-    public int minEnemyCountBeforeSpawn;
+    public EnemySpawnData[] enemySpawnsPerFloor;
 }

@@ -284,7 +284,7 @@ public class BattleTile : MonoBehaviour
 
     public async void ClickTile()
     {
-        await Task.Yield();
+        await Task.Delay((int)(Time.deltaTime * 1000));
 
         if (InputManager.wantsToRightClick) return;
 
