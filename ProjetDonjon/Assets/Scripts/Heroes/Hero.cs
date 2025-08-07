@@ -46,6 +46,9 @@ public class Hero : Unit
         unitData = heroData;
         _controller.EndAutoMoveAction += HideHero;
 
+        _spriteRenderer.material.SetFloat("_EliteEffectStrength", 0);
+        _spriteRenderer.material.SetFloat("_EliteEffectNoiseStrength", 0);
+
         InitialiseUnitInfos(heroData.baseHealth, heroData.baseStrength, heroData.baseSpeed, heroData.baseLuck, heroData.baseMovePoints);
         CurrentSkillPoints = HeroData.startSkillPoints;
         CurrentMaxSkillPoints = HeroData.maxSkillPoints;
