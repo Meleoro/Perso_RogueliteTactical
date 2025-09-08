@@ -38,6 +38,7 @@ public class HeroController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rbSprite;
     [SerializeField] private ParticleSystem _walkParticleSystem;
     [SerializeField] private ParticleSystem _landParticleSystem;
+    [SerializeField] private Transform _spriteParent;
     private Rigidbody2D _rb;
 
 
@@ -128,11 +129,11 @@ public class HeroController : MonoBehaviour
     {
         if(inputDir.x < -0.01)
         {
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+            _spriteParent.rotation = Quaternion.Euler(0, 180, 0);
         }
         else if(inputDir.x > 0.01)
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+            _spriteParent.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -276,9 +277,13 @@ public class HeroController : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
+        _rbSprite.transform.UStopChangeScale();
+
         currentControllerState = ControllerState.Idle;
         transform.position = savePositions[0];
         _rbSprite.transform.localScale = Vector3.one;
+
+        HeroesManager.Instance.TakeDamage(1);
     }
 
 

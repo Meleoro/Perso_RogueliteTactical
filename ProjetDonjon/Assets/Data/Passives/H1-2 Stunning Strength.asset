@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f51d3c135e2eb44b0a2bc3502c2e38, type: 3}
+  m_Name: H1-2 Stunning Strength
+  m_EditorClassIdentifier: 
+  passiveName: STUNNING ATTACKS
+  passiveDescription: HAS 10% CHANCE TO INFLICT STUNNED WHEN THIS UNIT DEALS DAMAGES
+  passiveIcon: {fileID: 8061498, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  additionalTooltipDatas:
+  - {fileID: 11400000, guid: f88c8bf3130dd394b92c7bb80e2c4467, type: 2}
+  passiveTriggerType: 3
+  passiveTriggerProba: 10
+  passiveEffects:
+  - appliedAlteration: {fileID: 11400000, guid: c2542ffcfdc24874f80e68e474db9402, type: 2}
+    additivePower: 0
+    multipliedPower: 0
+    duration: 0
+    summonPrefab: {fileID: 0}

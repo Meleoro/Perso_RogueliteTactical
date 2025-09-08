@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
@@ -174,11 +175,22 @@ public class CameraManager : GenericSingletonClass<CameraManager>
         currentWantedSize = cameraSize;
     }
 
-    public IEnumerator DoAttackFeelCoroutine(UnitAnimsInfos animInfos, bool isCrit)
+    public IEnumerator DoAttackFeelCoroutine(BattleTile[] concernedTiles, UnitAnimsInfos animInfos, bool isCrit)
     {
-        currentWantedSize = 4f;
+        Vector3 middlePos = Vector2.zero;
+        float maxDist = 0;
+        foreach(BattleTile tile in concernedTiles)
+        {
+            middlePos += tile.transform.position;
+            maxDist = Mathf.Max(maxDist, Vector2.Distance(concernedTiles[0].transform.position, tile.transform.position));
+        }
+        middlePos /= concernedTiles.Length;
 
-        while (true)
+        FocusOnPosition(middlePos, maxDist * 2f);
+
+        yield return new WaitForEndOfFrame();
+
+        /*while (true)
         {
             if (animInfos.PlaySkillEffect)
                 break;
@@ -189,7 +201,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
             yield return new WaitForEndOfFrame();
         }
 
-        currentWantedSize = _camera.orthographicSize + 1.5f;
+        //currentWantedSize = _camera.orthographicSize + 1.5f;
 
         float timer = 0;
         while (timer < 0.5f)
@@ -199,7 +211,7 @@ public class CameraManager : GenericSingletonClass<CameraManager>
             timer += Time.deltaTime;
 
             yield return new WaitForEndOfFrame();
-        }
+        }*/
     }
 
     public void FocusOnPosition(Vector3 focusedPos, float cameraSize)
@@ -213,11 +225,12 @@ public class CameraManager : GenericSingletonClass<CameraManager>
 
     #region Feel Functions
 
-    public void DoCameraShake(float duration, float strength, float vibrato)
+    public void DoCameraShake(float duration, float strength, int vibrato)
     {
         if (isShaking) return;
 
-        _parentTransform.UShakePosition(duration, strength, vibrato, ShakeLockType.Z);
+        _parentTransform.DOShakePosition(duration, strength, vibrato);
+        //_parentTransform.UShakePosition(duration, strength, vibrato, ShakeLockType.Z);
 
         StartCoroutine(CameraShakeCooldownCoroutine(duration));
     }

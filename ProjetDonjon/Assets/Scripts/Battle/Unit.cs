@@ -33,8 +33,11 @@ public class Unit : MonoBehaviour
     public Action OnHeroInfosChange;
 
     [Header("Alteration VFXs")]
+    [SerializeField] private GameObject buffVFX;
+    [SerializeField] private GameObject debuffVFX;
     [SerializeField] private GameObject shieldVFX;
     [SerializeField] private GameObject healVFX;
+    [SerializeField] private GameObject stunVFX;
 
     [Header("Outline Color")]
     [SerializeField] protected Color overlayColor = Color.white;
@@ -62,6 +65,7 @@ public class Unit : MonoBehaviour
 
     [Header("Protected Other Infos")]
     protected BattleTile currentTile;
+    protected BattleTile previousTile;
     protected bool isUnitsTurn;
     protected UnitData unitData;
     protected Unit provocationTarget;
@@ -81,22 +85,36 @@ public class Unit : MonoBehaviour
     public UnitData UnitData { get { return unitData; } }
     public BattleTile CurrentTile { get { return currentTile; } }
     public bool IsEnemy { get { return isEnemy; } }
-
     public bool IsHindered { get {
-            bool result = false;
             foreach(AlterationStruct altStruct in currentAlterations)
             {
                 if(altStruct.alteration.alterationType == AlterationType.Hindered)
                 {
-                    result = true;
+                    return true;
                 }
             }
-            return result;
+            return false;
         } }
+    public bool IsStunned
+    {
+        get
+        {
+            foreach (AlterationStruct altStruct in currentAlterations)
+            {
+                if (altStruct.alteration.alterationType == AlterationType.Stunned)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
     [Header("References")]
     [SerializeField] protected UnitUI _ui;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
+    [SerializeField] protected StunnedVFX _stunnedVFX;
+    [SerializeField] protected ShieldVFX _shieldVFX;
     public Animator _animator;
     public UnitAnimsInfos _unitAnimsInfos;
 
@@ -149,9 +167,30 @@ public class Unit : MonoBehaviour
         {
             MoveUnit(pathTiles[i], true);
 
+            if (pathTiles[i].IsHole)
+            {
+                StartCoroutine(FallCoroutine());
+
+                yield break;
+            }
+
             yield return new WaitForSeconds(0.15f);
         }
 
+        BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
+    }
+
+    private IEnumerator FallCoroutine()
+    {
+        _spriteRenderer.transform.UChangeScale(0.5f, Vector3.zero, CurveType.EaseInOutSin);
+
+        yield return new WaitForSeconds(0.5f);
+
+        _spriteRenderer.transform.UStopChangeScale();
+        MoveUnit(previousTile);
+        _spriteRenderer.transform.localScale = Vector3.one;
+
+        HeroesManager.Instance.TakeDamage(1);
         BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
     }
 
@@ -160,6 +199,7 @@ public class Unit : MonoBehaviour
         if(currentTile != null)
         {
             currentTile.UnitLeaveTile();
+            previousTile = currentTile;
         }
 
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
@@ -233,6 +273,8 @@ public class Unit : MonoBehaviour
 
     public bool VerifyCrit(Unit[] attackedUnits)
     {
+        if(attackedUnits.Length == 0) return false;
+
         int averageLuck = 0;
         for(int i = 0; i < attackedUnits.Length; i++)
         {
@@ -249,7 +291,7 @@ public class Unit : MonoBehaviour
     public virtual void TakeDamage(int damageAmount, Unit originUnit)
     {
         _animator.SetTrigger("Damage");
-        CameraManager.Instance.DoCameraShake(0.25f, Mathf.Lerp(0.2f, 0.5f, damageAmount / 10f), 0.025f);
+        CameraManager.Instance.DoCameraShake(0.2f, Mathf.Lerp(0.5f, 1f, damageAmount / 15f), 50);
 
         // Thorn
         if (originUnit)
@@ -258,9 +300,13 @@ public class Unit : MonoBehaviour
             if (thornAlt) originUnit.TakeDamage((int)thornAlt.strength, null);
         }
 
-        // Weakened
-        AlterationData weakenedAlt = VerifyHasAlteration(AlterationType.Vulnerable);
-        if (weakenedAlt) damageAmount = (int)(damageAmount * weakenedAlt.strength);
+        // Vulnerable
+        AlterationData vulnerableAlt = VerifyHasAlteration(AlterationType.Vulnerable);
+        if (vulnerableAlt) damageAmount = (int)(damageAmount * vulnerableAlt.strength);
+
+        // Sturdy
+        AlterationData sturdyAlt = VerifyHasAlteration(AlterationType.Sturdy);
+        if (sturdyAlt) damageAmount = (int)(damageAmount * sturdyAlt.strength);
 
         int shieldDamages = Mathf.Clamp(damageAmount, 0, CurrentShield);
         int healthDamages = damageAmount - shieldDamages;
@@ -269,6 +315,13 @@ public class Unit : MonoBehaviour
 
         CurrentShield -= shieldDamages;
         CurrentHealth -= healthDamages;
+
+        // Shield
+        if(shieldDamages != 0)
+        {
+            if (CurrentShield > 0) _shieldVFX.PlayBlockAnim();
+            else _shieldVFX.PlayBreakAnim();
+        }
 
         if (CurrentHealth <= 0)
             Die();
@@ -307,8 +360,16 @@ public class Unit : MonoBehaviour
 
                 AlterationStruct current = currentAlterations[i];
 
-                current.duration = alteration.duration > currentAlterations[i].duration ?
-                    alteration.duration : currentAlterations[i].duration;
+                if (current.alteration.alterationType == AlterationType.Shield)
+                {
+                    current.currentStrength = alteration.strength > currentAlterations[i].currentStrength ?
+                        alteration.strength : currentAlterations[i].currentStrength;
+                }
+                else
+                {
+                    current.duration = alteration.duration > currentAlterations[i].duration ?
+                        alteration.duration : currentAlterations[i].duration;
+                }
 
                 if (alteration.isStackable)
                 {
@@ -324,8 +385,13 @@ public class Unit : MonoBehaviour
             currentAlterations.Add(new AlterationStruct(alteration, alteration.duration, alteration.strength, origin));
         }
 
-        PlayAlterationVFX(alteration.alterationType);
-        ActualiseBuffsAndDebuffs(false);
+        if(alteration.alterationType == AlterationType.Shield)
+        {
+            CurrentShield = Mathf.Max(CurrentShield, (int)alteration.strength);
+        }
+
+        PlayAlterationVFX(alteration.alterationType, alteration.isPositive);
+        ActualiseAlterations(false);
     }
 
 
@@ -341,17 +407,49 @@ public class Unit : MonoBehaviour
         return null;
     }
 
-
-    private void PlayAlterationVFX(AlterationType type)
+    private void PlayAlterationVFX(AlterationType type, bool isBuff)
     {
         switch (type)
         {
             case AlterationType.Shield:
-                Destroy(Instantiate(shieldVFX, transform.position, Quaternion.Euler(0, 0, 0)), 2f);
-                break;
+                _shieldVFX.PlayEquipAnim();
+                return;
+
+            case AlterationType.Stunned:
+                Destroy(Instantiate(stunVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
+                _stunnedVFX.Appear();
+                return;
+        }
+
+        if (isBuff)
+        {
+            Destroy(Instantiate(buffVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
+        }
+        else
+        {
+            Destroy(Instantiate(debuffVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
         }
     }
 
+    public void RemoveAllAlterations()
+    {
+        for (int i = currentAlterations.Count - 1; i >= 0; i--)
+        {
+            RemoveAlteration(i);
+        }
+
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
+    }
+
+    private void RemoveAlteration(int index)
+    {
+        if (currentAlterations[index].alteration.alterationType == AlterationType.Stunned)
+        {
+            _stunnedVFX.Hide();
+        }
+
+        currentAlterations.RemoveAt(index);
+    }
 
     private void RemoveAlteration(AlterationType type)
     {
@@ -359,7 +457,7 @@ public class Unit : MonoBehaviour
         {
             if (currentAlterations[i].alteration.alterationType == type)
             {
-                currentAlterations.RemoveAt(i);
+                RemoveAlteration(i);
                 break;
             }
         }
@@ -368,7 +466,7 @@ public class Unit : MonoBehaviour
     }
 
 
-    private void ActualiseBuffsAndDebuffs(bool endTurn)
+    private void ActualiseAlterations(bool endTurn)
     {
         if (endTurn)
         {
@@ -383,7 +481,7 @@ public class Unit : MonoBehaviour
 
                 if (currentAlterations[i].duration <= 0 && !currentAlterations[i].alteration.isInfinite)
                 {
-                    currentAlterations.RemoveAt(i);
+                    RemoveAlteration(i);
                 }
             }
         }
@@ -392,7 +490,6 @@ public class Unit : MonoBehaviour
         strengthModificatorAdditive = 0;
         speedModificatorAdditive = 0;
         luckModificatorAdditive = 0;
-        currentShield = 0;
         provocationTarget = null;
 
         for (int i = 0; i < currentAlterations.Count; i++)
@@ -409,10 +506,6 @@ public class Unit : MonoBehaviour
 
                 case AlterationType.Provocked:
                     provocationTarget = currentAlterations[i].origin;
-                    break;
-
-                case AlterationType.Shield:
-                    CurrentShield += (int)currentAlterations[i].currentStrength;
                     break;
 
                 case AlterationType.Lucky:
@@ -568,7 +661,7 @@ public class Unit : MonoBehaviour
         EndTurnOutline();
         HideOutline();
 
-        ActualiseBuffsAndDebuffs(true);
+        ActualiseAlterations(true);
 
         StartCoroutine(BattleManager.Instance.NextTurnCoroutine(delay));
     }

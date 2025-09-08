@@ -137,6 +137,24 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""SkillTrees"",
+                    ""type"": ""Button"",
+                    ""id"": ""0349d121-9eb0-422a-9905-b86599b39000"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skills"",
+                    ""type"": ""Button"",
+                    ""id"": ""44080859-041b-48fd-9316-b9ee65544d05"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""RotateLeft"",
                     ""type"": ""Button"",
                     ""id"": ""30809e02-f676-4c4a-bb54-c170be4b4062"",
@@ -293,6 +311,28 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""8dbaf473-91a4-4231-b3f8-b8d6675be1f6"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkillTrees"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""75a811ae-15d0-4955-927d-c5aac69d419e"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skills"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""ba76ac7d-84b8-4305-a04f-dd1ff58d2970"",
                     ""path"": ""<Keyboard>/q"",
                     ""interactions"": """",
@@ -435,6 +475,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_BaseActionMap_Interact = m_BaseActionMap.FindAction("Interact", throwIfNotFound: true);
         m_BaseActionMap_Inventory = m_BaseActionMap.FindAction("Inventory", throwIfNotFound: true);
         m_BaseActionMap_HeroInfo = m_BaseActionMap.FindAction("HeroInfo", throwIfNotFound: true);
+        m_BaseActionMap_SkillTrees = m_BaseActionMap.FindAction("SkillTrees", throwIfNotFound: true);
+        m_BaseActionMap_Skills = m_BaseActionMap.FindAction("Skills", throwIfNotFound: true);
         m_BaseActionMap_RotateLeft = m_BaseActionMap.FindAction("RotateLeft", throwIfNotFound: true);
         m_BaseActionMap_RotateRight = m_BaseActionMap.FindAction("RotateRight", throwIfNotFound: true);
         m_BaseActionMap_MouseDelta = m_BaseActionMap.FindAction("MouseDelta", throwIfNotFound: true);
@@ -526,6 +568,8 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_BaseActionMap_Interact;
     private readonly InputAction m_BaseActionMap_Inventory;
     private readonly InputAction m_BaseActionMap_HeroInfo;
+    private readonly InputAction m_BaseActionMap_SkillTrees;
+    private readonly InputAction m_BaseActionMap_Skills;
     private readonly InputAction m_BaseActionMap_RotateLeft;
     private readonly InputAction m_BaseActionMap_RotateRight;
     private readonly InputAction m_BaseActionMap_MouseDelta;
@@ -563,6 +607,14 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "BaseActionMap/HeroInfo".
         /// </summary>
         public InputAction @HeroInfo => m_Wrapper.m_BaseActionMap_HeroInfo;
+        /// <summary>
+        /// Provides access to the underlying input action "BaseActionMap/SkillTrees".
+        /// </summary>
+        public InputAction @SkillTrees => m_Wrapper.m_BaseActionMap_SkillTrees;
+        /// <summary>
+        /// Provides access to the underlying input action "BaseActionMap/Skills".
+        /// </summary>
+        public InputAction @Skills => m_Wrapper.m_BaseActionMap_Skills;
         /// <summary>
         /// Provides access to the underlying input action "BaseActionMap/RotateLeft".
         /// </summary>
@@ -628,6 +680,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @HeroInfo.started += instance.OnHeroInfo;
             @HeroInfo.performed += instance.OnHeroInfo;
             @HeroInfo.canceled += instance.OnHeroInfo;
+            @SkillTrees.started += instance.OnSkillTrees;
+            @SkillTrees.performed += instance.OnSkillTrees;
+            @SkillTrees.canceled += instance.OnSkillTrees;
+            @Skills.started += instance.OnSkills;
+            @Skills.performed += instance.OnSkills;
+            @Skills.canceled += instance.OnSkills;
             @RotateLeft.started += instance.OnRotateLeft;
             @RotateLeft.performed += instance.OnRotateLeft;
             @RotateLeft.canceled += instance.OnRotateLeft;
@@ -672,6 +730,12 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @HeroInfo.started -= instance.OnHeroInfo;
             @HeroInfo.performed -= instance.OnHeroInfo;
             @HeroInfo.canceled -= instance.OnHeroInfo;
+            @SkillTrees.started -= instance.OnSkillTrees;
+            @SkillTrees.performed -= instance.OnSkillTrees;
+            @SkillTrees.canceled -= instance.OnSkillTrees;
+            @Skills.started -= instance.OnSkills;
+            @Skills.performed -= instance.OnSkills;
+            @Skills.canceled -= instance.OnSkills;
             @RotateLeft.started -= instance.OnRotateLeft;
             @RotateLeft.performed -= instance.OnRotateLeft;
             @RotateLeft.canceled -= instance.OnRotateLeft;
@@ -765,6 +829,20 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHeroInfo(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SkillTrees" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkillTrees(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Skills" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkills(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "RotateLeft" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

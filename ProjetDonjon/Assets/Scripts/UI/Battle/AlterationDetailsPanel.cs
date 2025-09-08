@@ -22,7 +22,7 @@ public class AlterationDetailsPanel : MonoBehaviour
     [SerializeField] private RectTransform _parentRectTr;
 
 
-    public void OpenDetails(Vector2 position, AlterationStruct infos)
+    public void OpenDetails(Vector2 position, AlterationStruct infos, Unit attachedUnit)
     {
         _animator.SetBool("IsOpened", true);
         transform.position = position + offset;
@@ -33,7 +33,7 @@ public class AlterationDetailsPanel : MonoBehaviour
         switch (infos.alteration.alterationType)
         {
             case AlterationType.Shield:
-                _counterText.text = infos.alteration.strength.ToString();
+                _counterText.text = attachedUnit.CurrentShield.ToString();
                 break;
 
             case AlterationType.Strength:

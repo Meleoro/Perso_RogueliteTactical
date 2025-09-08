@@ -12,6 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a4df46b03aadc9249bda5741a5972ca0, type: 3}
   m_Name: Enviro1
   m_EditorClassIdentifier: 
+  enviroName: THE CRYPT
+  enviroDescription: THIS CRYPT FULL OF TREASURE IS ALSO HOME FOR A CIVILISATION
+    OF GOBLINS, IT IS ALSO SAID THAT A DARK MAGE LURKS IN THE DEPTH OF THIS CRYPT
+  enviroDangerText: LOW
+  enviroIllustration: {fileID: 7975086727044346999, guid: a70726b90ea81ae4ebcea3b9fc470dce, type: 3}
   minDistGoldenPath: 5
   maxDistGoldenPath: 7
   minRoomAmount: 7

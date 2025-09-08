@@ -22,13 +22,13 @@ AnimationClip:
     curve:
     - time: 0
       value: {fileID: -6366988396368053875, guid: 60565d0b4a8893144aa36018df30af2b, type: 3}
-    - time: 0.33333334
+    - time: 0.85
       value: {fileID: -1457194378008095737, guid: 60565d0b4a8893144aa36018df30af2b, type: 3}
-    - time: 0.41666666
+    - time: 0.9166667
       value: {fileID: -1073972567141390651, guid: 60565d0b4a8893144aa36018df30af2b, type: 3}
-    - time: 0.75
+    - time: 1.2666667
       value: {fileID: 4680579899801278760, guid: 60565d0b4a8893144aa36018df30af2b, type: 3}
-    - time: 0.8333333
+    - time: 1.3333334
       value: {fileID: -6366988396368053875, guid: 60565d0b4a8893144aa36018df30af2b, type: 3}
     attribute: m_Sprite
     path: EnemySprite
@@ -62,7 +62,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.84999996
+    m_StopTime: 1.35
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

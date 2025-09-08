@@ -18,7 +18,8 @@ public class DetailsPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI[] _statsTexts;
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private TextMeshProUGUI _descriptionText;
-    [SerializeField] private RectTransform _parentRectTr;
+    [SerializeField] private RectTransform _gloabalParentRectTr;
+    [SerializeField] private RectTransform _mainParentRectTr;
     [SerializeField] private AdditionalTooltip[] _additionalTooltips;
 
 
@@ -30,8 +31,8 @@ public class DetailsPanel : MonoBehaviour
 
     public void OpenDetails(LootData data, Vector3 lootPos)
     {
-        _parentRectTr.position = lootPos + offset;
-        _parentRectTr.gameObject.SetActive(true);
+        _gloabalParentRectTr.position = lootPos + (offset + new Vector3(0.9f * data.spaceTaken[0].row.Length, 0));
+        _gloabalParentRectTr.gameObject.SetActive(true);
 
         if (data.healthUpgrade != 0)
         {
@@ -60,36 +61,27 @@ public class DetailsPanel : MonoBehaviour
         for(int i = 0; i < _additionalTooltips.Length; i++)
         {
             if (i < data.additionalTooltipDatas.Length)
-                _additionalTooltips[i].Show(data.additionalTooltipDatas[i]);
+                _additionalTooltips[i].Show(data.additionalTooltipDatas[i], 0.15f + i * 0.15f);
 
             else
                 _additionalTooltips[i].Hide();
         }
 
-        if(currentCoroutine != null)
-        {
-            StopCoroutine(currentCoroutine);
-        }
-        currentCoroutine = StartCoroutine(OpenEffectsCoroutine(0.15f));
+        if(currentCoroutine is not null) StopCoroutine(currentCoroutine);
+        
+        currentCoroutine = StartCoroutine(OpenEffectsCoroutine(0.25f));
     }
 
     private IEnumerator OpenEffectsCoroutine(float duration)
     {
+        _mainParentRectTr.localScale = Vector3.zero;
+
         float aimedSize = 0.75f;
-        _parentRectTr.UStopChangeScale();
-        _parentRectTr.UChangeScale(duration * 0.25f, new Vector3(1.25f * aimedSize, 0.85f * aimedSize, 1f * aimedSize), CurveType.EaseInOutCubic);
+        _mainParentRectTr.UChangeScale(0.12f, Vector3.one * aimedSize * 1.1f, CurveType.EaseOutCubic);
 
-        yield return new WaitForSeconds(duration * 0.25f);
+        yield return new WaitForSeconds(0.12f);
 
-        _parentRectTr.UStopChangeScale();
-        _parentRectTr.UChangeScale(duration * 0.5f, new Vector3(0.85f * aimedSize, 1.15f * aimedSize, 1f * aimedSize), CurveType.EaseInOutCubic);
-
-        yield return new WaitForSeconds(duration * 0.5f);
-
-        _parentRectTr.UStopChangeScale();
-        _parentRectTr.UChangeScale(duration * 0.25f, new Vector3(1f * aimedSize, 1f * aimedSize, 1f * aimedSize), CurveType.EaseInOutCubic);
-
-        yield return new WaitForSeconds(duration * 0.25f);
+        _mainParentRectTr.UChangeScale(0.15f, new Vector3(aimedSize, aimedSize, aimedSize), CurveType.EaseInOutCubic);
     }
 
     public void CloseDetails()
@@ -104,8 +96,11 @@ public class DetailsPanel : MonoBehaviour
             StopCoroutine(currentCoroutine);
         }
 
-        _parentRectTr.localScale = new Vector3(0, 0.75f, 0);
-        _parentRectTr.gameObject.SetActive(false);
+        _gloabalParentRectTr.gameObject.SetActive(false);
+
+        if (currentCoroutine is not null) StopCoroutine(currentCoroutine);
+        _mainParentRectTr.UStopChangeScale();
+
     }
 
     private IEnumerator CloseEffectsCoroutine()

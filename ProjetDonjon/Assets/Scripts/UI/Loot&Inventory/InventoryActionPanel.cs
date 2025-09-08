@@ -21,6 +21,9 @@ public class InventoryActionPanel : MonoBehaviour
     [SerializeField] private Animator _animator;
 
 
+
+    #region Main Panel
+
     public void OpenPanel(Loot associatedLoot)
     {
         if (isOpened && (associatedLoot == currentLoot))
@@ -43,6 +46,8 @@ public class InventoryActionPanel : MonoBehaviour
                 break;
 
             case LootType.Consumable:
+                if (!BattleManager.Instance.IsInBattle && !associatedLoot.LootData.usableOutsideBattle) break;
+
                 _buttonsRectTr[0].gameObject.SetActive(true);
                 _buttonsTexts[0].text = "USE";
                 break;
@@ -83,9 +88,8 @@ public class InventoryActionPanel : MonoBehaviour
                 break;
 
             case LootType.Consumable:
-                currentLoot.AssociatedHero.UseItem(currentLoot.LootData);
-                currentLoot.DestroyItem();
-                break;
+                OpenChooseTarget();
+                return;
         }
 
         ClosePanel();
@@ -97,4 +101,52 @@ public class InventoryActionPanel : MonoBehaviour
 
         ClosePanel();
     }
+
+    #endregion
+
+
+    #region Choose Target Panel
+
+    private void OpenChooseTarget()
+    {
+        ClosePanel();
+        _animator.SetBool("ChooseTargetOpened", true);
+
+        Hero[] heroes = HeroesManager.Instance.Heroes;
+
+        for(int i = 0; i < 3; i++)
+        {
+            if(heroes.Length > i)
+            {
+                _buttonsRectTr[i + 2].gameObject.SetActive(true);
+                _buttonsTexts[i + 2].text = heroes[i].HeroData.unitName;
+            }
+            else
+            {
+                _buttonsRectTr[i + 2].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void CloseChoseTarget(bool openMain)
+    {
+        _animator.SetBool("ChooseTargetOpened", false);
+
+        if (openMain)
+        {
+            OpenPanel(currentLoot);
+        }
+    }
+
+    public void ValidateTarget(int index)
+    {
+        Hero concernedHero = HeroesManager.Instance.Heroes[index];
+
+        concernedHero.UseItem(currentLoot.LootData);
+        currentLoot.DestroyItem();
+
+        CloseChoseTarget(false);
+    }
+
+    #endregion
 }

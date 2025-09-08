@@ -44,6 +44,7 @@ public class BattleTile : MonoBehaviour
     private BattleTileState saveTileState;
     private Vector3 savePos;
     private Coroutine highlightCoroutine;
+    private Coroutine changeStateEffectCoroutine;
     private BattleTile[] highlightedTiles;
     private bool isHole;
 
@@ -79,10 +80,6 @@ public class BattleTile : MonoBehaviour
         tileNeighbors = new List<BattleTile>();
 
         this.isHole = isHole;
-        if (isHole)
-        {
-            _tileButton.enabled = false;
-        }
     }
 
     public void AddNeighbor(BattleTile tile)
@@ -125,37 +122,40 @@ public class BattleTile : MonoBehaviour
     public void DisplayMoveTile()
     {
         if (currentTileState == BattleTileState.Move) return;
-
         currentTileState = BattleTileState.Move;
-        StartCoroutine(ChangeStateEffect(moveTileColorOutline, moveTileColorBack, true, saveTileState == BattleTileState.Move));
+
+        if (changeStateEffectCoroutine is not null) StopCoroutine(changeStateEffectCoroutine);
+        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(moveTileColorOutline, moveTileColorBack, true, saveTileState == BattleTileState.Move));
     }
 
     public void DisplayPossibleAttackTile(bool doBounce)
     {
         if (currentTileState == BattleTileState.Attack) return;
-
         currentTileState = BattleTileState.Attack;
-        StartCoroutine(ChangeStateEffect(attackTileColorOutline, attackTileColorBack, doBounce, saveTileState == BattleTileState.Attack));
+
+        if (changeStateEffectCoroutine is not null) StopCoroutine(changeStateEffectCoroutine);
+        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(attackTileColorOutline, attackTileColorBack, doBounce, saveTileState == BattleTileState.Attack));
     }
 
     public void DisplayDangerTile()
     {
         if (currentTileState == BattleTileState.Danger) return;
-
         if (unitOnTile is not null) unitOnTile.DisplaySkillOutline(false);
-
         currentTileState = BattleTileState.Danger;
-        StartCoroutine(ChangeStateEffect(dangerTileColorOutline, dangerTileColorBack, false, saveTileState == BattleTileState.Danger));
+
+        if (changeStateEffectCoroutine is not null) StopCoroutine(changeStateEffectCoroutine);
+        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(dangerTileColorOutline, dangerTileColorBack, false, saveTileState == BattleTileState.Danger));
     }
 
     public void DisplayNormalTile()
     {
         if (currentTileState == BattleTileState.None) return;
         if (currentTileState == BattleTileState.Danger && unitOnTile is not null) unitOnTile.HideOutline();
-
         saveTileState = currentTileState;
         currentTileState = BattleTileState.None;
-        StartCoroutine(ChangeStateEffect(baseTileColorOutline, baseTileColorBack, false));
+
+        if(changeStateEffectCoroutine is not null) StopCoroutine(changeStateEffectCoroutine);
+        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(baseTileColorOutline, baseTileColorBack, false));
     }
 
     private IEnumerator ChangeStateEffect(Color outlineColor, Color backColor, bool doBounce = true, bool doInstant = false)
@@ -170,22 +170,46 @@ public class BattleTile : MonoBehaviour
             _mainSpriteRenderer.UStopSpriteRendererLerpColor();
             _backSpriteRenderer.UStopSpriteRendererLerpColor();
 
+            transform.UStopChangePosition();
+            transform.UStopChangeScale();
+            transform.UStopChangeRotation();
+
             _mainSpriteRenderer.color = outlineColor;
             _backSpriteRenderer.color = backColor;
 
             yield break;
         }
 
-        _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
-        _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
-
         if (doBounce)
         {
-            transform.UChangePosition(0.05f, savePos + new Vector3(0, 0.08f, 0), CurveType.EaseInOutCubic);
+            yield return new WaitForSeconds(Random.Range(0, 0.05f));
 
-            yield return new WaitForSeconds(0.05f);
+            float randomDelay = 0.1f + Random.Range(-0.03f, 0.03f);
 
-            transform.UChangePosition(0.1f, savePos, CurveType.EaseInOutCubic);
+            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor + Color.white * 0.25f);
+            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor + Color.white * 0.25f);
+
+            transform.UChangePosition(randomDelay, savePos + new Vector3(0, 0.1f, 0), CurveType.EaseInOutCubic);
+            transform.UChangeScale(randomDelay, new Vector3(Random.Range(1.05f, 1.15f), Random.Range(1f, 1.15f), 1), CurveType.EaseInOutCubic);
+            //transform.UChangeRotation(randomDelay, Quaternion.Euler(Random.Range(-20f, 20f), Random.Range(-20f, 20f), 0), CurveType.EaseInOutCubic);
+
+            yield return new WaitForSeconds(randomDelay);
+
+            transform.UChangePosition(0.2f, savePos, CurveType.EaseInOutCubic);
+            transform.UChangeScale(0.2f, Vector3.one, CurveType.EaseInOutCubic);
+            //transform.UChangeRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseInOutCubic);
+
+            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
+            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
+        }
+        else
+        {
+            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
+            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
+
+            transform.UChangePosition(0.2f, savePos, CurveType.EaseInOutCubic);
+            transform.UChangeScale(0.2f, Vector3.one, CurveType.EaseInOutCubic);
+            transform.UChangeRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseInOutCubic);
         }
     }
 

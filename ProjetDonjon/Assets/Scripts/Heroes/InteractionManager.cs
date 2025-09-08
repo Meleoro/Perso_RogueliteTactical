@@ -45,11 +45,15 @@ public class InteractionManager : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (!GameManager.Instance.IsInExplo) return;
+
         AddInteractibleAtRange(collision.GetComponent<IInteractible>());
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (!GameManager.Instance.IsInExplo) return;
+
         RemoveInteractibleAtRange(collision.GetComponent<IInteractible>());
     }
 

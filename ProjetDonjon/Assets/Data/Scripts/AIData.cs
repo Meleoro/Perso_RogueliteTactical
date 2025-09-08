@@ -15,5 +15,7 @@ public class AIData : UnitData
     public int dangerLevel;
     public SkillData[] skills;
     public bool[] movePatern = new bool[15 * 15];
+    public int minXpDrop;
+    public int maxXpDrop;
 
 }

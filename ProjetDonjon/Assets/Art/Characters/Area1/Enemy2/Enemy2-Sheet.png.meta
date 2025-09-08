@@ -521,6 +521,28 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Enemy2-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff715689f37d2d4409fbfb312d18d629
+      internalID: -219107570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -544,6 +566,7 @@ TextureImporter:
       Enemy2-Sheet_14: -1477237799843429475
       Enemy2-Sheet_15: -5509388812366996950
       Enemy2-Sheet_16: -5766590174127809405
+      Enemy2-Sheet_17: -219107570
       Enemy2-Sheet_2: 2376935786006118555
       Enemy2-Sheet_3: -2553599648655437860
       Enemy2-Sheet_4: -3403038955023108337

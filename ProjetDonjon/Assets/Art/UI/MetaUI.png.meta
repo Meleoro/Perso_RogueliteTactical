@@ -1,0 +1,463 @@
+fileFormatVersion: 2
+guid: a70726b90ea81ae4ebcea3b9fc470dce
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7975086727044346999
+    second: MetaUI_0
+  - first:
+      213: -2189895309199146860
+    second: MetaUI_1
+  - first:
+      213: 705792655566803846
+    second: MetaUI_2
+  - first:
+      213: 1254162980325873192
+    second: MetaUI_3
+  - first:
+      213: -6150240308243321745
+    second: MetaUI_4
+  - first:
+      213: -6927259682234693172
+    second: MetaUI_5
+  - first:
+      213: 2939678459411991809
+    second: MetaUI_6
+  - first:
+      213: -8139822561378224678
+    second: MetaUI_7
+  - first:
+      213: 4774352156516170420
+    second: MetaUI_8
+  - first:
+      213: 5366789533485924925
+    second: MetaUI_9
+  - first:
+      213: -4380290748461275800
+    second: MetaUI_10
+  - first:
+      213: -1349500979538322084
+    second: MetaUI_11
+  - first:
+      213: -83099587684555627
+    second: MetaUI_12
+  - first:
+      213: -5126437460110315055
+    second: MetaUI_13
+  - first:
+      213: 3820966661422873301
+    second: MetaUI_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MetaUI_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 380
+        width: 71
+        height: 90
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 774396adf133dae60800000000000000
+      internalID: 7975086727044346999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_1
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 315
+        width: 64
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49004ef91ddeb91e0800000000000000
+      internalID: -2189895309199146860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_2
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 254
+        width: 64
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68393284eaa7bc900800000000000000
+      internalID: 705792655566803846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_3
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 203
+        width: 50
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 826d4c4f59ea76110800000000000000
+      internalID: 1254162980325873192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_8
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 2
+        width: 113
+        height: 135
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ba34c1adf7e14240800000000000000
+      internalID: 4774352156516170420
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_9
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 6
+        width: 83
+        height: 127
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3286bf65aaaa7a40800000000000000
+      internalID: 5366789533485924925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_10
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 81
+        width: 104
+        height: 108
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8652905a5c41633c0800000000000000
+      internalID: -4380290748461275800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_14
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 34
+        width: 76
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5da78b82fecc60530800000000000000
+      internalID: 3820966661422873301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_4
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 23
+        width: 61
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cea0d9b76da11b041b57d61f87491b7a
+      internalID: -6150240308243321745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_5
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 156
+        width: 225
+        height: 135
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: da5e07d9b033ee345a5a096f6521faaf
+      internalID: -6927259682234693172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_6
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 276
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08e881d27c00b7042afaa79413b2f28e
+      internalID: 2939678459411991809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_7
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 303
+        width: 302
+        height: 171
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 180b0a7fba182224e9e1ae5b029a0a75
+      internalID: -8139822561378224678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MetaUI_11
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 246
+        width: 86
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f9f234d9ba181e45958e02c4536f8d2
+      internalID: -1349500979538322084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: e4fed042c72f3d24dbab181db0cb46e6
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      MetaUI_0: 7975086727044346999
+      MetaUI_1: -2189895309199146860
+      MetaUI_10: -4380290748461275800
+      MetaUI_11: -1349500979538322084
+      MetaUI_12: -83099587684555627
+      MetaUI_13: -5126437460110315055
+      MetaUI_14: 3820966661422873301
+      MetaUI_2: 705792655566803846
+      MetaUI_3: 1254162980325873192
+      MetaUI_4: -6150240308243321745
+      MetaUI_5: -6927259682234693172
+      MetaUI_6: 2939678459411991809
+      MetaUI_7: -8139822561378224678
+      MetaUI_8: 4774352156516170420
+      MetaUI_9: 5366789533485924925
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -15,8 +15,10 @@ public class SkillDataEditor : Editor
     public SerializedProperty skillEffects;
     public SerializedProperty skillPatern;
     public SerializedProperty skillAOEPatern;
-    public SerializedProperty skillAOEPaternVertical;
-    public SerializedProperty skillAOEPaternHorizontal;
+    public SerializedProperty skillAOEPaternLeft;
+    public SerializedProperty skillAOEPaternRight;
+    public SerializedProperty skillAOEPaternUp;
+    public SerializedProperty skillAOEPaternDown;
 
     private int paternSize;
 
@@ -41,8 +43,10 @@ public class SkillDataEditor : Editor
         skillEffects = so.FindProperty("skillEffects");
         skillPatern = so.FindProperty("skillPatern");
         skillAOEPatern = so.FindProperty("skillAOEPatern");
-        skillAOEPaternVertical = so.FindProperty("skillAOEPaternVertical");
-        skillAOEPaternHorizontal = so.FindProperty("skillAOEPaternHorizontal");
+        skillAOEPaternLeft = so.FindProperty("skillAOEPaternLeft");
+        skillAOEPaternRight = so.FindProperty("skillAOEPaternRight");
+        skillAOEPaternUp = so.FindProperty("skillAOEPaternUp");
+        skillAOEPaternDown = so.FindProperty("skillAOEPaternDown");
 
         paternSize = 15;
     }
@@ -95,7 +99,7 @@ public class SkillDataEditor : Editor
 
         GUILayout.Space(20);
 
-        EditorGUILayout.LabelField("AOE Patern Vertical");
+        EditorGUILayout.LabelField("AOE Patern Left");
 
         GUILayout.Space(10);
 
@@ -107,7 +111,7 @@ public class SkillDataEditor : Editor
                 {
                     for (int x = 0; x < 9; x++)
                     {
-                        EditorGUILayout.PropertyField(skillAOEPaternVertical.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
+                        EditorGUILayout.PropertyField(skillAOEPaternLeft.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
                     }
                 }
             }
@@ -115,7 +119,7 @@ public class SkillDataEditor : Editor
 
         GUILayout.Space(20);
 
-        EditorGUILayout.LabelField("AOE Patern Horizontal");
+        EditorGUILayout.LabelField("AOE Patern Right");
 
         GUILayout.Space(10);
 
@@ -127,7 +131,47 @@ public class SkillDataEditor : Editor
                 {
                     for (int x = 0; x < 9; x++)
                     {
-                        EditorGUILayout.PropertyField(skillAOEPaternHorizontal.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
+                        EditorGUILayout.PropertyField(skillAOEPaternRight.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
+                    }
+                }
+            }
+        }
+
+        GUILayout.Space(20);
+
+        EditorGUILayout.LabelField("AOE Patern Up");
+
+        GUILayout.Space(10);
+
+        using (new GUILayout.VerticalScope(EditorStyles.helpBox, new[] { GUILayout.MinWidth(22 * 9) }))
+        {
+            for (int y = 0; y < 9; y++)
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        EditorGUILayout.PropertyField(skillAOEPaternUp.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
+                    }
+                }
+            }
+        }
+
+        GUILayout.Space(20);
+
+        EditorGUILayout.LabelField("AOE Patern Down");
+
+        GUILayout.Space(10);
+
+        using (new GUILayout.VerticalScope(EditorStyles.helpBox, new[] { GUILayout.MinWidth(22 * 9) }))
+        {
+            for (int y = 0; y < 9; y++)
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    for (int x = 0; x < 9; x++)
+                    {
+                        EditorGUILayout.PropertyField(skillAOEPaternDown.GetArrayElementAtIndex((y * 9) + x), GUIContent.none, GUILayout.MinWidth(EditorGUIUtility.labelWidth - 350));
                     }
                 }
             }

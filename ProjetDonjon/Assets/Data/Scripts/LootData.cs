@@ -64,6 +64,7 @@ public class LootData : ScriptableObject
     [Header("Consumable Infos")]
     public ConsumableType consumableType;
     public int consumablePower;
+    public bool usableOutsideBattle;
 
     [Header("Others")]
     public AdditionalTooltipData[] additionalTooltipDatas;

@@ -10,7 +10,9 @@ public enum AlterationType
     Shield,
     Thorn,
     Lucky,
-    Unlucky
+    Unlucky,
+    Stunned,
+    Sturdy
 }
 
 [CreateAssetMenu(fileName = "AlterationData", menuName = "Scriptable Objects/AlterationData")]

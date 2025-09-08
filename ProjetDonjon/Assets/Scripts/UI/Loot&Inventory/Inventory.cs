@@ -8,17 +8,22 @@ public class Inventory : MonoBehaviour
 {
     [Header("Parameters")]
     [SerializeField] private float distanceBetweenSlots;
+    [SerializeField] private bool isChest;
 
     [Header("Public Infos")]
     public RectTransform RectTransform { get { return _rectTransform; } }
     public RectTransform LootParent { get { return _lootParent; } }
     public Hero AssociatedHero { get { return associatedHero; } }
+    public InventorySlot[,] InventorySlotsTab { get { return inventorySlotsTab; } }
+    public bool IsChest { get { return isChest; } }
 
     [Header("Private Infos")]
     private InventorySlot[,] inventorySlotsTab = new InventorySlot[0, 0];
     private InventorySlot[] inventorySlots;
     private InventorySlot[] upgradeSlots1;
     private InventorySlot[] upgradeSlots2;
+    private RectTransform originalParent;
+    private RectTransform originalLootParentParent;   // Oui
     private Hero associatedHero;
     private bool isMoving;
 
@@ -34,32 +39,93 @@ public class Inventory : MonoBehaviour
 
 
 
-    public InventorySlot[] GetSlots()
+    #region Initialisation Functions
+
+    public void SetupPosition(RectTransform hiddenPosRectTr, RectTransform showedPosRectTr, RectTransform lootParent)
     {
-        return inventorySlots;
+        _hiddenRectTr = hiddenPosRectTr;
+        _showedRectTr = showedPosRectTr;
+        _lootParent = lootParent;
+
+        _rectTransform = GetComponent<RectTransform>();
+
+        if(_hiddenRectTr is not null)
+            _rectTransform.position = _hiddenRectTr.position;
+
+        originalParent = _rectTransform.parent as RectTransform;
+        originalLootParentParent = _lootParent.parent as RectTransform;
     }
 
-    private Vector2Int GetInventoryDimensions()
+    public void InitialiseInventory(Hero hero)
     {
-        Vector2Int result = Vector2Int.zero;
+        associatedHero = hero;
+
+        inventorySlots = _slotsParent.GetComponentsInChildren<InventorySlot>();
+        if (!isChest)
+        {
+            upgradeSlots1 = _upgrade1SlotsParent.GetComponentsInChildren<InventorySlot>();
+            upgradeSlots2 = _upgrade2SlotsParent.GetComponentsInChildren<InventorySlot>();
+        }
+        SetupSlots();
+
+        if (isChest) InventoriesManager.Instance.AddSlots(inventorySlots);
+
+        Vector2Int inventoryDimensions = GetInventoryDimensions();
+        inventorySlotsTab = new InventorySlot[inventoryDimensions.x + 1, inventoryDimensions.y + 1];
 
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            if (inventorySlots[i].SlotCoordinates.x > result.x)
-                result.x = inventorySlots[i].SlotCoordinates.x;
-
-            if (inventorySlots[i].SlotCoordinates.y > result.y)
-                result.y = inventorySlots[i].SlotCoordinates.y;
+            inventorySlotsTab[inventorySlots[i].SlotCoordinates.x, inventorySlots[i].SlotCoordinates.y] = inventorySlots[i];
         }
 
-        return result;
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
+        }
+
+        if (isChest) return;
+
+        for (int i = 0; i < upgradeSlots1.Length; i++)
+        {
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
+            upgradeSlots1[i].gameObject.SetActive(false);
+        }
+
+        for (int i = 0; i < upgradeSlots2.Length; i++)
+        {
+            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
+            upgradeSlots2[i].gameObject.SetActive(false);
+        }
     }
 
-    public void RebootPosition()
+
+    private void SetupSlots()
     {
-        _rectTransform.position = _hiddenRectTr.position;
-        _lootParent.position = _hiddenRectTr.position;
+        Vector2 bottomLeftPosition = inventorySlots[0].RectTransform.localPosition;
+
+        // Neighbors + Find bottom left location
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            inventorySlots[i].SetupNeighbors(inventorySlots, distanceBetweenSlots);
+
+            if (inventorySlots[i].RectTransform.localPosition.x < bottomLeftPosition.x)
+                bottomLeftPosition.x = inventorySlots[i].RectTransform.localPosition.x;
+
+            if (inventorySlots[i].RectTransform.localPosition.y < bottomLeftPosition.y)
+                bottomLeftPosition.y = inventorySlots[i].RectTransform.localPosition.y;
+        }
+
+        // Coordinates
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            Vector2 slotOffset = (Vector2)inventorySlots[i].RectTransform.localPosition - bottomLeftPosition;
+            Vector2Int slotCoordinates = new Vector2Int((int)(slotOffset.x / distanceBetweenSlots), (int)(slotOffset.y / distanceBetweenSlots));
+
+            inventorySlots[i].SetupCoordinates(slotCoordinates);
+        }
     }
+
+    #endregion
 
 
     #region Open / Close Functions
@@ -139,78 +205,36 @@ public class Inventory : MonoBehaviour
     #endregion
 
 
-    #region Initialisation Functions
+    #region Others
 
-    public void SetupPosition(RectTransform hiddenPosRectTr, RectTransform showedPosRectTr, RectTransform lootParent)
+    public InventorySlot[] GetSlots()
     {
-        _hiddenRectTr = hiddenPosRectTr;
-        _showedRectTr = showedPosRectTr;
-        _lootParent = lootParent;
+        return inventorySlots;
+    }
 
-        _rectTransform = GetComponent<RectTransform>();
+    private Vector2Int GetInventoryDimensions()
+    {
+        Vector2Int result = Vector2Int.zero;
+
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            if (inventorySlots[i].SlotCoordinates.x > result.x)
+                result.x = inventorySlots[i].SlotCoordinates.x;
+
+            if (inventorySlots[i].SlotCoordinates.y > result.y)
+                result.y = inventorySlots[i].SlotCoordinates.y;
+        }
+
+        return result;
+    }
+
+    public void RebootPosition()
+    {
+        _rectTransform.SetParent(originalParent);
+        _lootParent.SetParent(originalLootParentParent);
+
         _rectTransform.position = _hiddenRectTr.position;
-    }
-
-    public void InitialiseInventory(Hero hero)
-    {
-        associatedHero = hero;
-
-        inventorySlots = _slotsParent.GetComponentsInChildren<InventorySlot>();
-        upgradeSlots1 = _upgrade1SlotsParent.GetComponentsInChildren<InventorySlot>();
-        upgradeSlots2 = _upgrade2SlotsParent.GetComponentsInChildren<InventorySlot>();
-        SetupSlots();
-
-        Vector2Int inventoryDimensions = GetInventoryDimensions();
-        inventorySlotsTab = new InventorySlot[inventoryDimensions.x + 1, inventoryDimensions.y + 1];
-
-        for(int i = 0; i < inventorySlots.Length; i++) 
-        {
-            inventorySlotsTab[inventorySlots[i].SlotCoordinates.x, inventorySlots[i].SlotCoordinates.y] = inventorySlots[i];
-        }
-
-        for (int i = 0; i < inventorySlots.Length; i++)
-        {
-            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
-        }
-
-        for (int i = 0; i < upgradeSlots1.Length; i++)
-        {
-            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
-            upgradeSlots1[i].gameObject.SetActive(false);
-        }
-
-        for (int i = 0; i < upgradeSlots2.Length; i++)
-        {
-            inventorySlots[i].SetupReferences(_lootParent, _slotsParent, _overlayedSlotsParent, this);
-            upgradeSlots2[i].gameObject.SetActive(false);
-        }
-    }
-
-
-    private void SetupSlots()
-    {
-        Vector2 bottomLeftPosition = inventorySlots[0].RectTransform.localPosition;
-
-        // Neighbors + Find bottom left location
-        for (int i = 0; i < inventorySlots.Length; i++)
-        {
-            inventorySlots[i].SetupNeighbors(inventorySlots, distanceBetweenSlots);
-
-            if(inventorySlots[i].RectTransform.localPosition.x < bottomLeftPosition.x)
-                bottomLeftPosition.x = inventorySlots[i].RectTransform.localPosition.x;
-
-            if (inventorySlots[i].RectTransform.localPosition.y < bottomLeftPosition.y)
-                bottomLeftPosition.y = inventorySlots[i].RectTransform.localPosition.y;
-        }
-
-        // Coordinates
-        for (int i = 0; i < inventorySlots.Length; i++)
-        {
-            Vector2 slotOffset = (Vector2)inventorySlots[i].RectTransform.localPosition - bottomLeftPosition;
-            Vector2Int slotCoordinates = new Vector2Int((int)(slotOffset.x / distanceBetweenSlots), (int)(slotOffset.y / distanceBetweenSlots));
-
-            inventorySlots[i].SetupCoordinates(slotCoordinates);
-        }
+        _lootParent.position = _hiddenRectTr.position;
     }
 
     #endregion
@@ -221,14 +245,14 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < inventorySlots.Length; i++)
         {
             List<InventorySlot> overlayedSlots = GetOverlayedCoordinates(inventorySlots[i].SlotCoordinates, item.LootData.spaceTaken);
-            if (overlayedSlots is null) continue;
+            if (overlayedSlots.Count == 0) continue;
 
             item.PlaceInInventory(overlayedSlots);
             return;
         }
     }
 
-    private List<InventorySlot> GetOverlayedCoordinates(Vector2Int bottomLeftCoord, SpaceTakenRow[] spaceTaken)
+    public List<InventorySlot> GetOverlayedCoordinates(Vector2Int bottomLeftCoord, SpaceTakenRow[] spaceTaken)
     {
         List<InventorySlot> validSlots = new List<InventorySlot>();
 
@@ -239,8 +263,8 @@ public class Inventory : MonoBehaviour
                 Vector2Int currentCoord = bottomLeftCoord + new Vector2Int(x, y);
                 InventorySlot currentSlot = GetSlotAtCoord(currentCoord);
 
-                if (currentSlot is null) return null;    // If the placement isn't valid
-                if (currentSlot.VerifyHasLoot()) return null;
+                if (currentSlot is null) return new List<InventorySlot>();    // If the placement isn't valid
+                if (currentSlot.VerifyHasLoot()) return new List<InventorySlot>();
                 validSlots.Add(currentSlot);             // If the placement is valid
             }
         }
@@ -251,7 +275,7 @@ public class Inventory : MonoBehaviour
     private InventorySlot GetSlotAtCoord(Vector2Int coord)
     {
         if(coord.x < 0 || coord.y < 0) return null;
-        if (coord.x >= inventorySlotsTab.GetLength(0) || coord.x >= inventorySlotsTab.GetLength(1)) return null;
+        if (coord.x >= inventorySlotsTab.GetLength(0) || coord.y >= inventorySlotsTab.GetLength(1)) return null;
         return inventorySlotsTab[coord.x, coord.y];
     }
 }

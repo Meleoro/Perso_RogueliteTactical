@@ -50,6 +50,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 1
+  buffVFX: {fileID: 681623016373210144, guid: 65722577af6b2cf48bc5018986b195f6, type: 3}
+  debuffVFX: {fileID: 7845840632209546155, guid: fe1f168013654594da5974d28c188584, type: 3}
   shieldVFX: {fileID: 4073576334773073123, guid: d3ea12f10502ea84c86aeea07470278a, type: 3}
   healVFX: {fileID: 3493669056963546257, guid: 0ae6680a16c47224daefd2e67649e76f, type: 3}
   overlayColor: {r: 1, g: 1, b: 1, a: 1}
@@ -58,6 +60,7 @@ MonoBehaviour:
   unitsTurnColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _ui: {fileID: 1987359570940192128}
   _spriteRenderer: {fileID: 8929217451348358929}
+  _stunVFX: {fileID: 0}
   _animator: {fileID: 2865990679414596872}
   _unitAnimsInfos: {fileID: 4674991809401278559}
   aiData: {fileID: 11400000, guid: 6c6390c7d8b059241a2bed3c1f6eed5e, type: 2}
@@ -65,7 +68,6 @@ MonoBehaviour:
   lootPrefab: {fileID: 6116046027794798314, guid: 8529cd8fcc49e9f4f958669b6e3cdac4, type: 3}
   coinPrefab: {fileID: 4481646905077759251, guid: 387ecc4f9a2d12c4bbbe25e444bac85e, type: 3}
   isBoss: 0
-  isElite: 0
   _eliteVFX: {fileID: 8572300150965941542}
 --- !u!95 &2865990679414596872
 Animator:

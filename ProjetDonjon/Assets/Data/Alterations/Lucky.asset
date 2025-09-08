@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alterationName: Lucky
   alterationDescription: Double the unit's luck
-  alterationIcon: {fileID: -2134214469, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  alterationIcon: {fileID: 541444313, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 7
   isPositive: 1
   isInfinite: 0

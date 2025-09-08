@@ -8,7 +8,9 @@ public enum UIState
 {
     Nothing,
     Inventories,
-    HeroesInfos
+    HeroesInfos,
+    SkillTrees,
+    Skills
 }
 
 public class UIManager : GenericSingletonClass<UIManager>
@@ -40,6 +42,8 @@ public class UIManager : GenericSingletonClass<UIManager>
     [Header("References")]
     [SerializeField] private InventoriesManager _inventoriesManager;
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
+    [SerializeField] private SkillTreeManager _skillTreesManager;
+    [SerializeField] private SkillsMenu _skillsMenu;
     [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
     [SerializeField] private Image _transitionFadeImage;
     [SerializeField] private CoinUI _coinUI;
@@ -61,6 +65,12 @@ public class UIManager : GenericSingletonClass<UIManager>
 
         _heroInfosScreen.Open += () => currentState = UIState.HeroesInfos;
         _heroInfosScreen.Close += () => currentState = UIState.Nothing;
+
+        _skillTreesManager.OnSkillTreeOpen += () => currentState = UIState.SkillTrees;
+        _skillTreesManager.OnSkillTreeClose += () => currentState = UIState.Nothing;
+
+        _skillsMenu.OnShow += () => currentState = UIState.Skills;
+        _skillsMenu.OnHide += () => currentState = UIState.Nothing;
 
         _transitionFadeImage.color = new Color(_transitionFadeImage.color.r, _transitionFadeImage.color.g, _transitionFadeImage.color.b, 1);
         StartCoroutine(FloorTransitionText.IntroCoroutine(2f));
@@ -85,6 +95,16 @@ public class UIManager : GenericSingletonClass<UIManager>
                     if (!_inventoriesManager.VerifyCanOpenCloseInventory()) return;
                     _inventoriesManager.OpenInventories();
                 }
+
+                if (InputManager.wantsToSkillTree)
+                {
+                    _skillTreesManager.Show();
+                }
+
+                if (InputManager.wantsToSkills)
+                {
+                    _skillsMenu.Show(); 
+                }
                 break;
 
 
@@ -107,6 +127,20 @@ public class UIManager : GenericSingletonClass<UIManager>
                     currentState = UIState.Nothing;
                 }
                 break;
+
+            case UIState.SkillTrees:
+                if (InputManager.wantsToSkillTree)
+                {
+                    _skillTreesManager.Hide();
+                }
+                break;
+
+            case UIState.Skills:
+                if (InputManager.wantsToSkills)
+                {
+                    _skillsMenu.Hide();
+                }
+                break;
         }
     }
 
@@ -116,7 +150,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     }
 
 
-    public void FadeScreen(float duration, int finalValue)
+    public void FadeScreen(float duration, float finalValue)
     {
         _transitionFadeImage.UFadeImage(duration, finalValue);
     }

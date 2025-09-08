@@ -1,12 +1,6 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public struct HeroSkillStruct
-{
-    public SkillData skill;
-    public int levelToUnlock;
-}
 
 [CreateAssetMenu(fileName = "HeroData", menuName = "Scriptable Objects/HeroData")]
 public class HeroData : UnitData
@@ -18,5 +12,9 @@ public class HeroData : UnitData
     public Inventory heroInventoryPrefab;
 
     [Header("Hero Skills")]
-    public HeroSkillStruct[] heroSkills;
+    public SkillData[] heroBaseSkills;
+    public SkillData[] heroSkillPool;
+    public PassiveData[] heroPassivePool;
+    public int[] heroSkillSlotsUnlockedLevels = new int[6];
+    public int[] heroPassiveSlotsUnlockedLevels = new int[3];
 }

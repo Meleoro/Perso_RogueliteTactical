@@ -40,17 +40,37 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     private GenProPathCalculator _pathCalculator;
 
 
-    private void Start()
+    #region Start / End Exploration
+
+    public void StartExploration(EnviroData enviroData)
     {
+        this.enviroData = enviroData;
+
         trailFloorsIndexes = new int[2];
         trailFloorsIndexes[0] = Random.Range(0, 2);
         trailFloorsIndexes[1] = Random.Range(3, 5);
 
+        _heroesManager.StartExploration(spawnPos);
         GenerateFloor(enviroData);
-        _heroesManager.Initialise(null, spawnPos);
         StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.15f));
     }
 
+
+    public void EndExploration()
+    {
+        Transform[] objToDestroy = _roomsParent.GetComponentsInChildren<Transform>();
+
+        foreach (Transform obj in objToDestroy)
+        {
+            if (obj == transform) continue;
+            Destroy(obj.gameObject);
+        }
+    }
+
+    #endregion
+
+
+    #region Generate Floors
 
     public void GenerateNextFloor()
     {
@@ -219,6 +239,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         }
     }
 
+    #endregion
 
 
     #region Utility Functions

@@ -3,12 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.Rendering.Universal;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utilities;
+using static Enums;
 
 public class BattleManager : GenericSingletonClass<BattleManager>
 {
@@ -33,6 +31,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     private Unit currentUnit;
     private SkillData currentSkill;
     private BattleTile currentSkillBaseTile;
+    private int currentVFXIndex;
 
     [Header("Public Infos")]
     public Room BattleRoom { get {  return battleRoom; } }
@@ -58,11 +57,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     private void Update()
     {
         if (!isInBattle) return;
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            EndBattle();
-        }
     }
 
 
@@ -147,6 +141,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         for(int i = 0; i < HeroesManager.Instance.Heroes.Length; i++)
         {
+            if (HeroesManager.Instance.Heroes[i].CurrentHealth <= 0) continue;
             AddUnit(HeroesManager.Instance.Heroes[i]);
         }
         for (int i = 0; i < battleRoom.RoomEnemies.Count; i++)
@@ -181,8 +176,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         for (int i = deadHeroes.Count() - 1; i >= 0; i--)
         {
-            deadHeroes[i].HideOutline();
-            deadHeroes[i].Heal(1);
+            //deadHeroes[i].HideOutline();
+            //deadHeroes[i].Heal(1);
         }
         deadHeroes.Clear();
 
@@ -242,19 +237,22 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
 
         List<Vector2Int> path = _pathCalculator.GetPath(currentUnit.CurrentTile.TileCoordinates, aimedTile.TileCoordinates, useDiagonals);
-        BattleTile[] pathTiles =  new BattleTile[path.Count - 1];
-
-        for(int i = 1; i < path.Count; i++)
+        if(path.Count > 0)
         {
-            pathTiles[i-1] = battleRoom.PlacedBattleTiles[path[i].x, path[i].y];
+            BattleTile[] pathTiles = new BattleTile[path.Count - 1];
+
+            for (int i = 1; i < path.Count; i++)
+            {
+                pathTiles[i - 1] = battleRoom.PlacedBattleTiles[path[i].x, path[i].y];
+            }
+
+            StartCoroutine(currentUnit.MoveUnitCoroutine(pathTiles));
+            ResetTiles();
+
+            StartCoroutine(CameraManager.Instance.FocusOnTrCoroutine(pathTiles[pathTiles.Length - 1].transform, 5f, 0.4f));
+
+            yield return new WaitForSeconds(path.Count * 0.1f);
         }
-
-        StartCoroutine(currentUnit.MoveUnitCoroutine(pathTiles));
-        ResetTiles();
-
-        StartCoroutine(CameraManager.Instance.FocusOnTrCoroutine(pathTiles[pathTiles.Length-1].transform, 5f, 0.4f));
-
-        yield return new WaitForSeconds(path.Count * 0.1f);
 
         if(CurrentUnit.GetType() == typeof(Hero))
         {
@@ -293,12 +291,14 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         return result.ToArray();
     }
 
+
     public IEnumerator UseSkillCoroutine(SkillData usedSkill)
     {
         if (usedSkill == null) usedSkill = currentSkill;
         OnSkillUsed.Invoke();
 
         BattleTile[] skillBattleTiles = GetAllSkillTiles().ToArray();
+        currentVFXIndex = 0;
 
         // We verify is the attack is crit
         bool isCrit = false;
@@ -309,23 +309,37 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
 
         // We launch the animations / others effects
-        StartCoroutine(CameraManager.Instance.DoAttackFeelCoroutine(CurrentUnit._unitAnimsInfos, isCrit));
+        StartCoroutine(CameraManager.Instance.DoAttackFeelCoroutine(skillBattleTiles, CurrentUnit._unitAnimsInfos, isCrit));
         CurrentUnit._animator.SetBool("IsCrit", isCrit);
         CurrentUnit._animator.SetTrigger(usedSkill.animName);
 
         // We wait the moment the skill applies it's effect
+        int wantedAttackCount = usedSkill.attackCount, currentAttackCount = 0;
+        bool applied = false;
         while (true)
         {
             yield return new WaitForEndOfFrame();
 
-            if (CurrentUnit._unitAnimsInfos.PlaySkillEffect)
-                break;
-        }
+            if (CurrentUnit._unitAnimsInfos.PlaySkillEffect && !applied)
+            {
+                currentAttackCount++;
+                applied = true;
 
-        // We apply the skill effect
-        for (int i = 0; i < skillBattleTiles.Length; i++)
-        {
-            ApplySkillOnTile(skillBattleTiles[i], usedSkill, currentUnit, isCrit);
+                // We apply the skill effect
+                PlaySkillVFX(skillBattleTiles, usedSkill);
+                for (int i = 0; i < skillBattleTiles.Length; i++)
+                {
+                    ApplySkillOnTile(skillBattleTiles[i], usedSkill, currentUnit, isCrit);
+                }
+
+                if (currentAttackCount >= wantedAttackCount) break;
+            }
+
+
+            if (!CurrentUnit._unitAnimsInfos.PlaySkillEffect)
+            {
+                applied = false;
+            }
         }
 
         ResetTiles();
@@ -367,13 +381,10 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     private void ApplySkillOnTile(BattleTile battleTile, SkillData usedSkill, Unit unit, bool isCrit)
     {
-        if(usedSkill.VFX != null)
-        {
-            Instantiate(usedSkill.VFX, battleTile.UnitOnTile.transform.position, Quaternion.Euler(0, 0, 0));
-        }
-
         for (int i = 0; i < usedSkill.skillEffects.Length; i++)
         {
+            if (usedSkill.skillEffects[i].onlyOnCrit && !isCrit) continue;
+
             // We verify the effect applies on the unit type on the tile
             switch (usedSkill.skillEffects[i].skillEffectTargetType)
             {
@@ -406,7 +417,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             switch (usedSkill.skillEffects[i].skillEffectType)
             {
                 case SkillEffectType.Damage:
-                    // Thorn
                     if (isCrit) battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower 
                         * unit.CurrentStrength * unit.CurrentCritMultiplier), unit);
                     else battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower * unit.CurrentStrength), unit);
@@ -427,9 +437,86 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
     }
 
+    private void PlaySkillVFX(BattleTile[] battleTile, SkillData usedSkill)
+    {
+        if (usedSkill.VFXs.Length == 0 && usedSkill.downVFX == null) return;
+
+        Vector2Int coordDif = currentSkillBaseTile.TileCoordinates - currentUnit.CurrentTile.TileCoordinates;
+
+        // We Choose the VFX to play
+        GameObject usedVFX = null;
+        if(usedSkill.VFXs.Length == 0)
+        {
+            if(coordDif.x > 0) usedVFX = usedSkill.rightVFX;
+            else if(coordDif.x < 0) usedVFX = usedSkill.leftVFX;
+            else if(coordDif.y > 0) usedVFX = usedSkill.upVFX;
+            else usedVFX = usedSkill.downVFX;
+        }
+        else
+        {
+            usedVFX = usedSkill.VFXs[currentVFXIndex];
+        }
+
+        // We play the VFX
+        if (usedSkill.VFXs.Length > currentVFXIndex && !usedSkill.onTargetVFX && usedSkill.oneVFXPerTile)
+        {
+            foreach (BattleTile tile in battleTile)
+            {
+                GameObject newVFX = Instantiate(usedVFX, tile.UnitOnTile.transform.position, Quaternion.Euler(0, 0, 0));
+                AdaptVFXVisuals(newVFX, coordDif, usedSkill);
+            }
+        }
+        else if (usedSkill.VFXs.Length > currentVFXIndex && usedSkill.onTargetVFX)
+        {
+            foreach (BattleTile tile in battleTile)
+            {
+                if (tile.UnitOnTile is null) continue;
+                GameObject newVFX = Instantiate(usedVFX, tile.UnitOnTile.transform.position, Quaternion.Euler(0, 0, 0));
+                AdaptVFXVisuals(newVFX, coordDif, usedSkill);
+            }
+        }
+        else
+        {
+            Vector3 middlePos = Vector2.zero;
+            foreach (BattleTile tile in battleTile)
+            {
+                middlePos += tile.transform.position;
+            }
+            middlePos /= battleTile.Length;
+
+            GameObject newVFX = Instantiate(usedVFX, middlePos, Quaternion.Euler(0, 0, 0));
+            AdaptVFXVisuals(newVFX, coordDif, usedSkill);
+        }
+
+        currentVFXIndex++;
+    }
+
+    private void AdaptVFXVisuals(GameObject vfx, Vector2Int coordDif, SkillData skillData)
+    {
+        if (skillData.mirrorHorizontalVFX)
+        {
+            Debug.Log(coordDif);
+
+            if (coordDif.x < 0) 
+                vfx.transform.localScale = new Vector3(-1 * vfx.transform.localScale.x, vfx.transform.localScale.y, vfx.transform.localScale.z);
+        }
+
+        if (skillData.mirrorVerticalVFX)
+        {
+            if (coordDif.y > 0)
+                vfx.transform.localScale = new Vector3(vfx.transform.localScale.x, -1 * vfx.transform.localScale.y, vfx.transform.localScale.z);
+        }
+
+        if (skillData.rotateVFX)
+        {
+            vfx.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(coordDif.y, coordDif.x) * Mathf.Rad2Deg);
+        }
+    }
+
     private void SummonUnit(AIUnit prefab, BattleTile tile)
     {
         AIUnit unit = Instantiate(prefab, transform);
+        unit.Initialise(false);
         unit.MoveUnit(tile);
 
         AddUnit(unit);
@@ -443,7 +530,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     #region Tiles Functions
 
-    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool checkReachable = true, bool useDiagonals = false, bool blockedByUnits = false, BattleTile ignoredTile = null)
+    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool useDiagonals = false, 
+        ObstacleType obstacleType = ObstacleType.Nothing, BattleTile ignoredTile = null)
     {
         List<BattleTile> returnedTiles = new List<BattleTile>();
 
@@ -451,13 +539,15 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         {
             if (!patern[i]) continue;
 
-            Vector2Int currentCoord = new Vector2Int(i / paternSize, i % paternSize);
+            Vector2Int currentCoord = new Vector2Int(i % paternSize, i / paternSize);
             Vector2Int coordAccordingToCenter = new Vector2Int(currentCoord.x - (int)(paternSize * 0.5f), currentCoord.y - (int)(paternSize * 0.5f));
             BattleTile battleTile = battleRoom.GetBattleTile(paternMiddle + coordAccordingToCenter);
 
-            if (checkReachable && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, useDiagonals, ignoredTile)) continue;
             if (battleTile is null) continue;
-            if (battleTile.UnitOnTile is not null && blockedByUnits && ignoredTile != battleTile) continue;
+            if (obstacleType != ObstacleType.Nothing && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, 
+                useDiagonals, obstacleType, ignoredTile)) continue;
+            if (battleTile.UnitOnTile is not null && (obstacleType == ObstacleType.Units || obstacleType == ObstacleType.All) 
+                && ignoredTile != battleTile) continue;
 
             returnedTiles.Add(battleTile);
         }
@@ -473,7 +563,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         if (skill is not null) currentSkill = skill;
         if (baseTile is not null) currentSkillBaseTile = baseTile;
 
-        List<BattleTile> skillTiles = GetPaternTiles(currentSkillBaseTile.TileCoordinates, currentSkill.skillPatern, (int)Mathf.Sqrt(currentSkill.skillPatern.Length));
+        List<BattleTile> skillTiles = GetPaternTiles(currentSkillBaseTile.TileCoordinates, currentSkill.skillPatern, 
+            (int)Mathf.Sqrt(currentSkill.skillPatern.Length), true, 
+            currentSkill.skillType != SkillType.SkillArea ? ObstacleType.UnitsIncluded : ObstacleType.Nothing);
 
         for(int i = 0; i < skillTiles.Count; i++)
         {
@@ -502,20 +594,32 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 {
                     Vector2Int coordinateDif = overlayedTile.TileCoordinates - CurrentUnit.CurrentTile.TileCoordinates;
 
-                    if(coordinateDif.y != 0)
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternVertical, (int)Mathf.Sqrt(skill.skillAOEPaternVertical.Length), false);
+                    if (coordinateDif.y > 0)
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternUp,
+                            (int)Mathf.Sqrt(skill.skillAOEPaternUp.Length), false, Enums.ObstacleType.UnitsIncluded);
+
+                    else if (coordinateDif.y < 0)
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternDown,
+                            (int)Mathf.Sqrt(skill.skillAOEPaternDown.Length), false, Enums.ObstacleType.UnitsIncluded);
+
+                    else if (coordinateDif.x > 0)
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternRight,
+                            (int)Mathf.Sqrt(skill.skillAOEPaternRight.Length), false, Enums.ObstacleType.UnitsIncluded);
 
                     else
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternHorizontal, (int)Mathf.Sqrt(skill.skillAOEPaternHorizontal.Length), false);
+                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternLeft,
+                            (int)Mathf.Sqrt(skill.skillAOEPaternLeft.Length), false, Enums.ObstacleType.UnitsIncluded);
                 }
                 else
                 {
-                    skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPatern, (int)Mathf.Sqrt(skill.skillAOEPatern.Length), false);
+                    skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPatern, (int)Mathf.Sqrt(skill.skillAOEPatern.Length), false,
+                        ObstacleType.UnitsIncluded);
                 }
                 break;
 
             case SkillType.SkillArea:
-                skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length), false);
+                skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length), 
+                    false, ObstacleType.Nothing);
                 break;
         }
 
@@ -537,7 +641,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         {
             case PreviewType.Move:
                 tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern, 
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, true);
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
 
                 for (int i = 0; i < tiles.Count; i++)
                 {
@@ -558,12 +662,12 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
             case PreviewType.MoveAndAttack:
                 tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern,
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, true);
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
 
                 for (int i = 0; i < tiles.Count; i++)
                 {
                     secondaryTiles = GetPaternTiles(tiles[i].TileCoordinates, enemy.CurrentSkillData.skillPatern,
-                        (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true);
+                        (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true, ObstacleType.UnitsIncluded);
 
                     for (int j = 0; j < secondaryTiles.Count; j++)
                     {

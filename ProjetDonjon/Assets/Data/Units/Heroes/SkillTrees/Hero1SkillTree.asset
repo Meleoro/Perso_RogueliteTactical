@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce4fd714fa06dc74f9818a63ade6b1a5, type: 3}
+  m_Name: Hero1SkillTree
+  m_EditorClassIdentifier: 
+  skillTreeRows:
+  - rowNodes:
+    - skillData: {fileID: 11400000, guid: 3e9e6851cb1de5f4881e4da65eeb70be, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0000000001000000
+    - skillData: {fileID: 11400000, guid: f44070f45bf8eef4fa0c3cd0127b3dd9, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0100000002000000
+  - rowNodes:
+    - skillData: {fileID: 11400000, guid: d48cbcc9ff9e4954181e2e2cbef64e59, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 00000000
+    - skillData: {fileID: 11400000, guid: ce727c256b1a6c54998de1ab3ed0221a, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 01000000
+    - skillData: {fileID: 11400000, guid: 1de13370fed095c459d3b7f5f12f9943, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 315935237, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 02000000
+  - rowNodes:
+    - skillData: {fileID: 11400000, guid: a9b1a4eecfde815429f4d14d921f0d71, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 00000000
+    - skillData: {fileID: 11400000, guid: 304aa12bf95e1b4449436896720ae892, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 908435436, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0000000001000000
+    - skillData: {fileID: 0}
+      passiveData: {fileID: 11400000, guid: e620cdfced962df4bafc3cc286c139d2, type: 2}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 01000000
+  - rowNodes:
+    - skillData: {fileID: 0}
+      passiveData: {fileID: 11400000, guid: ccdb142059ffbfe4bb55183d67008cc9, type: 2}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0000000001000000
+    - skillData: {fileID: 0}
+      passiveData: {fileID: 11400000, guid: cb10a74eed1c0b743b4cf3ff71284f7a, type: 2}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0100000002000000
+  - rowNodes:
+    - skillData: {fileID: 11400000, guid: 5cd70294ab216df4d9a27b744eb270d7, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 00000000
+    - skillData: {fileID: 11400000, guid: afae5e465a89fd743a661d6ae1af990b, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 0000000001000000
+    - skillData: {fileID: 11400000, guid: a9d6c95e76b7ddc44bb43aee2515c06e, type: 2}
+      passiveData: {fileID: 0}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 01000000
+  - rowNodes:
+    - skillData: {fileID: 0}
+      passiveData: {fileID: 11400000, guid: 53daaae079061454984c360fe6ed8f1e, type: 2}
+      icon: {fileID: 833979996, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 
+    - skillData: {fileID: 0}
+      passiveData: {fileID: 11400000, guid: 0f0e940186ea0dd458168a5520422c5b, type: 2}
+      icon: {fileID: 1320192300, guid: c9f013acfd912164c907920db08e81f5, type: 3}
+      connectedNextNodeIndexes: 

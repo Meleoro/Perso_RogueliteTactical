@@ -40,6 +40,7 @@ public class AIUnit : Unit
     [SerializeField] private ParticleSystem _eliteVFX;
 
 
+
     #region Setup
 
     public void Initialise(bool isElite)
@@ -225,6 +226,12 @@ public class AIUnit : Unit
 
     public IEnumerator PlayEnemyTurnCoroutine()
     {
+        if (IsStunned)
+        {
+            EndTurn(0f);
+            yield break;
+        }
+
         SetupAimedTiles();
 
         yield return new WaitForSeconds(0.5f);
@@ -280,7 +287,8 @@ public class AIUnit : Unit
     private (BattleTile, BattleTile) GetBestMove(BattleTile currentTile, int depth = 0, int maxDepth = 0)
     {
         BattleTile[] possibleMoves = 
-            BattleManager.Instance.GetPaternTiles(currentTile.TileCoordinates, AIData.movePatern, (int)Mathf.Sqrt(AIData.movePatern.Length), true).ToArray();
+            BattleManager.Instance.GetPaternTiles(currentTile.TileCoordinates, AIData.movePatern, (int)Mathf.Sqrt(AIData.movePatern.Length), 
+            true, Enums.ObstacleType.All).ToArray();
         int bestGrade = -1000;
         BattleTile pickedMoveTile = currentTile;
         BattleTile pickedSkillTile = null;
@@ -325,7 +333,7 @@ public class AIUnit : Unit
 
                 if (currentSkillData.skillType == SkillType.SkillArea) possibleSkillTiles = new BattleTile[1] { possibleMoves[i] };
                 else possibleSkillTiles = BattleManager.Instance.GetPaternTiles(possibleMoves[i].TileCoordinates, currentSkillData.skillPatern,
-                        (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true, false, false, currentTile).ToArray();
+                        (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true, Enums.ObstacleType.UnitsIncluded, currentTile).ToArray();
 
                 for (int j = 0; j < possibleSkillTiles.Length; j++)
                 {
@@ -360,24 +368,32 @@ public class AIUnit : Unit
         if (currentSkillData.skillType == SkillType.SkillArea)
         {
             skillDangerTiles = BattleManager.Instance.GetPaternTiles(movePos,
-                currentSkillData.skillPatern, (int)Mathf.Sqrt(currentSkillData.skillPatern.Length)).ToArray();
+                currentSkillData.skillPatern, (int)Mathf.Sqrt(currentSkillData.skillPatern.Length), true, Enums.ObstacleType.Nothing).ToArray();
         }
         else if (currentSkillData.useOrientatedAOE)
         {
             Vector2Int coordinateDif = skillPos - CurrentTile.TileCoordinates;
 
-            if (coordinateDif.y != 0)
-                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternVertical,
-                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternVertical.Length), false).ToArray();
+            if (coordinateDif.y > 0)
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternUp,
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternUp.Length), false, Enums.ObstacleType.UnitsIncluded).ToArray();
+
+            else if(coordinateDif.y < 0)
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternDown,
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternDown.Length), false, Enums.ObstacleType.UnitsIncluded).ToArray();
+
+            else if (coordinateDif.x > 0)
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternRight,
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternRight.Length), false, Enums.ObstacleType.UnitsIncluded).ToArray();
 
             else
-                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternHorizontal,
-                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternHorizontal.Length), false).ToArray();
+                skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPaternLeft,
+                    (int)Mathf.Sqrt(currentSkillData.skillAOEPaternLeft.Length), false, Enums.ObstacleType.UnitsIncluded).ToArray();
         }
         else
         {
-            skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos,
-                currentSkillData.skillAOEPatern, (int)Mathf.Sqrt(currentSkillData.skillAOEPatern.Length)).ToArray();
+            skillDangerTiles = BattleManager.Instance.GetPaternTiles(skillPos, currentSkillData.skillAOEPatern, 
+                (int)Mathf.Sqrt(currentSkillData.skillAOEPatern.Length), true, Enums.ObstacleType.UnitsIncluded).ToArray();
         }
 
         return skillDangerTiles;
@@ -439,6 +455,8 @@ public class AIUnit : Unit
     protected override void Die()
     {
         currentTile.UnitLeaveTile();
+
+        HeroesManager.Instance.SpawnXP(AIData.minXpDrop, transform.position);
 
         if(BattleManager.Instance.CurrentEnemies.Count == 1 || isBoss)
         {

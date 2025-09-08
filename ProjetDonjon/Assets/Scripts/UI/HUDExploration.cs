@@ -15,6 +15,8 @@ public class HUDExploration : MonoBehaviour
     [SerializeField] private Animator _animator;
     [SerializeField] private InventoriesManager _inventoryManager;
     [SerializeField] private HeroInfosScreen _heroInfosScreen;
+    [SerializeField] private SkillTreeManager _skillTreeScreen;
+    [SerializeField] private SkillsMenu _skillsMenu;
 
 
     private void Start()
@@ -23,10 +25,14 @@ public class HUDExploration : MonoBehaviour
         _heroInfosScreen.Close += Show;
         _inventoryManager.OnInventoryOpen += Hide;
         _inventoryManager.OnInventoryClose += Show;
+        _skillTreeScreen.OnSkillTreeOpen += Hide;
+        _skillTreeScreen.OnSkillTreeClose += Show;
         BattleManager.Instance.OnBattleStart += Hide;
         BattleManager.Instance.OnBattleEnd += Show;
+        _skillsMenu.OnShow += Hide;
+        _skillsMenu.OnHide += Show;
 
-        foreach(var button in _buttonsImages)
+        foreach (var button in _buttonsImages)
         {
             Material material = button.material;
             Material material2 = new Material(material);
@@ -82,6 +88,20 @@ public class HUDExploration : MonoBehaviour
         if (!isDisplayed) return;
 
         StartCoroutine(_heroInfosScreen.OpenInfosScreenCoroutine());
+    }
+
+    public void ClickSkill()
+    {
+        if (!isDisplayed) return;
+
+        _skillTreeScreen.Show();
+    }
+
+    public void ClickSkillTree()
+    {
+        if (!isDisplayed) return;
+
+        _skillsMenu.Show();
     }
 
     #endregion

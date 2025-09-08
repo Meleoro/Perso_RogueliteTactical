@@ -7,24 +7,20 @@ public class Alteration : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private Color buffColor;
     [SerializeField] private Color debuffColor;
-    [SerializeField] private Sprite attackSprite;
-    [SerializeField] private Sprite speedSprite;
-    [SerializeField] private Sprite shieldSprite;
-    [SerializeField] private Sprite provocationSprite;
-    [SerializeField] private Sprite buffSprite;
-    [SerializeField] private Sprite debuffSprite;
 
     [Header("Private Infos")]
     private AlterationStruct currentData;
+    private Unit attachedUnit;
     private bool isDisplayed;
 
     [Header("References")]
     [SerializeField] private Image _image;
 
 
-    private void Setup(AlterationStruct info)
+    private void Setup(AlterationStruct info, Unit unit)
     {
         currentData = info;
+        attachedUnit = unit;
 
         _image.sprite = info.alteration.alterationIcon;
 
@@ -41,15 +37,14 @@ public class Alteration : MonoBehaviour
 
     #region Appear / Disappear
 
-    public void Appear(AlterationStruct info)
+    public void Appear(AlterationStruct info, Unit unit)
     {
-        Setup(info);
+        Setup(info, unit);
         _image.enabled = true;
 
         if (!isDisplayed)
         {
             isDisplayed = true;
-
         }
     }
 
@@ -68,10 +63,10 @@ public class Alteration : MonoBehaviour
 
 
     #region Mouse Inputs
-
+    
     public void OverlayAlteration()
     {
-        UIManager.Instance.AlterationDetailsPanel.OpenDetails(transform.position, currentData);
+        UIManager.Instance.AlterationDetailsPanel.OpenDetails(transform.position, currentData, attachedUnit);
     }
 
     public void QuitOverlayAlteration()

@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dbdbd1fa00c0946929de6036460233, type: 3}
   m_Name: Vulnerable
   m_EditorClassIdentifier: 
-  alterationName: Vulnerable
-  alterationDescription: This unit takes 50% more damages
-  alterationIcon: {fileID: 980239215, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  alterationName: VULNERABLE
+  alterationDescription: TAKES +50% DAMAGES
+  alterationIcon: {fileID: -389502807, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 2
   isPositive: 0
   isInfinite: 0
   isStackable: 0
   duration: 3
-  strength: 0.5
+  strength: 1.5

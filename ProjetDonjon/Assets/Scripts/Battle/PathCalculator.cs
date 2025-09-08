@@ -2,6 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using static Enums;
 
 public class PathCalculator
 {
@@ -221,7 +222,7 @@ public class PathCalculator
 
 
 
-    public bool VerifyIsReachable(Vector2Int start, Vector2Int end, bool useDiagonals, BattleTile ignoredTile)
+    public bool VerifyIsReachable(Vector2Int start, Vector2Int end, bool useDiagonals, ObstacleType obstacleType, BattleTile ignoredTile)
     {
         Vector2Int dir = end - start;
 
@@ -250,8 +251,9 @@ public class PathCalculator
             if(currentTile.battleTile != ignoredTile)
             {
                 if (currentTile.battleTile is null) return false;
-                if (currentTile.isBlocked) return false;
-                if (currentTile.battleTile.IsHole) return false;
+                if (currentTile.isBlocked && (obstacleType == ObstacleType.All || obstacleType == ObstacleType.Units 
+                    || obstacleType == ObstacleType.UnitsIncluded)) return false;
+                if (currentTile.battleTile.IsHole && (obstacleType == ObstacleType.All || obstacleType == ObstacleType.Holes)) return false;
             }
 
             currentCoord = currentTile.tilePos + dir;

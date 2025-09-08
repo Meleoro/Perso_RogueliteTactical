@@ -87,16 +87,22 @@ public class EquipmentSlot : MonoBehaviour
         if(callAction) OnEquipmentAdd?.Invoke(addedLoot, slotIndex);
     }
 
+
+
     public void RemoveEquipment(bool callAction)
     {
         _equipmentImage.sprite = null;
         _equipmentImage.enabled = false;
 
-        if(equipedLoot)
-            equipedLoot.Unequip();
-
-        if (callAction) OnEquipmentRemove?.Invoke(equipedLoot, slotIndex);
         equipedLoot = null;
+
+        if (callAction) 
+        {
+            if (equipedLoot)
+                equipedLoot.Unequip();
+
+            OnEquipmentRemove?.Invoke(equipedLoot, slotIndex); 
+        }
     }
 
     #endregion

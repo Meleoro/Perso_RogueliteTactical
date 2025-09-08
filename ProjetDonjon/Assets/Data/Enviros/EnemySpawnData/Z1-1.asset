@@ -15,7 +15,7 @@ MonoBehaviour:
   possibleEnemies:
   - enemyPrefab: {fileID: 4534582793652375552, guid: 70e303305ebdc8c468a69e20ccc80b88, type: 3}
     proba: 70
-    eliteProba: 100
+    eliteProba: 0
     maxCountPerBattle: 10
     minEnemyCountBeforeSpawn: 0
   - enemyPrefab: {fileID: 4534582793652375552, guid: 8ecdeba3a3418884a8b2ac8e334f3640, type: 3}

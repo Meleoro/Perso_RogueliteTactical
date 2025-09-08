@@ -51,6 +51,24 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "SkillTrees",
+                    "type": "Button",
+                    "id": "0349d121-9eb0-422a-9905-b86599b39000",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Skills",
+                    "type": "Button",
+                    "id": "44080859-041b-48fd-9316-b9ee65544d05",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "RotateLeft",
                     "type": "Button",
                     "id": "30809e02-f676-4c4a-bb54-c170be4b4062",
@@ -202,6 +220,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "HeroInfo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8dbaf473-91a4-4231-b3f8-b8d6675be1f6",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SkillTrees",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "75a811ae-15d0-4955-927d-c5aac69d419e",
+                    "path": "<Keyboard>/h",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skills",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

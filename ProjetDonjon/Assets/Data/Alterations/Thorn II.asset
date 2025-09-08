@@ -15,7 +15,7 @@ MonoBehaviour:
   alterationName: Thorn II
   alterationDescription: When the unit is attacked, inflicts 2 damage to the attacking
     unit
-  alterationIcon: {fileID: -388375028, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  alterationIcon: {fileID: 315588431, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   alterationType: 6
   isPositive: 1
   isInfinite: 1

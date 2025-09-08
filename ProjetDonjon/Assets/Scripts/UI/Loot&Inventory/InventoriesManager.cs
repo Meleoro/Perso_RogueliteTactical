@@ -23,6 +23,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [Header("Private Infos")]
     private Inventory[] heroesInventories = new Inventory[3];
     private List<InventorySlot> allSlots = new List<InventorySlot>();
+    private List<Loot> allLoots = new List<Loot>();
     private int inventoryInstantiatedAmount = 0;
 
     [Header("Public Infos")]
@@ -74,6 +75,11 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         return heroesInventories[index];
     }
 
+    public void AddSlots(InventorySlot[] addedSlots)
+    {
+        allSlots.AddRange(addedSlots);
+    }
+
 
     private IEnumerator ResetPosDelayCoroutine() 
     {
@@ -86,43 +92,26 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
         }
     }
 
-
-    public void AddItem(Loot loot)
+    // Opens the inventories and add a new item to place
+    public void AddItemToInventories(Loot loot)
     {
         if (!VerifyCanOpenCloseInventory()) return;
 
         OpenInventories();
     }
 
-    public InventorySlot VerifyIsOverlayingSlot(Vector3 raycastPos, Vector3 centerPos)
+    public void AddItem(Loot loot)
     {
-        float maxDist = 75f;
-        InventorySlot bestSlot = null;
-        float minDist1 = Mathf.Infinity;
-        List<InventorySlot> possibleSlots = new List<InventorySlot>();
+        allLoots.Add(loot);
+    }
 
-        for (int i = 0; i < allSlots.Count; i++)
-        {
-            float currentDist = Vector2.Distance(allSlots[i].RectTransform.InverseTransformPoint(raycastPos), Vector3.zero);
-            if (currentDist < maxDist)
-            {
-                currentDist += Vector2.Distance(allSlots[i].RectTransform.InverseTransformPoint(centerPos), Vector3.zero);
-                possibleSlots.Add(allSlots[i]);
-
-                if(currentDist < minDist1)
-                {
-                    bestSlot = allSlots[i];
-                    minDist1 = currentDist;  
-                }
-            }
-        }
-
-        return bestSlot;
+    public void RemoveItem(Loot loot)
+    {
+        allLoots.Remove(loot);
     }
 
 
     #region Open / Close Functions
-
 
     public bool VerifyCanOpenCloseInventory()
     {
@@ -195,6 +184,29 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     #endregion
 
 
+    #region GameFeel
+
+    public void HoverLoot(Loot hoveredLoot)
+    {
+        foreach(Loot loot in allLoots)
+        {
+            if (loot == hoveredLoot) continue;
+            loot.OverlayOtherLoot();
+        }
+    }
+
+    public void UnhoverLoot(Loot unhoveredLoot)
+    {
+        foreach (Loot loot in allLoots)
+        {
+            if (loot == unhoveredLoot) continue;
+            loot.QuitOverlayOtherLoot();
+        }
+    }
+
+    #endregion
+
+
     #region Others
 
     private IEnumerator SetupStartItemsCoroutine(Inventory inventoryPrefab, Hero hero)
@@ -209,6 +221,25 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
             inventoryPrefab.AutoPlaceItem(item);
         }
+    }
+
+    public InventorySlot VerifyIsOverlayingSlot(Vector3 raycastPos, Vector3 centerPos)
+    {
+        float maxDist = 75f;
+        InventorySlot bestSlot = null;
+        List<InventorySlot> possibleSlots = new List<InventorySlot>();
+
+        for (int i = 0; i < allSlots.Count; i++)
+        {
+            float currentDist = Vector2.Distance(allSlots[i].RectTransform.InverseTransformPoint(raycastPos), Vector3.zero);
+            if (currentDist < maxDist)
+            {
+                bestSlot = allSlots[i];
+                maxDist = currentDist;
+            }
+        }
+
+        return bestSlot;
     }
 
 

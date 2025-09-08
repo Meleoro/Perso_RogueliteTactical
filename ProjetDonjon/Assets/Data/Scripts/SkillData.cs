@@ -37,7 +37,7 @@ public struct SkillEffect
 
     public int additivePower;
     public float multipliedPower;
-    public int duration;
+    public bool onlyOnCrit;
 
     public AIUnit summonPrefab;
 }
@@ -57,12 +57,26 @@ public class SkillData : ScriptableObject
     [Header("Effects")]
     public SkillType skillType;
     public SkillEffect[] skillEffects;
-    public GameObject VFX;
+    [Min(1)] public int attackCount;
+
+    [Header("Visuals")]
+    public bool onTargetVFX;
+    public bool oneVFXPerTile;
+    public bool rotateVFX;
+    public bool mirrorHorizontalVFX;
+    public bool mirrorVerticalVFX;
+    public GameObject[] VFXs;
+    public GameObject leftVFX;
+    public GameObject rightVFX;
+    public GameObject upVFX;
+    public GameObject downVFX;
 
     [Header("Paterns")]
     public bool useOrientatedAOE;
     public bool[] skillPatern = new bool[15 * 15];
     public bool[] skillAOEPatern = new bool[9 * 9];
-    public bool[] skillAOEPaternHorizontal = new bool[9 * 9];
-    public bool[] skillAOEPaternVertical = new bool[9 * 9];
+    public bool[] skillAOEPaternLeft = new bool[9 * 9];
+    public bool[] skillAOEPaternRight = new bool[9 * 9];
+    public bool[] skillAOEPaternUp = new bool[9 * 9];
+    public bool[] skillAOEPaternDown = new bool[9 * 9];
 }

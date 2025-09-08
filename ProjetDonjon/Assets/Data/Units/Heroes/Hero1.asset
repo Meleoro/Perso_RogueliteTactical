@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a6480e1efa2d5341b3af49125052ea1, type: 3}
+  m_Name: Hero1
+  m_EditorClassIdentifier: 
+  unitName: KNIGHT
+  unitImage: {fileID: -5014593385331915717, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  baseHealth: 5
+  baseStrength: 2
+  baseSpeed: 3
+  baseLuck: 2
+  baseMovePoints: 3
+  maxSkillPoints: 3
+  startSkillPoints: 1
+  heroInventoryPrefab: {fileID: 4803297770596504823, guid: 631feea1674ffbb4fa06dc5b02c9d019, type: 3}
+  heroBaseSkills:
+  - {fileID: 11400000, guid: 9adbc46d5d2b7644ba3a2c4d1114e811, type: 2}
+  - {fileID: 11400000, guid: 16a518b41d4dd22409252b310935aa88, type: 2}
+  heroSkillPool:
+  - {fileID: 11400000, guid: 9adbc46d5d2b7644ba3a2c4d1114e811, type: 2}
+  - {fileID: 11400000, guid: 16a518b41d4dd22409252b310935aa88, type: 2}
+  heroPassivePool: []
+  heroSkillSlotsUnlockedLevels: 00000000000000000000000005000000090000000d000000
+  heroPassiveSlotsUnlockedLevels: 00000000070000000f000000

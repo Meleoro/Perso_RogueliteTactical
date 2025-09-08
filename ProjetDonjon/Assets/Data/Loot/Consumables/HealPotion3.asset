@@ -25,5 +25,10 @@ MonoBehaviour:
   strengthUpgrade: 0
   speedUpgrade: 0
   luckUpgrade: 0
+  equipmentEffectType: 0
+  equipmentEffectAlteration: {fileID: 0}
+  equipmentEffectPower: 0
   consumableType: 0
   consumablePower: -1
+  usableOutsideBattle: 1
+  additionalTooltipDatas: []

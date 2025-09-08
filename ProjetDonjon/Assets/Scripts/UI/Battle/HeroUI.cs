@@ -1,3 +1,4 @@
+using DG.Tweening;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -24,6 +25,11 @@ public class UnitUI : MonoBehaviour
     private int currentHealth;
     private Alteration[] currentAlterations;
     private Vector3 saveDamageTextPos;
+    private Vector3 saveLevelUpTextPos;
+    private Unit attachedUnit;
+
+    [Header("Public Infos")]
+    public RectTransform XPPointsParent { get { return _xpPointsParent; } }
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI _healthText;
@@ -38,16 +44,33 @@ public class UnitUI : MonoBehaviour
     [SerializeField] private Alteration[] _alterations;
     [SerializeField] private TextMeshProUGUI _damageText;
 
+    [Header("XP References")]
+    [SerializeField] private Image _xpFillableImage;
+    [SerializeField] private Image _xpOutlineImage;
+    [SerializeField] private Image _xpBackImage;
+    [SerializeField] private RectTransform _xpBarParent;
+    [SerializeField] private RectTransform _xpPointsParent;
+    [SerializeField] private RectTransform _levelUpTextTr;
+
 
 
     private void Start()
     {
         HideUnitUI();
+        ResetXPProgress();
 
+        saveLevelUpTextPos = _levelUpTextTr.localPosition;
+        _levelUpTextTr.localScale = Vector3.zero;
         saveDamageTextPos = _damageText.rectTransform.localPosition;
         _damageText.rectTransform.localScale = Vector3.zero;
 
+        _xpOutlineImage.color = new Color(_xpOutlineImage.color.r, _xpOutlineImage.color.g, _xpOutlineImage.color.b, 0);
+        _xpFillableImage.color = new Color(_xpFillableImage.color.r, _xpFillableImage.color.g, _xpFillableImage.color.b, 0);
+        _xpBackImage.color = new Color(_xpBackImage.color.r, _xpBackImage.color.g, _xpBackImage.color.b, 0);
+
         _changePaternText.rectTransform.localScale = Vector3.zero;
+
+        attachedUnit = GetComponentInParent<Unit>();
     }
 
     private void Update()
@@ -55,6 +78,73 @@ public class UnitUI : MonoBehaviour
         _healthFillableImage.fillAmount = Mathf.Lerp(_healthFillableImage.fillAmount, currentAimedRatio, Time.deltaTime * 5f);
         _healthFillableImage2.fillAmount = Mathf.Lerp(_healthFillableImage2.fillAmount, _healthFillableImage.fillAmount, Time.deltaTime * 5f);
     }
+
+
+    #region XP Bar
+
+    public void GainXP(float newRatio)
+    {
+        StartCoroutine(GainXPCoroutine(newRatio));
+    }
+
+    private IEnumerator GainXPCoroutine(float newRatio)
+    {
+        _xpOutlineImage.UFadeImage(0.1f, 1f);
+        _xpFillableImage.UFadeImage(0.1f, 1f);
+        _xpBackImage.UFadeImage(0.1f, 1f);
+
+        yield return new WaitForSeconds(0.1f);
+
+        _xpFillableImage.ULerpFillAmount(1, newRatio, CurveType.EaseOutCubic);
+
+        yield return new WaitForSeconds(1);
+
+        if (newRatio == 1)
+        {
+            _xpBarParent.UChangeScale(0.1f, Vector3.one * 1.2f);
+
+            yield return new WaitForSeconds(0.1f);
+
+            _xpBarParent.UChangeScale(0.2f, Vector3.one);
+        }
+        else
+        {
+            _xpOutlineImage.UFadeImage(0.2f, 0f);
+            _xpFillableImage.UFadeImage(0.2f, 0f);
+            _xpBackImage.UFadeImage(0.2f, 0f);
+        }
+    }
+
+    public IEnumerator DoLevelUpEffectCoroutine(float duration)
+    {
+        _levelUpTextTr.localPosition = saveLevelUpTextPos;
+
+        _levelUpTextTr.UChangeScale(duration * 0.1f, new Vector3(1.3f, 0.9f, 1.0f), CurveType.EaseInOutCubic);
+        _levelUpTextTr.UChangeLocalPosition(duration, saveLevelUpTextPos + Vector3.up * 25f, CurveType.EaseOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.1f);
+
+        _levelUpTextTr.UChangeScale(duration * 0.2f, new Vector3(0.85f, 1.15f, 1.0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.2f);
+
+        _levelUpTextTr.UChangeScale(duration * 0.1f, new Vector3(1f, 1f, 1.0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.5f);
+
+        _levelUpTextTr.UChangeScale(duration * 0.2f, new Vector3(0f, 0f, 0f), CurveType.EaseInOutCubic);
+
+        yield return new WaitForSeconds(duration * 0.2f);
+
+        _levelUpTextTr.localPosition = saveLevelUpTextPos;
+    }
+
+    public void ResetXPProgress()
+    {
+        _xpFillableImage.fillAmount = 0;
+    }
+
+    #endregion
 
 
     #region Hide / Show
@@ -98,7 +188,7 @@ public class UnitUI : MonoBehaviour
     {
         if(currentAimedRatio != currentHealthRatio && currentAimedRatio != 0)
         {
-            StartCoroutine(DoDamageTextEffectCoroutine(this.currentHealth - currentHealth, 0.8f));
+            StartCoroutine(DoDamageTextEffectCoroutine(this.currentHealth - currentHealth, 1f));
 
             _hearthImage.rectTransform.UBounceScale(0.15f, Vector3.one * 1.3f, 0.3f, Vector3.one, CurveType.EaseInOutCubic);
             _hearthImage.rectTransform.UShakeLocalPosition(0.3f, 10f, 0.03f, ShakeLockType.Z);
@@ -116,7 +206,7 @@ public class UnitUI : MonoBehaviour
                 _alterations[i].Disappear();
                 continue;
             }
-            _alterations[i].Appear(currentAlterations[i]);
+            _alterations[i].Appear(currentAlterations[i], attachedUnit);
         }
     }
 
@@ -126,19 +216,19 @@ public class UnitUI : MonoBehaviour
         _damageText.rectTransform.localPosition = saveDamageTextPos;
 
         _damageText.rectTransform.UChangeScale(duration * 0.1f, new Vector3(1.3f, 0.9f, 1.0f), CurveType.EaseInOutCubic);
-        _damageText.rectTransform.UChangeLocalPosition(duration, saveDamageTextPos + Vector3.up * 25f, CurveType.EaseOutCubic);
+        _damageText.rectTransform.UChangeLocalPosition(duration, saveDamageTextPos + Vector3.up * 35f, CurveType.EaseOutCubic);
 
         yield return new WaitForSeconds(duration * 0.1f);
 
-        _damageText.rectTransform.UChangeScale(duration * 0.2f, new Vector3(0.85f, 1.15f, 1.0f), CurveType.EaseInOutCubic);
+        _damageText.rectTransform.DOScale(new Vector3(0.85f, 1.15f, 1.0f), duration * 0.2f).SetEase(Ease.InOutCubic);
 
         yield return new WaitForSeconds(duration * 0.2f);
 
-        _damageText.rectTransform.UChangeScale(duration * 0.1f, new Vector3(1f, 1f, 1.0f), CurveType.EaseInOutCubic);
+        _damageText.rectTransform.DOScale(new Vector3(1f, 1f, 1f), duration * 0.1f).SetEase(Ease.InOutCubic);
 
         yield return new WaitForSeconds(duration * 0.5f);
 
-        _damageText.rectTransform.UChangeScale(duration * 0.2f, new Vector3(0f, 0f, 0f), CurveType.EaseInOutCubic);
+        _damageText.rectTransform.DOScale(new Vector3(0f, 0f, 0f), duration * 0.2f).SetEase(Ease.InOutCubic);
 
         yield return new WaitForSeconds(duration * 0.2f);
 

@@ -51,7 +51,6 @@ public class InventorySlot : MonoBehaviour
         associatedInventory = inventory;
     }
 
-
     #region Manage Slot Content Functions
 
     public bool VerifyHasLoot()

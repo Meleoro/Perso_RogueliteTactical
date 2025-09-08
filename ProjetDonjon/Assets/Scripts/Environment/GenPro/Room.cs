@@ -169,7 +169,8 @@ public class Room : MonoBehaviour
                 if (!_battleGroundTilemap.HasTile(new Vector3Int(x, y))) continue;
                 if (!holeTiles.Contains(_battleGroundTilemap.GetTile(new Vector3Int(x, y)))) continue;
 
-                Instantiate(holePrefab, _battleGroundTilemap.CellToWorld(new Vector3Int(x, y)), Quaternion.Euler(0, 0, 0));
+                Instantiate(holePrefab, _battleGroundTilemap.CellToWorld(new Vector3Int(x, y)) + new Vector3(1, 0.75f), 
+                    Quaternion.Euler(0, 0, 0), transform);
             }
         }
     }
@@ -351,7 +352,6 @@ public class Room : MonoBehaviour
         }
     }
 
-
     private void SetupSpawners(Hero[] heroes)
     {
         roomEnemySpawners = _spawnersParentTr.GetComponentsInChildren<EnemySpawner>().ToList();
@@ -390,7 +390,6 @@ public class Room : MonoBehaviour
         newEnemy.EnterBattle(newEnemy.CurrentTile);
 
         yield return new WaitForSeconds(1f);
-
 
         // Camera Movement + Boss Anim
         CameraManager.Instance.FocusOnTr(newEnemy.transform, 3);

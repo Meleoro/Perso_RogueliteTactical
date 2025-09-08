@@ -45,9 +45,10 @@ public class SkillsPanelButton : MonoBehaviour
         _rectTr = GetComponent<RectTransform>();
     }
 
-    public void InitialiseButton(HeroSkillStruct heroSkillStruct, Hero hero)
+    public void InitialiseButton(SkillData data, Hero hero)
     {
-        skillData = heroSkillStruct.skill;
+        skillData = data;
+
         _buttonText.text = skillData.skillName;
         _skillIcon.sprite = skillData.skillIcon;    
 

@@ -50,14 +50,14 @@ public class SkillsPanel : MonoBehaviour
 
         for (int i = 0; i < _skillButtons.Length; i++)
         {
-            if(hero.HeroData.heroSkills.Length <= i)
+            if(hero.EquippedSkills.Length <= i || hero.EquippedSkills[i] == null)
             {
                 _skillButtons[i].gameObject.SetActive(false);
                 continue;
             }
 
             _skillButtons[i].gameObject.SetActive(true);
-            _skillButtons[i].InitialiseButton(hero.HeroData.heroSkills[i], hero);
+            _skillButtons[i].InitialiseButton(hero.EquippedSkills[i], hero);
             _skillButtons[i].ActualiseSkillPointsImages(hero);
             _skillButtons[i].QuitOverlayButtonInstant(true);
         }
@@ -94,7 +94,7 @@ public class SkillsPanel : MonoBehaviour
         for (int i = 0; i < _additionalTooltips.Length; i++)
         {
             if(i < skillData.additionalTooltipDatas.Length)
-                _additionalTooltips[i].Show(skillData.additionalTooltipDatas[i]);
+                _additionalTooltips[i].Show(skillData.additionalTooltipDatas[i], 0);
 
             else
                 _additionalTooltips[i].Hide();

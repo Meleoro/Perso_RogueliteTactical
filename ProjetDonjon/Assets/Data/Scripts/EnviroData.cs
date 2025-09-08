@@ -5,6 +5,12 @@ using UnityEngine;
 public class EnviroData : ScriptableObject
 {
     [Header("Main Parameters")]
+    public string enviroName;
+    [TextArea] public string enviroDescription;
+    public string enviroDangerText;
+    public Sprite enviroIllustration;
+
+    [Header("Main Generation")]
     public int minDistGoldenPath;
     public int maxDistGoldenPath;
     public int minRoomAmount;
