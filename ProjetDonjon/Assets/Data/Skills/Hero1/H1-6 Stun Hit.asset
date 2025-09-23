@@ -16,7 +16,8 @@ MonoBehaviour:
   skillDescription: DEALS SMALL DAMAGES AND STUNS THE TARGET
   animName: Skill3
   skillPointCost: 2
-  skillIcon: {fileID: -769846746, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  skillIcon: {fileID: 1685792960, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  skillHighlightIcon: {fileID: -1451717230, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas:
   - {fileID: 11400000, guid: f88c8bf3130dd394b92c7bb80e2c4467, type: 2}
   skillType: 1

@@ -55,6 +55,8 @@ public class LootData : ScriptableObject
     public int strengthUpgrade;
     public int speedUpgrade;
     public int luckUpgrade;
+    public int mpUpgrade;
+    public int spUpgrade;
 
     [Header("Equipment Special Effect Infos")]
     public SpecialEquipmentEffectType equipmentEffectType;

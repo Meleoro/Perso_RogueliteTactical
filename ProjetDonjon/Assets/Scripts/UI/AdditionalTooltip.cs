@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -25,7 +26,7 @@ public class AdditionalTooltip : MonoBehaviour
         _descriptionText.text = data.tooltipDescription;
 
         if (showCoroutine is not null) StopCoroutine(showCoroutine);
-        _mainRectTr.UStopChangeScale();
+        _mainRectTr.DOComplete();
 
         showCoroutine = StartCoroutine(ShowCoroutine(delay));
     }
@@ -36,18 +37,18 @@ public class AdditionalTooltip : MonoBehaviour
 
         yield return new WaitForSeconds(delay);
 
-        _mainRectTr.UChangeScale(0.12f, Vector3.one * 0.85f, CurveType.EaseOutCubic);
+        _mainRectTr.DOScale(Vector3.one * 1.15f, 0.12f).SetEase(Ease.OutCubic);
 
         yield return new WaitForSeconds(0.12f);
 
-        _mainRectTr.UChangeScale(0.15f, Vector3.one * 0.75f, CurveType.EaseInOutCubic);
+        _mainRectTr.DOScale(Vector3.one * 1f, 0.15f).SetEase(Ease.InOutCubic);
     }
 
 
     public void Hide()
     {
         if (showCoroutine is not null) StopCoroutine(showCoroutine);
-        _mainRectTr.UStopChangeScale();
+        _mainRectTr.DOComplete();
 
         _mainRectTr.localScale = Vector3.zero;
     }

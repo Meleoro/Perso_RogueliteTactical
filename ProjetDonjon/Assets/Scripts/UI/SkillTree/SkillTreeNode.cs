@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using Unity.VisualScripting;
@@ -73,6 +74,10 @@ public class SkillTreeNode : MonoBehaviour
         _shadowImage.sprite = data.skillData is not null ? skillSprites[1] : passiveSprites[1];
         _outlineImage.sprite = data.skillData is not null ? skillSprites[2] : passiveSprites[2];
         _iconImage.sprite = data.icon;
+        _mainImage.SetNativeSize();
+        _iconImage.SetNativeSize();
+        _shadowImage.SetNativeSize();
+        _outlineImage.SetNativeSize();
 
         ActualiseNodeState(false, false);
     }
@@ -154,39 +159,42 @@ public class SkillTreeNode : MonoBehaviour
         if (isPossessed)
         {
             currentColor = possessedColor;
-            currentOutlineColor = outlineReachableColor;
+            currentOutlineColor = outlinePossessedColor;
             currentScale = Vector3.one * 0.9f;
 
-            _outlineImage.ULerpImageColor(0.2f, outlineBaseColor);
-            _lineRenderer.startColor = outlinePossessedColor;
-            _lineRenderer.endColor = outlinePossessedColor;
+            _outlineImage.DOColor(currentOutlineColor, 0.2f);
+            _lineRenderer.startColor = currentOutlineColor;
+            _lineRenderer.endColor = currentOutlineColor;
+
+            _iconImage.DOColor(currentOutlineColor, 0.2f);
         }
         else if (isReachable)
         {
             currentColor = reachableColor;
-            currentScale = Vector3.one * 0.75f;
+            currentScale = Vector3.one * 0.9f;
             currentOutlineColor = outlineReachableColor;
 
-            _lineRenderer.startColor = outlineBaseColor;
-            _lineRenderer.endColor = outlineBaseColor;
-            _outlineImage.ULerpImageColor(0.2f, outlineBaseColor);
+            _lineRenderer.startColor = currentOutlineColor;
+            _lineRenderer.endColor = currentOutlineColor;
+            _outlineImage.DOColor(currentOutlineColor, 0.2f);
             availableCoroutine = StartCoroutine(AvailableEffectCoroutine());
+
+            _iconImage.DOColor(currentOutlineColor, 0.2f);
         }
         else
         {
             currentColor = baseColor;
-            currentScale = Vector3.one * 0.6f;
+            currentScale = Vector3.one * 0.85f;
             currentOutlineColor = outlineBaseColor;
 
-            _outlineImage.ULerpImageColor(0.2f, outlineBaseColor);
-            _lineRenderer.startColor = outlineBaseColor;
-            _lineRenderer.endColor = outlineBaseColor;
+            _outlineImage.DOColor(currentOutlineColor, 0.2f);
+            _lineRenderer.startColor = currentOutlineColor;
+            _lineRenderer.endColor = currentOutlineColor;
+
+            _iconImage.DOColor(currentOutlineColor, 0.2f);
         }
 
-        _mainImage.UStopLerpImageColor();
-        _iconImage.UStopLerpImageColor();
         _mainImage.color = currentColor;
-        _iconImage.color = currentColor;
 
         _rectTr.UStopChangeScale();
         _rectTr.localScale = currentScale;
@@ -203,9 +211,13 @@ public class SkillTreeNode : MonoBehaviour
     {
         if(availableCoroutine != null) StopCoroutine(availableCoroutine);
 
-        _mainImage.ULerpImageColor(0.2f, currentColor + Color.white * 0.2f, CurveType.EaseOutCubic);
-        _iconImage.ULerpImageColor(0.2f, currentColor + Color.white * 0.2f, CurveType.EaseOutCubic);
-        _outlineImage.ULerpImageColor(0.2f, outlinePossessedColor, CurveType.EaseOutCubic);
+        _outlineImage.DOComplete();
+        _iconImage.DOComplete();
+        _mainImage.DOComplete();
+
+        _mainImage.DOColor(currentColor + Color.white * 0.2f, 0.2f).SetEase(Ease.OutCubic);
+        _iconImage.DOColor(outlinePossessedColor, 0.2f).SetEase(Ease.OutCubic);
+        _outlineImage.DOColor(outlinePossessedColor, 0.2f).SetEase(Ease.OutCubic);
 
         _rectTr.UChangeScale(0.1f, currentScale + Vector3.one * 0.3f, CurveType.EaseOutSin);
 
@@ -222,9 +234,13 @@ public class SkillTreeNode : MonoBehaviour
         if(hoverCoroutine != null) StopCoroutine(hoverCoroutine);
         if (isReachable && !isPossessed) availableCoroutine = StartCoroutine(AvailableEffectCoroutine(0.2f));
 
-        _mainImage.ULerpImageColor(0.2f, currentColor, CurveType.EaseOutCubic);
-        _iconImage.ULerpImageColor(0.2f, currentColor, CurveType.EaseOutCubic);
-        _outlineImage.ULerpImageColor(0.2f, currentOutlineColor, CurveType.EaseOutCubic);
+        _outlineImage.DOComplete();
+        _iconImage.DOComplete();
+        _mainImage.DOComplete();
+
+        _mainImage.DOColor(currentColor, 0.2f).SetEase(Ease.OutCubic);
+        _iconImage.DOColor(currentOutlineColor, 0.2f).SetEase(Ease.OutCubic);
+        _outlineImage.DOColor(currentOutlineColor, 0.2f).SetEase(Ease.OutCubic);
 
         _rectTr.UChangeScale(0.2f, currentScale, CurveType.EaseInOutSin);
     }
@@ -256,17 +272,17 @@ public class SkillTreeNode : MonoBehaviour
 
         while(true)
         {
-            _rectTr.UChangeScale(0.75f, currentScale * 1.1f, CurveType.EaseInOutSin);
-            _outlineImage.ULerpImageColor(0.75f, outlineReachableColor2, CurveType.EaseInOutSin);
-            _mainImage.ULerpImageColor(0.75f, reachableColor + Color.white * 0.05f, CurveType.EaseInOutSin);
-            _iconImage.ULerpImageColor(0.75f, reachableColor + Color.white * 0.05f, CurveType.EaseInOutSin);
+            _rectTr.UChangeScale(0.75f, currentScale * 0.9f, CurveType.EaseInOutSin);
+            _outlineImage.DOColor(outlineReachableColor2, 0.75f).SetEase(Ease.InOutSine);
+            _mainImage.DOColor(reachableColor + Color.white * 0.05f, 0.75f).SetEase(Ease.InOutSine);
+            _iconImage.DOColor(outlineReachableColor2, 0.75f).SetEase(Ease.InOutSine);
 
             yield return new WaitForSeconds(1f);
 
             _rectTr.UChangeScale(0.75f, currentScale, CurveType.EaseInOutSin);
-            _outlineImage.ULerpImageColor(0.75f, outlineReachableColor, CurveType.EaseInOutSin);
-            _mainImage.ULerpImageColor(0.75f, reachableColor, CurveType.EaseInOutSin);
-            _iconImage.ULerpImageColor(0.75f, reachableColor, CurveType.EaseInOutSin);
+            _outlineImage.DOColor(outlineReachableColor, 0.75f).SetEase(Ease.InOutSine);
+            _mainImage.DOColor(reachableColor, 0.75f).SetEase(Ease.InOutSine);
+            _iconImage.DOColor(outlineReachableColor, 0.75f).SetEase(Ease.InOutSine);
 
             yield return new WaitForSeconds(0.9f);
         }

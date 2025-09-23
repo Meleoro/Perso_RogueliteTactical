@@ -280,7 +280,7 @@ public class HeroController : MonoBehaviour
         _rbSprite.transform.UStopChangeScale();
 
         currentControllerState = ControllerState.Idle;
-        transform.position = savePositions[0];
+        transform.position = savePositions[1];
         _rbSprite.transform.localScale = Vector3.one;
 
         HeroesManager.Instance.TakeDamage(1);

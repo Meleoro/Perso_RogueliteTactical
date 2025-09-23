@@ -9,8 +9,8 @@ public class EquippedSkill : MonoBehaviour
 {
     [Header("Parameters")]
     [SerializeField] private bool isPassiveSlot;
-    [SerializeField] private Sprite backSpriteEquipped;
-    [SerializeField] private Sprite backSpriteUnequipped;
+    [SerializeField] private Sprite emptyIcon;
+    [SerializeField] private Sprite lockIcon;
 
     [Header("Actions")]
     public Action<EquippedSkill> OnHover;
@@ -33,40 +33,36 @@ public class EquippedSkill : MonoBehaviour
     [SerializeField] private Image _backImage;
     [SerializeField] private Image _highlightImage;
     [SerializeField] private TextMeshProUGUI _mainText;
-    [SerializeField] private Image _lockImage;
-    [SerializeField] private TextMeshProUGUI _lockText;
+    [SerializeField] private Image _skillIcon;
 
 
     private void ActualiseVisuals()
     {
         if (isLocked)
         {
-            _lockImage.enabled = true;
-            _lockText.enabled = true;
+            _skillIcon.sprite = lockIcon;
         }
         else
-        { 
-            _lockImage.enabled = false;
-            _lockText.enabled = false;
+        {
+            _skillIcon.sprite = emptyIcon;
         }
 
         if(skillData is not null)
         {
             _mainText.enabled = true;
             _mainText.text = skillData.skillName;
-            _backImage.sprite = backSpriteEquipped;
+            _skillIcon.sprite = skillData.skillHighlightIcon;
         }
 
         else if (passiveData is not null)
         {
             _mainText.enabled = true;
             _mainText.text = passiveData.passiveName;
-            _backImage.sprite = backSpriteEquipped;
+            _skillIcon.sprite = passiveData.passiveIcon;
         }
         else
         {
             _mainText.enabled = false;  
-            _backImage.sprite = backSpriteUnequipped;
         }
     }
 
@@ -94,7 +90,7 @@ public class EquippedSkill : MonoBehaviour
     {
         isLocked = true;
 
-        _lockText.text = "LV." + lockedLevel;
+        _mainText.text = "LV." + lockedLevel;
 
         skillData = null;
         passiveData = null;

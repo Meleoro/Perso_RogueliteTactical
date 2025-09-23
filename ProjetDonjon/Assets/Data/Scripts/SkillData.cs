@@ -7,7 +7,8 @@ public enum SkillType
 {
     Self,
     AOEPaternTiles,
-    SkillArea
+    SkillArea,
+    AdjacentTiles
 }
 
 public enum SkillEffectTargetType
@@ -25,7 +26,8 @@ public enum SkillEffectType
     Heal,
     AddEnergy,
     Push,
-    Summon
+    Summon,
+    HealDebuffs
 }
 
 [Serializable]
@@ -48,10 +50,11 @@ public class SkillData : ScriptableObject
 {
     [Header("Main")]
     public string skillName;
-    public string skillDescription;
+    [TextArea]public string skillDescription;
     public string animName;
     public int skillPointCost;
     public Sprite skillIcon;
+    public Sprite skillHighlightIcon;
     public AdditionalTooltipData[] additionalTooltipDatas;
 
     [Header("Effects")]
@@ -66,6 +69,7 @@ public class SkillData : ScriptableObject
     public bool mirrorHorizontalVFX;
     public bool mirrorVerticalVFX;
     public GameObject[] VFXs;
+    public GameObject throwedObject;
     public GameObject leftVFX;
     public GameObject rightVFX;
     public GameObject upVFX;

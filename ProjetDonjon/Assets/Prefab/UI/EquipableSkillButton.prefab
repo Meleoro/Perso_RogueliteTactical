@@ -149,8 +149,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278853691
-  m_fontColor: {r: 0.23270428, g: 0.1261847, b: 0.038784023, a: 1}
+    rgba: 4278457898
+  m_fontColor: {r: 0.16352195, g: 0.08718686, b: 0.015940791, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -355,6 +355,22 @@ MonoBehaviour:
         - m_Target: {fileID: 4855949150004823235}
           m_TargetAssemblyTypeName: EquippableSkill, Assembly-CSharp
           m_MethodName: EndDrag
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - eventID: 4
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4855949150004823235}
+          m_TargetAssemblyTypeName: EquippableSkill, Assembly-CSharp
+          m_MethodName: ClickButton
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -491,6 +507,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4d600d9c20df5a4c93f125b238da5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hoveredColor: {r: 1, g: 1, b: 1, a: 1}
+  unhoveredColor: {r: 0.8901961, g: 0.8901961, b: 0.8901961, a: 1}
+  hoveredTextColor: {r: 1, g: 0.8901961, b: 0.67058825, a: 1}
+  unhoveredTextColor: {r: 0.16470589, g: 0.08627451, b: 0.015686275, a: 1}
+  highlightIconColor: {r: 0.94509804, g: 0.6901961, b: 0.49411765, a: 1}
   _mainRectTr: {fileID: 1743631968032063024}
   _buttonText: {fileID: 5185006736684371005}
   _mainImage: {fileID: 3989401074000656723}

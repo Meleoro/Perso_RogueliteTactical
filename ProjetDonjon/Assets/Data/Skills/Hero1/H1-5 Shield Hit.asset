@@ -16,7 +16,8 @@ MonoBehaviour:
   skillDescription: DEALS SMALL DAMAGES AND PUSHES THE TARGET
   animName: Skill3
   skillPointCost: 1
-  skillIcon: {fileID: -769846746, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  skillIcon: {fileID: 1812084220, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  skillHighlightIcon: {fileID: 465495736, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas: []
   skillType: 1
   skillEffects:

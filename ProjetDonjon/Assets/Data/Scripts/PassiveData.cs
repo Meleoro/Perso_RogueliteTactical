@@ -8,6 +8,7 @@ public class PassiveData : ScriptableObject
     public string passiveName;
     [TextArea] public string passiveDescription;
     public Sprite passiveIcon;
+    public Sprite passiveHighlightIcon;
     public AdditionalTooltipData[] additionalTooltipDatas;
 
     [Header("Effect")]

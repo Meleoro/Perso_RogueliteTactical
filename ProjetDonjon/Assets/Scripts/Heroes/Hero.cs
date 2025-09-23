@@ -54,10 +54,10 @@ public class Hero : Unit
     private int currentSkillTreePoints;
     private bool[] skillTreeUnlockedNodes;
 
-
     [Header("Hero References")]
     [SerializeField] private HeroController _controller;
     [SerializeField] private Transform _spriteRendererParent;
+    [SerializeField] private Transform _shadowTransform;
     [SerializeField] private HeroInfoPanel _heroInfoPanel;
     [SerializeField] private Collider2D[] _colliders;
 
@@ -108,6 +108,7 @@ public class Hero : Unit
         isHidden = false;
 
         _spriteRendererParent.gameObject.SetActive(true);
+        _shadowTransform.gameObject.SetActive(true);
 
         for (int i = 0; i < _colliders.Length; i++)
         {
@@ -121,8 +122,9 @@ public class Hero : Unit
         isHidden = true;
 
         _spriteRendererParent.gameObject.SetActive(false);
+        _shadowTransform.gameObject.SetActive(false);
 
-        for(int i = 0; i < _colliders.Length; i++)
+        for (int i = 0; i < _colliders.Length; i++)
         {
             _colliders[i].enabled = false;
         }
@@ -327,6 +329,13 @@ public class Hero : Unit
 
 
     #region Others
+
+    public override void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
+    {
+        currentMaxSkillPoints = maxSP;
+
+        base.ActualiseUnitInfos(newMaxHealth, newStrength, newSpeed, newLuck, newMovePoints, maxSP);
+    }
 
     public void AddSkillPoints(int quantity)
     {

@@ -25,9 +25,20 @@ MonoBehaviour:
   heroBaseSkills:
   - {fileID: 11400000, guid: fa97ea0063e522441914677eada810e1, type: 2}
   - {fileID: 11400000, guid: a54d94e12a6ae5e48b51889145abb1af, type: 2}
+  - {fileID: 11400000, guid: 3b58756d0586d7047b935a61a7e16d05, type: 2}
   heroSkillPool:
   - {fileID: 11400000, guid: fa97ea0063e522441914677eada810e1, type: 2}
+  - {fileID: 11400000, guid: 482bef61e241a5e44ae9564744b6361c, type: 2}
+  - {fileID: 11400000, guid: 6446af2578459de4083a12a37efc94ed, type: 2}
+  - {fileID: 11400000, guid: 3b58756d0586d7047b935a61a7e16d05, type: 2}
+  - {fileID: 11400000, guid: 1ad3d76110d9630478f6ac318c73d159, type: 2}
   - {fileID: 11400000, guid: a54d94e12a6ae5e48b51889145abb1af, type: 2}
+  - {fileID: 11400000, guid: 26c8896787f68394492e596ad66258ca, type: 2}
+  - {fileID: 11400000, guid: 6751e20b554257c4992d441afd4c1c57, type: 2}
+  - {fileID: 11400000, guid: ed4c0e619cc7dc540a4cb7f07bdb72cf, type: 2}
+  - {fileID: 11400000, guid: 0c0476276e966a14e8be6bf6fc6ba390, type: 2}
+  - {fileID: 11400000, guid: 5da4028e8305f324fab8252fcfa564b4, type: 2}
+  - {fileID: 11400000, guid: 6b488f1af944b00428fb99a2bd8a9f4b, type: 2}
   heroPassivePool: []
   heroSkillSlotsUnlockedLevels: 00000000000000000000000005000000090000000d000000
   heroPassiveSlotsUnlockedLevels: 00000000070000000f000000

@@ -36,6 +36,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private GameObject buffVFX;
     [SerializeField] private GameObject debuffVFX;
     [SerializeField] private GameObject shieldVFX;
+    [SerializeField] private GameObject hinderVFX;
     [SerializeField] private GameObject healVFX;
     [SerializeField] private GameObject stunVFX;
 
@@ -114,6 +115,7 @@ public class Unit : MonoBehaviour
     [SerializeField] protected UnitUI _ui;
     [SerializeField] protected SpriteRenderer _spriteRenderer;
     [SerializeField] protected StunnedVFX _stunnedVFX;
+    [SerializeField] protected PoisonedVFX _poisonedVFX;
     [SerializeField] protected ShieldVFX _shieldVFX;
     public Animator _animator;
     public UnitAnimsInfos _unitAnimsInfos;
@@ -141,7 +143,7 @@ public class Unit : MonoBehaviour
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
     }
 
-    public void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints)
+    public virtual void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
     {
         int currentDamages = currentMaxHealth - currentHealth;
 
@@ -177,7 +179,7 @@ public class Unit : MonoBehaviour
             yield return new WaitForSeconds(0.15f);
         }
 
-        BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
+        BattleManager.Instance.PathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
     }
 
     private IEnumerator FallCoroutine()
@@ -191,7 +193,7 @@ public class Unit : MonoBehaviour
         _spriteRenderer.transform.localScale = Vector3.one;
 
         HeroesManager.Instance.TakeDamage(1);
-        BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
+        BattleManager.Instance.PathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
     }
 
     public void MoveUnit(BattleTile tile, bool doSquish = false)
@@ -419,6 +421,14 @@ public class Unit : MonoBehaviour
                 Destroy(Instantiate(stunVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
                 _stunnedVFX.Appear();
                 return;
+
+            case AlterationType.Poisoned:
+                _poisonedVFX.PlayStartPoisonEffect();
+                return;
+
+            case AlterationType.Hindered:
+                Destroy(Instantiate(hinderVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
+                return;
         }
 
         if (isBuff)
@@ -435,6 +445,17 @@ public class Unit : MonoBehaviour
     {
         for (int i = currentAlterations.Count - 1; i >= 0; i--)
         {
+            RemoveAlteration(i);
+        }
+
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
+    }
+
+    public void RemoveAllNegativeAlterations()
+    {
+        for (int i = currentAlterations.Count - 1; i >= 0; i--)
+        {
+            if (currentAlterations[i].alteration.isPositive) continue;
             RemoveAlteration(i);
         }
 
@@ -649,6 +670,13 @@ public class Unit : MonoBehaviour
     public virtual void StartTurn()
     {
         isUnitsTurn = true;
+
+        // Poison
+        if (VerifyHasAlteration(AlterationType.Poisoned))
+        {
+            TakeDamage(1, null);
+            _poisonedVFX.PlayApplyPoisonEffect();
+        }
 
         StartTurnOutline();
     }

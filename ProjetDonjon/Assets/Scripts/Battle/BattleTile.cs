@@ -1,3 +1,4 @@
+using DG.Tweening;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
@@ -167,12 +168,8 @@ public class BattleTile : MonoBehaviour
 
         if (doInstant)
         {
-            _mainSpriteRenderer.UStopSpriteRendererLerpColor();
-            _backSpriteRenderer.UStopSpriteRendererLerpColor();
-
-            transform.UStopChangePosition();
-            transform.UStopChangeScale();
-            transform.UStopChangeRotation();
+            _mainSpriteRenderer.DOComplete();
+            transform.DOComplete();
 
             _mainSpriteRenderer.color = outlineColor;
             _backSpriteRenderer.color = backColor;
@@ -186,30 +183,27 @@ public class BattleTile : MonoBehaviour
 
             float randomDelay = 0.1f + Random.Range(-0.03f, 0.03f);
 
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor + Color.white * 0.25f);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor + Color.white * 0.25f);
+            _mainSpriteRenderer.DOColor(outlineColor + Color.white * 0.25f, randomDelay).SetEase(Ease.InOutCubic);
+            _backSpriteRenderer.DOColor(backColor + Color.white * 0.25f, randomDelay).SetEase(Ease.InOutCubic);
 
-            transform.UChangePosition(randomDelay, savePos + new Vector3(0, 0.1f, 0), CurveType.EaseInOutCubic);
-            transform.UChangeScale(randomDelay, new Vector3(Random.Range(1.05f, 1.15f), Random.Range(1f, 1.15f), 1), CurveType.EaseInOutCubic);
-            //transform.UChangeRotation(randomDelay, Quaternion.Euler(Random.Range(-20f, 20f), Random.Range(-20f, 20f), 0), CurveType.EaseInOutCubic);
+            transform.DOMove(savePos + new Vector3(0, 0.1f, 0), randomDelay).SetEase(Ease.InOutCubic);
+            transform.DOScale(new Vector3(1, Random.Range(1f, 1.15f), 1), randomDelay).SetEase(Ease.InOutCubic);
 
             yield return new WaitForSeconds(randomDelay);
 
-            transform.UChangePosition(0.2f, savePos, CurveType.EaseInOutCubic);
-            transform.UChangeScale(0.2f, Vector3.one, CurveType.EaseInOutCubic);
-            //transform.UChangeRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseInOutCubic);
+            transform.DOMove(savePos, randomDelay).SetEase(Ease.InOutCubic);
+            transform.DOScale(Vector3.one, randomDelay).SetEase(Ease.InOutCubic);
 
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
+            _mainSpriteRenderer.DOColor(outlineColor, randomDelay).SetEase(Ease.InOutCubic);
+            _backSpriteRenderer.DOColor(backColor, randomDelay).SetEase(Ease.InOutCubic);
         }
         else
         {
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(0.15f, outlineColor);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(0.15f, backColor);
+            _mainSpriteRenderer.DOColor(outlineColor, 0.15f).SetEase(Ease.InOutCubic);
+            _backSpriteRenderer.DOColor(backColor, 0.15f).SetEase(Ease.InOutCubic);
 
-            transform.UChangePosition(0.2f, savePos, CurveType.EaseInOutCubic);
-            transform.UChangeScale(0.2f, Vector3.one, CurveType.EaseInOutCubic);
-            transform.UChangeRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseInOutCubic);
+            transform.DOMove(savePos, 0.2f).SetEase(Ease.InOutCubic);
+            transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.InOutCubic);
         }
     }
 
@@ -260,8 +254,8 @@ public class BattleTile : MonoBehaviour
         {
             if (BattleManager.Instance.CurrentUnit.CurrentTile.TileCoordinates == TileCoordinates) return;
 
-            BattleManager.Instance._pathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
-            Vector2Int[] path = BattleManager.Instance._pathCalculator.GetPath(BattleManager.Instance.CurrentUnit.CurrentTile.TileCoordinates, TileCoordinates, false).ToArray();
+            BattleManager.Instance.PathCalculator.ActualisePathCalculatorTiles(BattleManager.Instance.BattleRoom.PlacedBattleTiles);
+            Vector2Int[] path = BattleManager.Instance.PathCalculator.GetPath(BattleManager.Instance.CurrentUnit.CurrentTile.TileCoordinates, TileCoordinates, false).ToArray();
             if (path.Length <= 1) return;
             highlightedTiles = new BattleTile[path.Length - 1];
 

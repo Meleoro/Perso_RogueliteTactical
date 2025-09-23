@@ -46,82 +46,102 @@ public class SkillsMenu : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _heroName;
 
     [Header("References Others")]
-    [SerializeField] private EquippableSkill _dragPreview;
     [SerializeField] private RectTransform _leftArrowRectTr;
     [SerializeField] private RectTransform _leftArrowPosRef;
     [SerializeField] private RectTransform _rightArrowRectTr;
     [SerializeField] private RectTransform _rightArrowPosRef;
+    [SerializeField] private GenericDetailsPanel _detailsPanel;
 
 
     private void Start()
     {
         foreach(EquippableSkill equippableSkill in _equippableSkillButtons)
         {
-            equippableSkill.OnStartDrag += StartDrag;
-            equippableSkill.OnEndDrag += EndDrag;
+            equippableSkill.OnHover += HoverEquippableSkill;
+            equippableSkill.OnUnhover += UnhoverEquippableSkill;
+            equippableSkill.OnClick += ClickEquippableSkill;
         }
 
         foreach (EquippedSkill equippedSkill in _equippedSkillButtons)
         {
-            equippedSkill.OnHover += HoverEquippedSkill;
-            equippedSkill.OnUnhover += UnhoverEquippedSkill;
+
         }
-
-        _dragPreview.gameObject.SetActive(false);
     }
 
 
-    #region Others
+    #region Equippable Buttons
 
-    private void HoverEquippedSkill(EquippedSkill hoveredButton)
+    private void HoverEquippableSkill(EquippableSkill equippableSkill)
     {
-        if (draggedInfos is null) return;
-        if (hoveredButton.IsPassiveSlot != (draggedInfos.PassiveData is not null)) return;
-        if (hoveredButton.IsLocked) return;
+        if(equippableSkill.PassiveData is null) 
+            _detailsPanel.LoadDetails(equippableSkill.SkillData, equippableSkill.transform.position);
 
-        hoveredEquippedButton = hoveredButton;
-        hoverEquippedCoroutine = StartCoroutine(hoveredButton.HoverFeelCoroutine());
+        else
+            _detailsPanel.LoadDetails(equippableSkill.PassiveData, equippableSkill.transform.position);
     }
 
-    private void UnhoverEquippedSkill()
+    private void UnhoverEquippableSkill()
     {
-        hoveredEquippedButton = null;
-        if(hoverEquippedCoroutine is not null) StopCoroutine(hoverEquippedCoroutine);
+        _detailsPanel.HideDetails();
     }
 
-    private void StartDrag(EquippableSkill infos)
+    private void ClickEquippableSkill(EquippableSkill equippableSkill)
     {
-        draggedInfos = infos;
-
-        foreach(EquippedSkill slot in _equippedSkillButtons)
+        if (equippableSkill.IsEquipped)
         {
-            if (slot.IsPassiveSlot != (draggedInfos.PassiveData is not null)) continue;
-            if (slot.IsLocked) continue;
-
-            slot.StartHighlight();
+            Unequip(equippableSkill);
+            equippableSkill.Unequip();
+        }
+        else
+        {
+            if (TryEquip(equippableSkill)) equippableSkill.Equip();
         }
 
-        if (draggedInfos.PassiveData is not null) _dragPreview.ShowDragPreview(infos.PassiveData);
-        else _dragPreview.ShowDragPreview(infos.SkillData);
+        ActualiseHeroInfos();
     }
 
-    private void EndDrag()
+    private bool TryEquip(EquippableSkill equippableSkill)
     {
-        if(hoveredEquippedButton is not null)
+        for (int i = 0; i < _equippedSkillButtons.Length; i++)
         {
-            if(draggedInfos.SkillData is not null) hoveredEquippedButton.SetEquippedElement(draggedInfos.SkillData);
-            else hoveredEquippedButton.SetEquippedElement(draggedInfos.PassiveData);
+            if (_equippedSkillButtons[i].IsLocked) continue;
+            if (_equippedSkillButtons[i].IsPassiveSlot && equippableSkill.PassiveData is null) continue;
+            if (_equippedSkillButtons[i].SkillData is not null || _equippedSkillButtons[i].PassiveData is not null) continue;
 
-            ActualiseHeroInfos();
+            if(equippableSkill.SkillData is not null) _equippedSkillButtons[i].SetEquippedElement(equippableSkill.SkillData);
+            else _equippedSkillButtons[i].SetEquippedElement(equippableSkill.PassiveData);
+
+            return true;
         }
 
-        foreach (EquippedSkill slot in _equippedSkillButtons)
-        {
-            slot.EndHighlight();
-        }
+        return false;
+    }
 
-        draggedInfos = null;
-        _dragPreview.HideDragPreview();
+    private void Unequip(EquippableSkill equippableSkill)
+    {
+        for (int i = 0; i < _equippedSkillButtons.Length; i++)
+        {
+            if (_equippedSkillButtons[i].IsLocked) continue;
+            if (_equippedSkillButtons[i].IsPassiveSlot && equippableSkill.PassiveData is null) continue;
+            if (_equippedSkillButtons[i].SkillData != equippableSkill.SkillData && equippableSkill.SkillData is not null) continue;
+            if (_equippedSkillButtons[i].PassiveData != equippableSkill.PassiveData && equippableSkill.PassiveData is not null) continue;
+
+            if (equippableSkill.SkillData is not null) _equippedSkillButtons[i].SetEquippedElement(null as SkillData);
+            else _equippedSkillButtons[i].SetEquippedElement(null as PassiveData);
+
+            return;
+        }
+    }
+
+    private void EquipSkill(SkillData skillData)
+    {
+        for(int i = 0; i < 12; i++)
+        {
+            if (_equippableSkillButtons[i].SkillData is null) continue;
+            if (_equippableSkillButtons[i].SkillData != skillData) continue;
+
+            _equippableSkillButtons[i].Equip();
+        }
     }
 
     private void ActualiseHeroInfos()
@@ -259,6 +279,7 @@ public class SkillsMenu : MonoBehaviour
 
         ActualiseUpButtons();
         LoadEquippableButtons();
+        LoadEquippedButtons();
     }
 
     private void ActualiseUpButtons()
@@ -289,7 +310,7 @@ public class SkillsMenu : MonoBehaviour
     public void SetupHero(Hero hero)
     {
         currentHero = hero;
-        _heroName.text = hero.HeroData.unitName;
+        //_heroName.text = hero.HeroData.unitName;
 
         LoadEquippableButtons();
         LoadEquippedButtons();
@@ -318,6 +339,8 @@ public class SkillsMenu : MonoBehaviour
 
             for (int i = 0; i < _equippableSkillButtons.Length; i++)
             {
+                _equippableSkillButtons[i].Unequip();
+
                 if (availableSkills.Count <= i)
                 {
                     _equippableSkillButtons[i].Hide();
@@ -339,7 +362,9 @@ public class SkillsMenu : MonoBehaviour
 
             for(int i = 0; i < _equippableSkillButtons.Length; i++)
             {
-                if(availablePassives.Count <= i)
+                _equippableSkillButtons[i].Unequip();
+
+                if (availablePassives.Count <= i)
                 {
                     _equippableSkillButtons[i].Hide();
                     continue;
@@ -383,6 +408,7 @@ public class SkillsMenu : MonoBehaviour
             else if(equippedSkills[i] is not null)
             {
                 _equippedSkillButtons[i].SetEquippedElement(equippedSkills[i]);
+                EquipSkill(equippedSkills[i]);
             }
             else
             {

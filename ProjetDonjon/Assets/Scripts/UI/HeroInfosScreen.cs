@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using TMPro;
@@ -22,6 +23,7 @@ public class HeroInfosScreen : MonoBehaviour
     private Inventory currentInventory;
     private bool isOpenning;
     private int currentHeroIndex;
+    private Color baseTextColor;
 
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;
@@ -51,6 +53,8 @@ public class HeroInfosScreen : MonoBehaviour
 
         UIManager.Instance.OnStartDrag += StartDrag;
         UIManager.Instance.OnStopDrag += StopDrag;
+
+        baseTextColor = _statsTexts[0].color;
     }
 
 
@@ -61,8 +65,54 @@ public class HeroInfosScreen : MonoBehaviour
 
         if (currentHeroIndex < 0) currentHeroIndex += _heroesManager.Heroes.Length;
 
-        ActualiseInfoScreen(_heroesManager.Heroes[currentHeroIndex]);
+        StartCoroutine(ChangeHeroCoroutine(left));
+
+        //ActualiseInfoScreen(_heroesManager.Heroes[currentHeroIndex]);
+        //ActualiseInventory();
+    }
+
+    private IEnumerator ChangeHeroCoroutine(bool goLeft)
+    {
+        isOpenning = true;
+
+        Vector3 pos1 = goLeft ? new Vector3(-800, 0, 0) : new Vector3(800, 0, 0);
+        Quaternion rot1 = goLeft ? Quaternion.Euler(0, 0, 15) : Quaternion.Euler(0, 0, -15);
+        currentInventory.RectTransform.UChangeLocalPosition(0.2f, pos1, CurveType.EaseInCubic);
+        currentInventory.RectTransform.UChangeLocalRotation(0.2f, rot1, CurveType.EaseInCubic);
+        currentInventory.LootParent.UChangeLocalPosition(0.2f, pos1, CurveType.EaseInCubic);
+        currentInventory.LootParent.UChangeLocalRotation(0.2f, rot1, CurveType.EaseInCubic);
+        _mainRectParent.UChangeLocalPosition(0.2f, pos1, CurveType.EaseInCubic);
+        _mainRectParent.UChangeLocalRotation(0.2f, rot1, CurveType.EaseInCubic);
+
+        yield return new WaitForSeconds(0.2f);
+
+        currentInventory.RectTransform.localRotation = Quaternion.Euler(0, 0, 0);
+        currentInventory.LootParent.localRotation = Quaternion.Euler(0, 0, 0);
+        _mainRectParent.localRotation = Quaternion.Euler(0, 0, 0);
+
+        ActualiseInfoScreen(_heroesManager.Heroes[currentHeroIndex], false);
         ActualiseInventory();
+
+        currentInventory.RectTransform.localRotation = rot1;
+        currentInventory.LootParent.localRotation = rot1;
+
+        currentInventory.RectTransform.localPosition = -pos1;
+        currentInventory.RectTransform.UChangeLocalPosition(0.2f, _shownInventoryPosition.localPosition, CurveType.EaseOutCubic);
+        currentInventory.RectTransform.UChangeLocalRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseOutCubic);
+
+        currentInventory.LootParent.localPosition = -pos1;
+        currentInventory.LootParent.UChangeLocalPosition(0.2f, _shownInventoryPosition.localPosition, CurveType.EaseOutCubic);
+        currentInventory.LootParent.UChangeLocalRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseOutCubic);
+
+        _mainRectParent.localRotation = rot1;
+
+        _mainRectParent.localPosition = -pos1;
+        _mainRectParent.UChangeLocalPosition(0.2f, _shownInfoScreenPosition.localPosition, CurveType.EaseOutCubic);
+        _mainRectParent.UChangeLocalRotation(0.2f, Quaternion.Euler(0, 0, 0), CurveType.EaseOutCubic);
+
+        yield return new WaitForSeconds(0.2f);
+
+        isOpenning = false;
     }
 
 
@@ -70,7 +120,7 @@ public class HeroInfosScreen : MonoBehaviour
 
     public IEnumerator OpenInfosScreenCoroutine()
     {
-        ActualiseInfoScreen(_heroesManager.Heroes[_heroesManager.CurrentHeroIndex]);
+        ActualiseInfoScreen(_heroesManager.Heroes[_heroesManager.CurrentHeroIndex], false);
         currentHeroIndex = _heroesManager.CurrentHeroIndex;
 
         HeroesManager.Instance.Heroes[currentHeroIndex].Controller.StopControl();
@@ -175,6 +225,8 @@ public class HeroInfosScreen : MonoBehaviour
     #endregion
 
 
+    #region Actualise Functions
+
     public EquipmentSlot GetAppropriateEquipmentSlot(EquipmentType type)
     {
         EquipmentSlot result = null;
@@ -195,7 +247,7 @@ public class HeroInfosScreen : MonoBehaviour
     }
 
 
-    public void ActualiseInfoScreen(Hero hero)
+    public void ActualiseInfoScreen(Hero hero, bool doEffect = true)
     {
         this.heroData = hero.HeroData;
         this.hero = hero;   
@@ -205,6 +257,7 @@ public class HeroInfosScreen : MonoBehaviour
         int currentSpeed = heroData.baseSpeed;
         int currentLuck = heroData.baseLuck;
         int currentMovePoints = heroData.baseMovePoints;
+        int currentMaxSP = heroData.maxSkillPoints;
 
         for(int i = 0; i < hero.EquippedLoot.Length; i++)
         {
@@ -216,18 +269,46 @@ public class HeroInfosScreen : MonoBehaviour
             currentStrength += hero.EquippedLoot[i].LootData.strengthUpgrade;
             currentSpeed += hero.EquippedLoot[i].LootData.speedUpgrade;
             currentLuck += hero.EquippedLoot[i].LootData.luckUpgrade;
+            currentMovePoints += hero.EquippedLoot[i].LootData.mpUpgrade;
+            currentMaxSP += hero.EquippedLoot[i].LootData.spUpgrade;
 
             _equipmentSlots[i].AddEquipment(hero.EquippedLoot[i], false);
         }
 
         _heroName.text = heroData.unitName;
 
+        if (doEffect) 
+            VerifyValueChangeEffects(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints, currentMaxSP);
+
         _statsTexts[0].text = currentHealth.ToString();
         _statsTexts[1].text = currentStrength.ToString();
         _statsTexts[2].text = currentSpeed.ToString();
         _statsTexts[3].text = currentLuck.ToString();
+        _statsTexts[4].text = currentMovePoints.ToString();
+        _statsTexts[5].text = currentMaxSP.ToString();
 
-        hero.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints);
+        hero.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints, currentMaxSP);
+    }
+
+    private void VerifyValueChangeEffects(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
+    {
+        if(newMaxHealth != int.Parse(_statsTexts[0].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[0]));
+        if(newStrength != int.Parse(_statsTexts[1].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[1]));
+        if(newSpeed != int.Parse(_statsTexts[2].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[2]));
+        if(newLuck != int.Parse(_statsTexts[3].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[3]));
+        if(newMovePoints != int.Parse(_statsTexts[4].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[4]));
+        if(maxSP != int.Parse(_statsTexts[5].text)) StartCoroutine(ValueChangeEffectCoroutine(_statsTexts[5]));
+    }
+
+    private IEnumerator ValueChangeEffectCoroutine(TextMeshProUGUI text)
+    {
+        text.DOColor(Color.white, 0.2f).SetEase(Ease.InOutCubic);
+        text.rectTransform.DOScale(Vector3.one * 1.2f, 0.2f).SetEase(Ease.InOutCubic);
+
+        yield return new WaitForSeconds(0.2f);
+
+        text.DOColor(baseTextColor, 0.2f).SetEase(Ease.InOutCubic);
+        text.rectTransform.DOScale(Vector3.one , 0.2f).SetEase(Ease.InOutCubic);
     }
 
     private void ActualiseInventory()
@@ -239,4 +320,6 @@ public class HeroInfosScreen : MonoBehaviour
         currentInventory.RectTransform.position = _shownInventoryPosition.position;
         currentInventory.LootParent.position = _shownInventoryPosition.position;
     }
+    
+    #endregion
 }

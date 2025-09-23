@@ -14,13 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passiveName: STUNNING ATTACKS
   passiveDescription: HAS 10% CHANCE TO INFLICT STUNNED WHEN THIS UNIT DEALS DAMAGES
-  passiveIcon: {fileID: 8061498, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  passiveIcon: {fileID: 1685792960, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  passiveHighlightIcon: {fileID: -1451717230, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas:
   - {fileID: 11400000, guid: f88c8bf3130dd394b92c7bb80e2c4467, type: 2}
   passiveTriggerType: 3
   passiveTriggerProba: 10
   passiveEffects:
-  - appliedAlteration: {fileID: 11400000, guid: c2542ffcfdc24874f80e68e474db9402, type: 2}
+  - passiveEffectType: 0
+    appliedAlteration: {fileID: 11400000, guid: c2542ffcfdc24874f80e68e474db9402, type: 2}
     additivePower: 0
     multipliedPower: 0
     duration: 0

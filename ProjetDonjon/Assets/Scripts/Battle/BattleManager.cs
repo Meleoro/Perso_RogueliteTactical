@@ -41,16 +41,22 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     public bool IsInBattle {  get { return isInBattle; } }
     public MenuType CurrentActionType { get { return _playerActionsMenu.CurrentMenu; } }
     public Tile[] HoleTiles { get { return holeTiles; } }
+    public PathCalculator PathCalculator { get { return PathCalculator; } }
+    public TilesManager TilesManager {  get { return _tilesManager; } }
+
 
     [Header("References")]
     [SerializeField] private Timeline _timeline;
     [SerializeField] private PlayerActionsMenu _playerActionsMenu;
-    public PathCalculator _pathCalculator;
+    private PathCalculator _pathCalculator;
+    private TilesManager _tilesManager;
+
 
 
     private void Start()
     {
         _pathCalculator = new PathCalculator();
+        _tilesManager = new TilesManager();
     }
 
 
@@ -190,6 +196,15 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         HeroesManager.Instance.ExitBattle();
 
         _timeline.Disappear();
+    }
+
+    public void StartBattleEndCutscene()
+    {
+        isInBattleCutscene = true;
+        isInBattle = false;
+
+        UIManager.Instance.HideHeroInfosPanels();
+        _playerActionsMenu.CloseActionsMenu();
     }
 
     #endregion
@@ -433,13 +448,38 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 case SkillEffectType.Summon:
                     SummonUnit(usedSkill.skillEffects[i].summonPrefab, battleTile);
                     break;
+
+                case SkillEffectType.HealDebuffs:
+                    battleTile.UnitOnTile.RemoveAllNegativeAlterations();
+                    break;
             }
         }
     }
 
     private void PlaySkillVFX(BattleTile[] battleTile, SkillData usedSkill)
     {
-        if (usedSkill.VFXs.Length == 0 && usedSkill.downVFX == null) return;
+        if (usedSkill.VFXs.Length == 0 && usedSkill.downVFX == null && usedSkill.throwedObject == null) return;
+
+        // Throwable VFX
+        if(usedSkill.throwedObject != null)
+        {
+            Vector3 middlePos = Vector2.zero;
+            foreach (BattleTile tile in battleTile)
+            {
+                middlePos += tile.transform.position;
+            }
+            middlePos /= battleTile.Length;
+
+            if (usedSkill.throwedObject.TryGetComponent<Flask>(out Flask flask))
+            {
+                FlaskType type = FlaskType.Poison;
+                if (usedSkill.skillEffects[0].appliedAlteration is null) type = FlaskType.Cure;
+                else if (usedSkill.skillEffects[0].appliedAlteration.alterationType == AlterationType.Weakened) type = FlaskType.Debuff;
+                Instantiate(flask, currentUnit.transform.position, Quaternion.Euler(0, 0, 0)).Initialise(middlePos, type);
+            }
+            return;
+        }
+
 
         Vector2Int coordDif = currentSkillBaseTile.TileCoordinates - currentUnit.CurrentTile.TileCoordinates;
 
@@ -495,8 +535,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     {
         if (skillData.mirrorHorizontalVFX)
         {
-            Debug.Log(coordDif);
-
             if (coordDif.x < 0) 
                 vfx.transform.localScale = new Vector3(-1 * vfx.transform.localScale.x, vfx.transform.localScale.y, vfx.transform.localScale.z);
         }
@@ -555,6 +593,31 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         return returnedTiles;
     }
 
+    public List<BattleTile> GetAdjacentTiles(BattleTile middleTile) 
+    {
+        List<BattleTile> result = new List<BattleTile>();
+        List<BattleTile> openList = new List<BattleTile>();
+        result.Add(middleTile);
+        openList.Add(middleTile);
+
+        while(openList.Count > 0)
+        {
+            BattleTile currentTile = openList[0];
+            openList.RemoveAt(0);
+
+            foreach(BattleTile tile in currentTile.TileNeighbors)
+            {
+                if (result.Contains(tile)) continue;
+                if (tile.CurrentTileState != BattleTileState.Attack && tile.CurrentTileState != BattleTileState.Danger) continue;
+                
+                result.Add(tile);
+                openList.Add(tile);
+            }
+        }
+
+        return result;
+    }
+
 
     public List<BattleTile> DisplayPossibleSkillTiles(SkillData skill, BattleTile baseTile, bool doBounce = true)
     {
@@ -563,9 +626,11 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         if (skill is not null) currentSkill = skill;
         if (baseTile is not null) currentSkillBaseTile = baseTile;
 
+        bool isBlockedByUnits = currentSkill.skillType != SkillType.SkillArea && currentSkill.skillType != SkillType.AdjacentTiles;
+
         List<BattleTile> skillTiles = GetPaternTiles(currentSkillBaseTile.TileCoordinates, currentSkill.skillPatern, 
-            (int)Mathf.Sqrt(currentSkill.skillPatern.Length), true, 
-            currentSkill.skillType != SkillType.SkillArea ? ObstacleType.UnitsIncluded : ObstacleType.Nothing);
+            (int)Mathf.Sqrt(currentSkill.skillPatern.Length), true,
+            isBlockedByUnits ? ObstacleType.UnitsIncluded : ObstacleType.Nothing);
 
         for(int i = 0; i < skillTiles.Count; i++)
         {
@@ -620,6 +685,10 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             case SkillType.SkillArea:
                 skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length), 
                     false, ObstacleType.Nothing);
+                break;
+
+            case SkillType.AdjacentTiles:
+                skillTiles = GetAdjacentTiles(overlayedTile);
                 break;
         }
 
@@ -745,20 +814,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         {
             battleRoom.BattleTiles[i].DisplayNormalTile();
         }
-    }
-
-    #endregion
-
-
-    #region Others
-
-    public void StartBattleEndCutscene() 
-    {
-        isInBattleCutscene = true;
-        isInBattle = false;
-
-        UIManager.Instance.HideHeroInfosPanels();
-        _playerActionsMenu.CloseActionsMenu();
     }
 
     #endregion

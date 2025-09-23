@@ -48,14 +48,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7038c560a1ea54543ab03c7faee25add, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isEnemy: 0
+  buffVFX: {fileID: 681623016373210144, guid: 65722577af6b2cf48bc5018986b195f6, type: 3}
+  debuffVFX: {fileID: 7845840632209546155, guid: fe1f168013654594da5974d28c188584, type: 3}
   shieldVFX: {fileID: 4073576334773073123, guid: d3ea12f10502ea84c86aeea07470278a, type: 3}
+  hinderVFX: {fileID: 3781525101279808218, guid: b036fc6eb74df2246a442811942557f3, type: 3}
   healVFX: {fileID: 3493669056963546257, guid: 0ae6680a16c47224daefd2e67649e76f, type: 3}
+  stunVFX: {fileID: 8724637062435613789, guid: 4fd7bfdd009c82c4ba9d96a32f72f584, type: 3}
+  overlayColor: {r: 1, g: 1, b: 1, a: 1}
+  positiveColor: {r: 0, g: 1, b: 0, a: 1}
+  negativeColor: {r: 1, g: 0, b: 0, a: 1}
+  unitsTurnColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _ui: {fileID: 1987359570940192128}
   _spriteRenderer: {fileID: 8929217451348358929}
+  _stunnedVFX: {fileID: 0}
+  _poisonedVFX: {fileID: 0}
+  _shieldVFX: {fileID: 0}
   _animator: {fileID: 2865990679414596872}
   _unitAnimsInfos: {fileID: 4674991809401278559}
   aiData: {fileID: 11400000, guid: de67dcb38a4165440a2b99ce3bc09310, type: 2}
-  isEnemy: 0
+  aiEliteData: {fileID: 0}
+  lootPrefab: {fileID: 0}
+  coinPrefab: {fileID: 0}
+  isBoss: 0
+  _eliteVFX: {fileID: 0}
 --- !u!95 &2865990679414596872
 Animator:
   serializedVersion: 7
@@ -266,6 +282,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlaySkillEffect: 0
+  PlayVFX: 0
+  PlayCritVFX: 0
+  _vfxToPlay: {fileID: 0}
+  _critVFXAnim: {fileID: 0}
 --- !u!1001 &8619814207663377190
 PrefabInstance:
   m_ObjectHideFlags: 0

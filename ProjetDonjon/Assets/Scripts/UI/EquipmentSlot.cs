@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -28,12 +29,13 @@ public class EquipmentSlot : MonoBehaviour
 
     [Header("References")]
     [SerializeField] Image _equipmentImage;
+    [SerializeField] Image _iconImage;
     [SerializeField] Image[] _allSlotImages;
 
 
     private void Start()
     {
-        saveBaseColor = _equipmentImage.color;
+        saveBaseColor = _iconImage.color;
     }
 
 
@@ -114,18 +116,22 @@ public class EquipmentSlot : MonoBehaviour
     {
         highlightCoroutine = StartCoroutine(HighlightEffectCoroutine());
 
-        for(int i = 0; i < _allSlotImages.Length; i++)
+        _iconImage.DOColor(highlightColor, 0.2f).SetEase(Ease.OutCubic);
+
+        /*for(int i = 0; i < _allSlotImages.Length; i++)
         {
             _allSlotImages[i].ULerpImageColor(0.2f, highlightColor);
-        }
+        }*/
     }
 
     public void HideSlot()
     {
-        for (int i = 0; i < _allSlotImages.Length; i++)
+        _iconImage.DOColor(hiddenColor, 0.2f).SetEase(Ease.OutCubic);
+
+        /*for (int i = 0; i < _allSlotImages.Length; i++)
         {
             _allSlotImages[i].ULerpImageColor(0.2f, hiddenColor);
-        }
+        }*/
     }
 
     public void GetBackToNormal()
@@ -137,7 +143,7 @@ public class EquipmentSlot : MonoBehaviour
 
         for (int i = 0; i < _allSlotImages.Length; i++)
         {
-            _allSlotImages[i].ULerpImageColor(0.2f, saveBaseColor);
+            _iconImage.DOColor(saveBaseColor, 0.2f).SetEase(Ease.OutCubic);
         }
     }
 
