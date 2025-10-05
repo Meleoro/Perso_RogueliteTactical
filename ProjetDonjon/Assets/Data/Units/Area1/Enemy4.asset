@@ -13,11 +13,14 @@ MonoBehaviour:
   m_Name: Enemy4
   m_EditorClassIdentifier: 
   unitName: Spear Skeleton
-  unitImage: {fileID: 903551230, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
-  baseHealth: 6
-  baseStrength: 2
-  baseSpeed: 4
-  baseLuck: 4
+  unitImage: {fileID: -433415525667023410, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
+  unitImageHighlight: {fileID: 734121066, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
+  baseHealth: 3
+  baseStrength: 1
+  baseSpeed: 3
+  baseLuck: 2
+  startAlterations:
+  - {fileID: 11400000, guid: 79b94ac45e9570a4f8938ed57c937901, type: 2}
   AI: 1
   dangerLevel: 3
   skills:

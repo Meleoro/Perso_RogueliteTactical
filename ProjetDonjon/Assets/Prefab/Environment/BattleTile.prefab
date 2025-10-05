@@ -227,7 +227,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 9084654784566164501}
           m_TargetAssemblyTypeName: BattleTile, Assembly-CSharp
-          m_MethodName: OverlayTile
+          m_MethodName: HoverTile
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -243,7 +243,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 9084654784566164501}
           m_TargetAssemblyTypeName: BattleTile, Assembly-CSharp
-          m_MethodName: QuitOverlayTile
+          m_MethodName: UnhoverTile
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

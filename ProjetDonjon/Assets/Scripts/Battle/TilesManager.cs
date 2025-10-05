@@ -4,11 +4,17 @@ using static Enums;
 
 public class TilesManager 
 {
-    [Header("Private Infos")]
-    public SkillData currentSkill;
-    public BattleTile currentSkillBaseTile;
+    [Header("Public Infos")]
+    public SkillData CurrentSkill { get { return currentSkill; } }
+    public BattleTile CurrentSkillBaseTile { get { return currentSkillBaseTile; } }
     public Unit currentUnit;
     public Room battleRoom;
+
+    [Header("Private Infos")]
+    private SkillData currentSkill;
+    private BattleTile currentSkillBaseTile;
+    private AIUnit currentHoveredUnit;
+    private PreviewType currentPreviewType;
 
     [Header("References")]
     private PathCalculator _pathCalculator;
@@ -23,10 +29,10 @@ public class TilesManager
     }
 
 
-    #region Tiles Functions
+    #region Utilities Functions
 
     public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool useDiagonals = false,
-        ObstacleType obstacleType = ObstacleType.Nothing, BattleTile ignoredTile = null)
+        ObstacleType obstacleType = ObstacleType.Nothing, BattleTile ignoredTile = null, bool includeEnd = false)
     {
         List<BattleTile> returnedTiles = new List<BattleTile>();
 
@@ -40,7 +46,7 @@ public class TilesManager
 
             if (battleTile is null) continue;
             if (obstacleType != ObstacleType.Nothing && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter,
-                useDiagonals, obstacleType, ignoredTile)) continue;
+                useDiagonals, obstacleType, ignoredTile, includeEnd)) continue;
             if (battleTile.UnitOnTile is not null && (obstacleType == ObstacleType.Units || obstacleType == ObstacleType.All)
                 && ignoredTile != battleTile) continue;
 
@@ -75,6 +81,48 @@ public class TilesManager
         return result;
     }
 
+    public Unit[] GetConcernedUnits(BattleTile[] tiles, SkillData skill, Unit baseUnit)
+    {
+        List<Unit> result = new List<Unit>();
+
+        foreach (BattleTile tile in tiles)
+        {
+            if (tile.UnitOnTile is null) continue;
+
+            switch (skill.skillEffects[0].skillEffectTargetType)
+            {
+                case SkillEffectTargetType.Enemies:
+                    if (baseUnit.GetType() != tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
+                    break;
+
+                case SkillEffectTargetType.Allies:
+                    if (baseUnit.GetType() == tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
+                    break;
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    public List<BattleTile> GetAllSkillTiles()
+    {
+        List<BattleTile> returnedTiles = new List<BattleTile>();
+
+        for (int i = 0; i < battleRoom.BattleTiles.Count; i++)
+        {
+            if (battleRoom.BattleTiles[i].CurrentTileState == BattleTileState.Danger)
+            {
+                returnedTiles.Add(battleRoom.BattleTiles[i]);
+            }
+        }
+
+        return returnedTiles;
+    }
+
+    #endregion
+
+
+    #region Tiles Functions
 
     public List<BattleTile> DisplayPossibleSkillTiles(SkillData skill, BattleTile baseTile, bool doBounce = true)
     {
@@ -104,7 +152,11 @@ public class TilesManager
         if (skill is null)
         {
             skill = currentSkill;
-            //DisplayPossibleSkillTiles(skill, currentSkillBaseTile);
+        }
+        else   // For Enemies
+        {
+            currentSkill = skill;
+            currentSkillBaseTile = overlayedTile;
         }
 
         List<BattleTile> skillTiles = new List<BattleTile>();
@@ -159,7 +211,11 @@ public class TilesManager
     // FOR ENEMIES, SHOWS THE POSSIBLE MOVE / SKILL TILES 
     public void DisplayPossibleTiles(AIUnit enemy)
     {
+        if (currentHoveredUnit == enemy && currentPreviewType == enemy.CurrentPreviewType) return;
+
         ResetTiles();
+        currentHoveredUnit = enemy;
+        currentPreviewType = enemy.CurrentPreviewType;
 
         List<BattleTile> tiles = new List<BattleTile>();
         List<BattleTile> secondaryTiles = new List<BattleTile>();
@@ -167,10 +223,11 @@ public class TilesManager
         {
             case PreviewType.Move:
                 tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern,
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All, null, true);
 
                 for (int i = 0; i < tiles.Count; i++)
                 {
+                    if (tiles[i].CantStopHere) continue;
                     tiles[i].DisplayMoveTile();
                 }
 
@@ -188,10 +245,11 @@ public class TilesManager
 
             case PreviewType.MoveAndAttack:
                 tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern,
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
+                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All, null, true);
 
                 for (int i = 0; i < tiles.Count; i++)
                 {
+                    if (tiles[i].CantStopHere) continue;
                     secondaryTiles = GetPaternTiles(tiles[i].TileCoordinates, enemy.CurrentSkillData.skillPatern,
                         (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true, ObstacleType.UnitsIncluded);
 
@@ -240,6 +298,7 @@ public class TilesManager
             {
                 neighbors.AddRange(openList[j].TileNeighbors);
 
+                if (openList[j].CantStopHere) continue;
                 openList[j].DisplayMoveTile();
 
                 tilesPositionsAddition += openList[j].transform.position;
@@ -267,6 +326,8 @@ public class TilesManager
 
     public void ResetTiles()
     {
+        currentHoveredUnit = null;
+
         for (int i = 0; i < battleRoom.BattleTiles.Count; i++)
         {
             battleRoom.BattleTiles[i].DisplayNormalTile();

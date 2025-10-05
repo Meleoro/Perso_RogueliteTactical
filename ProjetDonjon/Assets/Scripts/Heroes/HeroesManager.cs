@@ -221,7 +221,7 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>, ISaveable
                 }
             }
 
-            pickedTile.UnitEnterTile(heroes[i]);
+            pickedTile.UnitEnterTile(heroes[i], false);
             heroes[i].ShowHero();
             heroes[i].EnterBattle(pickedTile);
         }

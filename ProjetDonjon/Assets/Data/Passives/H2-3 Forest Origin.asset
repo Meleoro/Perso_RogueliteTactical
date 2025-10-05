@@ -19,12 +19,15 @@ MonoBehaviour:
   additionalTooltipDatas:
   - {fileID: 11400000, guid: a3a2ae7d22be7624f8654ebb623e18a1, type: 2}
   - {fileID: 11400000, guid: bdd1cd386b28d51469bd606f8f387012, type: 2}
-  passiveTriggerType: 2
-  passiveTriggerProba: 25
+  passiveTriggerType: 0
+  neededAlteration: {fileID: 0}
+  passiveTriggerProba: 0
   passiveEffects:
-  - passiveEffectType: 2
-    appliedAlteration: {fileID: 0}
+  - passiveEffectType: 3
+    appliedAlteration: {fileID: 11400000, guid: 159132732668f964199bd5498810af03, type: 2}
     additivePower: 0
     multipliedPower: 0
-    duration: 0
-    summonPrefab: {fileID: 0}
+  - passiveEffectType: 3
+    appliedAlteration: {fileID: 11400000, guid: 90b47bb6b429ed34aa18b3e0a5c5b0e5, type: 2}
+    additivePower: 0
+    multipliedPower: 0

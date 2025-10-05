@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a6f51d3c135e2eb44b0a2bc3502c2e38, type: 3}
-  m_Name: H2-5 Frreeloader
+  m_Name: H2-5 Freeloader
   m_EditorClassIdentifier: 
   passiveName: FREELOADER
   passiveDescription: +50% CRIT CHANCES WHEN THIS UNIT ATTACK A STUNNED UNIT
@@ -18,12 +18,11 @@ MonoBehaviour:
   passiveHighlightIcon: {fileID: -1451717230, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas:
   - {fileID: 11400000, guid: f88c8bf3130dd394b92c7bb80e2c4467, type: 2}
-  passiveTriggerType: 2
-  passiveTriggerProba: 25
+  passiveTriggerType: 4
+  neededAlteration: {fileID: 11400000, guid: c2542ffcfdc24874f80e68e474db9402, type: 2}
+  passiveTriggerProba: 50
   passiveEffects:
-  - passiveEffectType: 2
+  - passiveEffectType: 5
     appliedAlteration: {fileID: 0}
-    additivePower: 0
+    additivePower: 50
     multipliedPower: 0
-    duration: 0
-    summonPrefab: {fileID: 0}

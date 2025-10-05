@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Summon1
   m_EditorClassIdentifier: 
   unitName: Sylvestre
-  unitImage: {fileID: 646457813, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  unitImage: {fileID: -8321560820259054559, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
+  unitImageHighlight: {fileID: -1462041630, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
   baseHealth: 4
   baseStrength: 1
   baseSpeed: 5
   baseLuck: 2
+  startAlterations: []
   AI: 0
   dangerLevel: 0
   skills:

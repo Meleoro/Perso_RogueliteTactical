@@ -10,7 +10,9 @@ public class HeroInfoPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _levelText;
     [SerializeField] private SkillPoint[] _skillPoints;
     [SerializeField] private TextMeshProUGUI _healthText;
+    [SerializeField] private TextMeshProUGUI _xpText;
     [SerializeField] private Image _healthFillableImage;
+    [SerializeField] private Image _xpFillableImage;
 
 
     public void InitialisePanel(Hero hero)
@@ -44,5 +46,10 @@ public class HeroInfoPanel : MonoBehaviour
 
         _healthText.text = hero.CurrentHealth + "/" + hero.CurrentMaxHealth;
         _healthFillableImage.fillAmount = (float)hero.CurrentHealth / hero.CurrentMaxHealth;
+
+        if (hero.CurrentXPToReach == 0) return;
+
+        _xpText.text = hero.CurrentXP + "/" + hero.CurrentXPToReach;
+        _xpFillableImage.fillAmount = (float)hero.CurrentXP / hero.CurrentXPToReach;
     }
 }

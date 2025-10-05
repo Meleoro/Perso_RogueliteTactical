@@ -87,7 +87,7 @@ public class SkillsPanelButton : MonoBehaviour
             OnSkillOverlay.Invoke(skillData);
         }
 
-        List<BattleTile> concernedTiles = BattleManager.Instance.DisplayPossibleSkillTiles(skillData, BattleManager.Instance.CurrentUnit.CurrentTile);
+        List<BattleTile> concernedTiles = BattleManager.Instance.TilesManager.DisplayPossibleSkillTiles(skillData, BattleManager.Instance.CurrentUnit.CurrentTile);
         float averageDist = 0;
 
         foreach(BattleTile battleTile in concernedTiles)

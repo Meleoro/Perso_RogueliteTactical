@@ -10,8 +10,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
 
+
 public class UnitUI : MonoBehaviour
 {
+    private enum HeartState
+    {
+        Normal,
+        Skull,
+        Shield
+    }
+
     [Header("Parameters")]
     [SerializeField] private float appearEffectSpeed;
 
@@ -27,6 +35,7 @@ public class UnitUI : MonoBehaviour
     private Vector3 saveDamageTextPos;
     private Vector3 saveLevelUpTextPos;
     private Unit attachedUnit;
+    private HeartState currentHeartState;
 
     [Header("Public Infos")]
     public RectTransform XPPointsParent { get { return _xpPointsParent; } }
@@ -56,6 +65,8 @@ public class UnitUI : MonoBehaviour
 
     private void Start()
     {
+        currentHeartState = HeartState.Normal;
+
         HideUnitUI();
         ResetXPProgress();
 
@@ -69,6 +80,7 @@ public class UnitUI : MonoBehaviour
         _xpBackImage.color = new Color(_xpBackImage.color.r, _xpBackImage.color.g, _xpBackImage.color.b, 0);
 
         _changePaternText.rectTransform.localScale = Vector3.zero;
+        currentAimedRatio = 1;
 
         attachedUnit = GetComponentInParent<Unit>();
     }
@@ -199,6 +211,9 @@ public class UnitUI : MonoBehaviour
         _healthText.text = currentHealth.ToString();
         this.currentHealth = currentHealth;
 
+        bool foundSkull = false;
+        bool foundShield = false;
+
         for (int i = 0; i < _alterations.Length; i++)
         {
             if(i >= currentAlterations.Count)
@@ -207,6 +222,40 @@ public class UnitUI : MonoBehaviour
                 continue;
             }
             _alterations[i].Appear(currentAlterations[i], attachedUnit);
+
+
+            // Sield / Skull heart sprites changes
+            if (currentAlterations[i].alteration.alterationType == AlterationType.Shield)
+            {
+                foundShield = true;
+
+                if(currentHeartState == HeartState.Normal)
+                {
+                    currentHeartState = HeartState.Shield;
+
+                }
+            }
+            else if (currentAlterations[i].alteration.alterationType == AlterationType.Skulled)
+            {
+                foundSkull = true;
+
+                if (currentHeartState == HeartState.Normal)
+                {
+                    currentHeartState = HeartState.Skull;
+                    _animator.SetTrigger("HeartSkull");
+                }
+            }
+        }
+
+        if(currentHeartState == HeartState.Shield && !foundShield)
+        {
+            currentHeartState = HeartState.Normal;
+
+        }
+        else if(currentHeartState == HeartState.Skull && !foundSkull)
+        {
+            currentHeartState = HeartState.Normal;
+            _animator.SetTrigger("SkullHeart");
         }
     }
 

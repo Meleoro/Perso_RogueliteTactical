@@ -180,14 +180,16 @@ public class HeroInfosScreen : MonoBehaviour
     {
         hero.AddEquipment(equipment, slotIndex);
 
-        ActualiseInfoScreen(hero);
+        hero.ActualiseUnitInfos(0, 0, 0, 0, 0, 0);
+        //ActualiseInfoScreen(hero);
     }
 
     private void RemoveEquipment(Loot equipment, int slotIndex)
     {
         hero.RemoveEquipment(equipment, slotIndex);
 
-        ActualiseInfoScreen(hero);
+        hero.ActualiseUnitInfos(0, 0, 0, 0, 0, 0);
+        //ActualiseInfoScreen(hero);
     }
 
     #endregion
@@ -252,25 +254,25 @@ public class HeroInfosScreen : MonoBehaviour
         this.heroData = hero.HeroData;
         this.hero = hero;   
 
-        int currentHealth = heroData.baseHealth;
-        int currentStrength = heroData.baseStrength;
-        int currentSpeed = heroData.baseSpeed;
-        int currentLuck = heroData.baseLuck;
-        int currentMovePoints = heroData.baseMovePoints;
-        int currentMaxSP = heroData.maxSkillPoints;
+        int currentHealth = 0;
+        int currentStrength = 0;
+        int currentSpeed = 0;
+        int currentLuck = 0;
+        int currentMovePoints = 0;
+        int currentMaxSP = 0;
 
-        for(int i = 0; i < hero.EquippedLoot.Length; i++)
+        for (int i = 0; i < hero.EquippedLoot.Length; i++)
         {
             _equipmentSlots[i].RemoveEquipment(false);
 
             if (hero.EquippedLoot[i] == null) continue;
 
-            currentHealth += hero.EquippedLoot[i].LootData.healthUpgrade;
-            currentStrength += hero.EquippedLoot[i].LootData.strengthUpgrade;
-            currentSpeed += hero.EquippedLoot[i].LootData.speedUpgrade;
-            currentLuck += hero.EquippedLoot[i].LootData.luckUpgrade;
-            currentMovePoints += hero.EquippedLoot[i].LootData.mpUpgrade;
-            currentMaxSP += hero.EquippedLoot[i].LootData.spUpgrade;
+            //currentHealth += hero.EquippedLoot[i].LootData.healthUpgrade;
+            //currentStrength += hero.EquippedLoot[i].LootData.strengthUpgrade;
+            //currentSpeed += hero.EquippedLoot[i].LootData.speedUpgrade;
+            //currentLuck += hero.EquippedLoot[i].LootData.luckUpgrade;
+            //currentMovePoints += hero.EquippedLoot[i].LootData.mpUpgrade;
+            //currentMaxSP += hero.EquippedLoot[i].LootData.spUpgrade;
 
             _equipmentSlots[i].AddEquipment(hero.EquippedLoot[i], false);
         }
@@ -280,15 +282,15 @@ public class HeroInfosScreen : MonoBehaviour
         if (doEffect) 
             VerifyValueChangeEffects(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints, currentMaxSP);
 
-        _statsTexts[0].text = currentHealth.ToString();
-        _statsTexts[1].text = currentStrength.ToString();
-        _statsTexts[2].text = currentSpeed.ToString();
-        _statsTexts[3].text = currentLuck.ToString();
-        _statsTexts[4].text = currentMovePoints.ToString();
-        _statsTexts[5].text = currentMaxSP.ToString();
-
-        hero.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck, currentMovePoints, currentMaxSP);
+        _statsTexts[0].text = hero.CurrentHealth.ToString();
+        _statsTexts[1].text = hero.CurrentStrength.ToString();
+        _statsTexts[2].text = hero.CurrentSpeed.ToString();
+        _statsTexts[3].text = hero.CurrentLuck.ToString();
+        _statsTexts[4].text = hero.CurrentMovePoints.ToString();
+        _statsTexts[5].text = hero.CurrentMaxSkillPoints.ToString();
     }
+
+
 
     private void VerifyValueChangeEffects(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
     {

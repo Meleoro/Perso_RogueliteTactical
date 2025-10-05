@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6f51d3c135e2eb44b0a2bc3502c2e38, type: 3}
   m_Name: H1-4 Shield Generator
   m_EditorClassIdentifier: 
-  passiveName: SHIELD GENERATOR
-  passiveDescription: EACH TIME THIS UNIT TAKES DAMAGES, GET 1 SHIELD
-  passiveIcon: {fileID: 8061498, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  passiveName: INVINCIBLE
+  passiveDescription: STURDY GIVES THIS UNIT +25% PROTECTION AGAINST ATTACKS
+  passiveIcon: {fileID: 1044571779, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  passiveHighlightIcon: {fileID: -1217327357, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas:
   - {fileID: 11400000, guid: 2e667cfbef3b2ac4c803004a64dfb851, type: 2}
   passiveTriggerType: 2
+  neededAlteration: {fileID: 11400000, guid: a4dccd989fc1ef24e9430b7dd0d6968f, type: 2}
   passiveTriggerProba: 100
   passiveEffects:
-  - appliedAlteration: {fileID: 11400000, guid: 69fc52cf0de22974ab85d665e8979052, type: 2}
-    additivePower: 0
+  - passiveEffectType: 2
+    appliedAlteration: {fileID: 0}
+    additivePower: -0.25
     multipliedPower: 0
-    duration: 0
-    summonPrefab: {fileID: 0}

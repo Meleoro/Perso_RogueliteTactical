@@ -13,17 +13,16 @@ MonoBehaviour:
   m_Name: H1-5 SP Generator
   m_EditorClassIdentifier: 
   passiveName: SP GENERATOR
-  passiveDescription: EACH TIME THIS UNIT TAKES DAMAGES, 25% CHANCE TO GAIN 1 SKILL
+  passiveDescription: EACH TIME THIS UNIT TAKES DAMAGES, 50% CHANCE TO GAIN 1 SKILL
     POINT
   passiveIcon: {fileID: 8061498, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
-  additionalTooltipDatas:
-  - {fileID: 11400000, guid: 2e667cfbef3b2ac4c803004a64dfb851, type: 2}
-  passiveTriggerType: 2
-  passiveTriggerProba: 25
+  passiveHighlightIcon: {fileID: 0}
+  additionalTooltipDatas: []
+  passiveTriggerType: 6
+  neededAlteration: {fileID: 0}
+  passiveTriggerProba: 50
   passiveEffects:
-  - passiveEffectType: 2
+  - passiveEffectType: 7
     appliedAlteration: {fileID: 0}
     additivePower: 0
     multipliedPower: 0
-    duration: 0
-    summonPrefab: {fileID: 0}

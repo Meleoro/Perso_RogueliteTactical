@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Enemy2
   m_EditorClassIdentifier: 
   unitName: Small Goblin
-  unitImage: {fileID: -1188208051, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  unitImage: {fileID: 6816692462494910891, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
+  unitImageHighlight: {fileID: -730966506, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
   baseHealth: 4
   baseStrength: 1
   baseSpeed: 4
   baseLuck: 1
+  startAlterations: []
   AI: 1
   dangerLevel: 2
   skills:

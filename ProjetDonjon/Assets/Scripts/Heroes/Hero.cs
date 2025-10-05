@@ -22,7 +22,6 @@ public class Hero : Unit
     [Header("Public Infos")]
     public Loot[] EquippedLoot { get { return equippedLoot; } }
     public SkillData[] EquippedSkills { get { return equippedSkills; } }
-    public PassiveData[] EquippedPassives { get { return equippedPassives; } }
     public Inventory Inventory { get { return inventory; } }
     public HeroData HeroData { get { return heroData; } }
     public SkillTreeData SkillTreeData { get { return skillTreeData; } }
@@ -35,12 +34,13 @@ public class Hero : Unit
     public bool[] SkillTreeUnlockedNodes { get { return skillTreeUnlockedNodes; } }
     public int HeroIndex { get { return heroIndex; } }
     public UnitUI UI { get { return _ui; } }
+    public int CurrentXP { get { return currentXP; } set { currentXP = value; OnHeroInfosChange?.Invoke(); } }
+    public int CurrentXPToReach { get { return XPToReach; } set { XPToReach = value; OnHeroInfosChange?.Invoke(); } }
 
 
     [Header("Private Infos")]
     private Loot[] equippedLoot = new Loot[6];
     private SkillData[] equippedSkills = new SkillData[6];
-    private PassiveData[] equippedPassives = new PassiveData[3];
     private Inventory inventory;
     private bool isHidden;
     private bool isDead;
@@ -67,6 +67,9 @@ public class Hero : Unit
         unitData = heroData;
         _controller.EndAutoMoveAction += HideHero;
 
+        CurrentLevel = HeroesManager.Instance.HeroesLevel[heroIndex];
+        CurrentXPToReach = (int)(10 * ((currentLevel + 1) * 1.25f));
+
         skillTreeUnlockedNodes = new bool[15];
         for(int i = 0; i < 15; i++)
         {
@@ -78,9 +81,6 @@ public class Hero : Unit
         InitialiseUnitInfos(heroData.baseHealth, heroData.baseStrength, heroData.baseSpeed, heroData.baseLuck, heroData.baseMovePoints);
         CurrentSkillPoints = HeroData.startSkillPoints;
         CurrentMaxSkillPoints = HeroData.maxSkillPoints;
-
-        currentLevel = HeroesManager.Instance.HeroesLevel[heroIndex];
-        XPToReach = (int)(10 * (currentLevel * 1.25f));
     }
 
     private void Update()
@@ -191,6 +191,8 @@ public class Hero : Unit
     {
         base.TakeDamage(damageAmount, originUnit);
 
+        OnHeroInfosChange?.Invoke();
+
         LootData[] hitLootEffects = GetEquippedLootOfEffectType(SpecialEquipmentEffectType.HitAlteration);
 
         for(int i = 0; i < hitLootEffects.Length; i++)
@@ -291,7 +293,7 @@ public class Hero : Unit
 
     public void GainXP(int quantity)
     {
-        currentXP += quantity;
+        CurrentXP += quantity;
         _ui.GainXP(Mathf.Clamp((float)currentXP / XPToReach, 0f, 1f));
 
         if (currentXP >= XPToReach) StartCoroutine(GainLevelCoroutine(0.5f));
@@ -306,8 +308,8 @@ public class Hero : Unit
         currentLevel++;
         currentSkillTreePoints++;
 
-        currentXP = currentXP - XPToReach;
-        XPToReach = (int)(XPToReach * 1.25f);
+        CurrentXP = currentXP - XPToReach;
+        CurrentXPToReach = (int)(XPToReach * 1.25f);
 
         _ui.ResetXPProgress();
 
@@ -330,11 +332,42 @@ public class Hero : Unit
 
     #region Others
 
-    public override void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
+    public override void ActualiseUnitInfos(int addedMaxHealth, int addedStrength, int addedSpeed, int addedLuck, int addedMovePoints, int addedSP)
     {
-        currentMaxSkillPoints = maxSP;
+        int currentHealth = addedMaxHealth;
+        int currentStrength = addedStrength;
+        int currentSpeed = addedSpeed;
+        int currentLuck = addedLuck;
+        int currentMovePoints = heroData.baseMovePoints + addedMovePoints;
+        int currentMaxSP = heroData.maxSkillPoints + addedSP;
 
-        base.ActualiseUnitInfos(newMaxHealth, newStrength, newSpeed, newLuck, newMovePoints, maxSP);
+        for (int i = 0; i < EquippedLoot.Length; i++)
+        {
+            if (EquippedLoot[i] == null) continue;
+
+            currentHealth += EquippedLoot[i].LootData.healthUpgrade;
+            currentStrength += EquippedLoot[i].LootData.strengthUpgrade;
+            currentSpeed += EquippedLoot[i].LootData.speedUpgrade;
+            currentLuck += EquippedLoot[i].LootData.luckUpgrade;
+            currentMovePoints += EquippedLoot[i].LootData.mpUpgrade;
+            currentMaxSP += EquippedLoot[i].LootData.spUpgrade;
+        }
+
+        this.currentMovePoints = currentMovePoints;
+        this.currentMaxSkillPoints = currentMaxSP;
+
+        base.ActualiseUnitInfos(currentHealth, currentStrength, currentSpeed, currentLuck, addedMovePoints, addedSP);
+
+        UIManager.Instance.HeroInfosScreen.ActualiseInfoScreen(this, true);
+    }
+
+    public override void AddStatsModificators(int addedMaxHealth, int addedStrength, int addedSpeed, int addedLuck, int addedMovePoints, int addedSP)
+    {
+        currentMovePoints += addedMovePoints;
+        currentMaxSkillPoints += addedSP;
+
+
+        base.AddStatsModificators(addedMaxHealth, addedStrength, addedSpeed, addedLuck, addedMovePoints, addedSP);
     }
 
     public void AddSkillPoints(int quantity)
@@ -394,6 +427,7 @@ public class Hero : Unit
     public void ActualiseEquippedPassives(PassiveData[] equippedPassives)
     {
         this.equippedPassives = equippedPassives;
+        ActualiseUnitInfos(0, 0, 0, 0, 0, 0);
     }
 
 

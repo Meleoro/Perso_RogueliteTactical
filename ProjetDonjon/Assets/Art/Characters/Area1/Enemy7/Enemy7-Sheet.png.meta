@@ -1,55 +1,58 @@
 fileFormatVersion: 2
-guid: 3a6432cb9bbb05741824abbe51780b9a
+guid: 61917f8a7715b154b85a7d9e2ba465ac
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1035785141089646686
-    second: Invocation1-Sheet_0
+      213: -8485624987758935837
+    second: Enemy7-Sheet_0
   - first:
-      213: 4624889251662800260
-    second: Invocation1-Sheet_1
+      213: -3421216054361317472
+    second: Enemy7-Sheet_1
   - first:
-      213: 7797576360396537456
-    second: Invocation1-Sheet_2
+      213: -4832264060905271012
+    second: Enemy7-Sheet_2
   - first:
-      213: 7683782667767959655
-    second: Invocation1-Sheet_3
+      213: -6101983600101933379
+    second: Enemy7-Sheet_3
   - first:
-      213: 4270583101706167784
-    second: Invocation1-Sheet_4
+      213: 7542417944065911613
+    second: Enemy7-Sheet_4
   - first:
-      213: -656612649511002804
-    second: Invocation1-Sheet_5
+      213: 2846281196139544705
+    second: Enemy7-Sheet_5
   - first:
-      213: -3997621646432908947
-    second: Invocation1-Sheet_6
+      213: 3507227556516021771
+    second: Enemy7-Sheet_6
   - first:
-      213: 8864578208003831862
-    second: Invocation1-Sheet_7
+      213: 7834757394838547985
+    second: Enemy7-Sheet_7
   - first:
-      213: -436902784829805483
-    second: Invocation1-Sheet_8
+      213: -8215424687999487568
+    second: Enemy7-Sheet_8
   - first:
-      213: -4770021589475603942
-    second: Invocation1-Sheet_9
+      213: -4533284712525316260
+    second: Enemy7-Sheet_9
   - first:
-      213: -5263594867706879036
-    second: Invocation1-Sheet_10
+      213: 8741606503777447426
+    second: Enemy7-Sheet_10
   - first:
-      213: -2983258470708685974
-    second: Invocation1-Sheet_11
+      213: -2384887831728279674
+    second: Enemy7-Sheet_11
   - first:
-      213: 8120130677565729302
-    second: Invocation1-Sheet_12
+      213: 5594766761155876116
+    second: Enemy7-Sheet_12
   - first:
-      213: 2779469638585536829
-    second: Invocation1-Sheet_13
+      213: -3870997482170729825
+    second: Enemy7-Sheet_13
   - first:
-      213: -787851567057636872
-    second: Invocation1-Sheet_14
+      213: -7687483633898127207
+    second: Enemy7-Sheet_14
   - first:
-      213: -8231916462045588183
-    second: Invocation1-Sheet_15
+      213: 8065193444236274024
+    second: Enemy7-Sheet_15
+  - first:
+      213: 366916123666543680
+    second: Enemy7-Sheet_16
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -145,7 +148,183 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Invocation1-Sheet_0
+      name: Enemy7-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e0437b48010d3a80800000000000000
+      internalID: -8485624987758935837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0af1eebff166580d0800000000000000
+      internalID: -3421216054361317472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c11dad4607950fcb0800000000000000
+      internalID: -4832264060905271012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbe3aa2de36615ba0800000000000000
+      internalID: -6101983600101933379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3ba49f982d0ca860800000000000000
+      internalID: 7542417944065911613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18085caeaa5008720800000000000000
+      internalID: 2846281196139544705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b06499c61ec2ca030800000000000000
+      internalID: 3507227556516021771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 128
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11e67bc1756aabc60800000000000000
+      internalID: 7834757394838547985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Enemy7-Sheet_8
       rect:
         serializedVersion: 2
         x: 0
@@ -160,14 +339,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2a749b9e6e620a1f0800000000000000
-      internalID: -1035785141089646686
+      spriteID: 0b1f0d006c2fcfd80800000000000000
+      internalID: -8215424687999487568
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_1
+      name: Enemy7-Sheet_9
       rect:
         serializedVersion: 2
         x: 64
@@ -182,14 +361,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 48522ea4548ee2040800000000000000
-      internalID: 4624889251662800260
+      spriteID: c5f383482998611c0800000000000000
+      internalID: -4533284712525316260
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_2
+      name: Enemy7-Sheet_10
       rect:
         serializedVersion: 2
         x: 128
@@ -204,14 +383,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 07e3b6ee26e863c60800000000000000
-      internalID: 7797576360396537456
+      spriteID: 20e26e7dccc605970800000000000000
+      internalID: 8741606503777447426
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_3
+      name: Enemy7-Sheet_11
       rect:
         serializedVersion: 2
         x: 192
@@ -226,14 +405,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 760dc9b30a742aa60800000000000000
-      internalID: 7683782667767959655
+      spriteID: 68f2fa8172d27eed0800000000000000
+      internalID: -2384887831728279674
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_4
+      name: Enemy7-Sheet_12
       rect:
         serializedVersion: 2
         x: 256
@@ -248,14 +427,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8e56bf854b8244b30800000000000000
-      internalID: 4270583101706167784
+      spriteID: 415dbd71aba94ad40800000000000000
+      internalID: 5594766761155876116
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_5
+      name: Enemy7-Sheet_13
       rect:
         serializedVersion: 2
         x: 320
@@ -270,14 +449,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c4d5ede264e33e6f0800000000000000
-      internalID: -656612649511002804
+      spriteID: f9a38c4ac44774ac0800000000000000
+      internalID: -3870997482170729825
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_6
+      name: Enemy7-Sheet_14
       rect:
         serializedVersion: 2
         x: 384
@@ -292,14 +471,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d6944f9fa489588c0800000000000000
-      internalID: -3997621646432908947
+      spriteID: 9908fd07d52905590800000000000000
+      internalID: -7687483633898127207
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_7
+      name: Enemy7-Sheet_15
       rect:
         serializedVersion: 2
         x: 448
@@ -314,14 +493,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 638bcb3e9ee450b70800000000000000
-      internalID: 8864578208003831862
+      spriteID: 8692380d4b25def60800000000000000
+      internalID: 8065193444236274024
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Invocation1-Sheet_8
+      name: Enemy7-Sheet_16
       rect:
         serializedVersion: 2
         x: 0
@@ -336,162 +515,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 55c27d46b3fcfe9f0800000000000000
-      internalID: -436902784829805483
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_9
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a1acc5413aa7dcdb0800000000000000
-      internalID: -4770021589475603942
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_10
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4c323c40b54f3f6b0800000000000000
-      internalID: -5263594867706879036
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_11
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a63db341a365996d0800000000000000
-      internalID: -2983258470708685974
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_12
-      rect:
-        serializedVersion: 2
-        x: 256
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 61aae0634df70b070800000000000000
-      internalID: 8120130677565729302
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_13
-      rect:
-        serializedVersion: 2
-        x: 320
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d31dfd7f8e8a29620800000000000000
-      internalID: 2779469638585536829
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_14
-      rect:
-        serializedVersion: 2
-        x: 384
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 8f17bc98c2df015f0800000000000000
-      internalID: -787851567057636872
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Invocation1-Sheet_15
-      rect:
-        serializedVersion: 2
-        x: 448
-        y: 0
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 9251513a79b52cd80800000000000000
-      internalID: -8231916462045588183
+      spriteID: 044f18d354c871500800000000000000
+      internalID: 366916123666543680
       vertices: []
       indices: 
       edges: []
@@ -500,7 +525,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: baf2d065b2cadb74f8b6d26a87fe0148
+    spriteID: 0d1889edbcdb2214ca7b79631dea8d62
     internalID: 0
     vertices: []
     indices: 
@@ -510,22 +535,23 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Invocation1-Sheet_0: -1035785141089646686
-      Invocation1-Sheet_1: 4624889251662800260
-      Invocation1-Sheet_10: -5263594867706879036
-      Invocation1-Sheet_11: -2983258470708685974
-      Invocation1-Sheet_12: 8120130677565729302
-      Invocation1-Sheet_13: 2779469638585536829
-      Invocation1-Sheet_14: -787851567057636872
-      Invocation1-Sheet_15: -8231916462045588183
-      Invocation1-Sheet_2: 7797576360396537456
-      Invocation1-Sheet_3: 7683782667767959655
-      Invocation1-Sheet_4: 4270583101706167784
-      Invocation1-Sheet_5: -656612649511002804
-      Invocation1-Sheet_6: -3997621646432908947
-      Invocation1-Sheet_7: 8864578208003831862
-      Invocation1-Sheet_8: -436902784829805483
-      Invocation1-Sheet_9: -4770021589475603942
+      Enemy7-Sheet_0: -8485624987758935837
+      Enemy7-Sheet_1: -3421216054361317472
+      Enemy7-Sheet_10: 8741606503777447426
+      Enemy7-Sheet_11: -2384887831728279674
+      Enemy7-Sheet_12: 5594766761155876116
+      Enemy7-Sheet_13: -3870997482170729825
+      Enemy7-Sheet_14: -7687483633898127207
+      Enemy7-Sheet_15: 8065193444236274024
+      Enemy7-Sheet_16: 366916123666543680
+      Enemy7-Sheet_2: -4832264060905271012
+      Enemy7-Sheet_3: -6101983600101933379
+      Enemy7-Sheet_4: 7542417944065911613
+      Enemy7-Sheet_5: 2846281196139544705
+      Enemy7-Sheet_6: 3507227556516021771
+      Enemy7-Sheet_7: 7834757394838547985
+      Enemy7-Sheet_8: -8215424687999487568
+      Enemy7-Sheet_9: -4533284712525316260
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

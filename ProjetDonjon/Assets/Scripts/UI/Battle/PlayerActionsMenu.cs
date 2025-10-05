@@ -1,4 +1,7 @@
+using DG.Tweening;
+using System.Collections;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities;
@@ -18,6 +21,8 @@ public class PlayerActionsMenu : MonoBehaviour
     [SerializeField] private Vector3 positionOffset;
     [SerializeField] private Color impossibleActionRemovedColor;
     [SerializeField] private Color overlayActionAddedColor;
+    [SerializeField] private Color textHoverColor;
+    [SerializeField] private Color textUnhoverColor;
     [SerializeField] private Sprite filledActionPointSprite;
     [SerializeField] private Sprite emptyActionPointSprite;
     [SerializeField] private Sprite filledSkillPointSprite;
@@ -40,6 +45,8 @@ public class PlayerActionsMenu : MonoBehaviour
     [SerializeField] private SkillsPanel _skillsPanel;
     [SerializeField] private Image[] _skillPointImages;
     [SerializeField] private Image[] _actionPointImages;
+    [SerializeField] private TextMeshProUGUI[] _buttonTexts;
+    [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
 
 
     private void Start()
@@ -118,7 +125,8 @@ public class PlayerActionsMenu : MonoBehaviour
     {
         CameraManager.Instance.OnCameraMouseInput -= CloseActionsMenu;
 
-        if(currentMenu != MenuType.Skills) currentHero.OnClickUnit += OpenActionsMenu;
+        if (currentMenu != MenuType.Skills && currentMenu != MenuType.Move) currentHero.OnClickUnit += OpenActionsMenu;
+        else if (currentMenu == MenuType.Move) currentHero.OnClickUnit += ReturnPreviousBattleMenu;
 
         _animator.SetBool("IsOpenned", false);
         isOpened = false;
@@ -132,7 +140,7 @@ public class PlayerActionsMenu : MonoBehaviour
         if (movedUnit || currentHero.IsHindered) return;
 
         currentMenu = MenuType.Move;
-        BattleManager.Instance.DisplayPossibleMoveTiles(currentHero);
+        BattleManager.Instance.TilesManager.DisplayPossibleMoveTiles(currentHero);
 
         CloseActionsMenu();
     }
@@ -173,6 +181,11 @@ public class PlayerActionsMenu : MonoBehaviour
 
         _buttonImages[buttonIndex].ULerpImageColor(0.1f, colorSaves[buttonIndex] + overlayActionAddedColor);
         _buttonImages[buttonIndex].rectTransform.UChangeScale(0.1f, Vector3.one * 1.05f);
+
+        _buttonTexts[buttonIndex].DOComplete();
+        _buttonTexts[buttonIndex].DOColor(textHoverColor, 0.1f);
+
+        StartCoroutine(AdaptHeightCoroutine(_buttonImages[buttonIndex].rectTransform.parent.GetComponent<RectTransform>(), 25, 30, 0.1f));
     }
 
     public void QuitOverlayButton(int buttonIndex)
@@ -183,6 +196,11 @@ public class PlayerActionsMenu : MonoBehaviour
 
         _buttonImages[buttonIndex].ULerpImageColor(0.15f, colorSaves[buttonIndex]);
         _buttonImages[buttonIndex].rectTransform.UChangeScale(0.15f, Vector3.one);
+
+        _buttonTexts[buttonIndex].DOComplete();
+        _buttonTexts[buttonIndex].DOColor(textUnhoverColor, 0.1f);
+
+        StartCoroutine(AdaptHeightCoroutine(_buttonImages[buttonIndex].rectTransform.parent.GetComponent<RectTransform>(), 30, 25, 0.1f));
     }
 
     public void QuitOverlayButtonInstant(int buttonIndex)
@@ -191,20 +209,36 @@ public class PlayerActionsMenu : MonoBehaviour
 
         _buttonImages[buttonIndex].color = colorSaves[buttonIndex];
         _buttonImages[buttonIndex].rectTransform.localScale = Vector3.one;
+
+        _buttonTexts[buttonIndex].DOComplete();
+        _buttonTexts[buttonIndex].color = textUnhoverColor;
+
+        _buttonImages[buttonIndex].rectTransform.parent.GetComponent<RectTransform>().sizeDelta = 
+            new Vector2(_buttonImages[buttonIndex].rectTransform.parent.GetComponent<RectTransform>().sizeDelta.x, 25);
+        _verticalLayoutGroup.enabled = false;
+        _verticalLayoutGroup.enabled = true;
+    }
+
+    private IEnumerator AdaptHeightCoroutine(RectTransform rectTr, float startHeight, float endHeight, float duration)
+    {
+        float timer = 0;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            rectTr.sizeDelta = new Vector2(rectTr.sizeDelta.x, Mathf.Lerp(startHeight, endHeight, timer / duration));
+            _verticalLayoutGroup.enabled = false;
+            _verticalLayoutGroup.enabled = true;
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     #endregion
 
 
     #region Others
-
-    private void MovedUnit()
-    {
-        movedUnit = true;
-        _buttonImages[0].ULerpImageColor(0.1f, colorSaves[0] - impossibleActionRemovedColor);
-
-        OpenActionsMenu();
-    }
 
     private void ReturnPreviousBattleMenu()
     {
@@ -213,13 +247,13 @@ public class PlayerActionsMenu : MonoBehaviour
             case MenuType.Move:
                 OpenActionsMenu();
                 CameraManager.Instance.FocusOnTr(currentHero.transform, 5f);
-                BattleManager.Instance.ResetTiles();
+                BattleManager.Instance.TilesManager.ResetTiles();
                 break;
 
             case MenuType.Skills:
                 OpenActionsMenu();
                 CameraManager.Instance.FocusOnTr(currentHero.transform, 5f);
-                BattleManager.Instance.ResetTiles();
+                BattleManager.Instance.TilesManager.ResetTiles();
                 _skillsPanel.CloseSkillsPanel();
                 break;
 

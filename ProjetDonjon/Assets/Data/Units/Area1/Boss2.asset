@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Boss2
   m_EditorClassIdentifier: 
   unitName: The Brute
-  unitImage: {fileID: -1188208051, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  unitImage: {fileID: -3766549011892430700, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
+  unitImageHighlight: {fileID: 1930839731, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
   baseHealth: 20
   baseStrength: 3
   baseSpeed: 5
   baseLuck: 10
+  startAlterations: []
   AI: 1
   dangerLevel: 20
   skills:

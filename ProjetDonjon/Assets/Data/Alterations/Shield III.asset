@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   alterationName: SHIELD
   alterationDescription: WILL TAKE DAMAGES BEFORE YOUR HEALTH
-  alterationIcon: {fileID: 1350469077, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
+  alterationIcon: {fileID: -5312513916703564955, guid: e1ca4aa97367bc14b988dd602f8dc871, type: 3}
   alterationType: 5
   isPositive: 1
   isInfinite: 1

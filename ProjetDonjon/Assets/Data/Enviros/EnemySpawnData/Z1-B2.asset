@@ -14,12 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   possibleEnemies:
   - enemyPrefab: {fileID: 4534582793652375552, guid: 7065f3b729656cf42a533cb15a42bdc1, type: 3}
-    proba: 75
+    proba: 50
     eliteProba: 50
     maxCountPerBattle: 5
     minEnemyCountBeforeSpawn: 0
+  - enemyPrefab: {fileID: 4534582793652375552, guid: 33d5baa09d638fe459cb3820acd8ee12, type: 3}
+    proba: 25
+    eliteProba: 25
+    maxCountPerBattle: 2
+    minEnemyCountBeforeSpawn: 0
   - enemyPrefab: {fileID: 4534582793652375552, guid: 9d47299945984854ebd7ecb090ff39aa, type: 3}
     proba: 25
-    eliteProba: 20
-    maxCountPerBattle: 5
+    eliteProba: 25
+    maxCountPerBattle: 2
     minEnemyCountBeforeSpawn: 0

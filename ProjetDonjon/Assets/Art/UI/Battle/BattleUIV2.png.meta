@@ -1,0 +1,1839 @@
+fileFormatVersion: 2
+guid: e1ca4aa97367bc14b988dd602f8dc871
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6594049498006788327
+    second: BattleUIV2_0
+  - first:
+      213: -2975266267870131222
+    second: BattleUIV2_1
+  - first:
+      213: 2685270527362610730
+    second: BattleUIV2_2
+  - first:
+      213: -6521186353691345132
+    second: BattleUIV2_3
+  - first:
+      213: -4839433049180794687
+    second: BattleUIV2_4
+  - first:
+      213: -3246920351175859145
+    second: BattleUIV2_5
+  - first:
+      213: 1212524931507193266
+    second: BattleUIV2_6
+  - first:
+      213: 1679030484773634569
+    second: BattleUIV2_7
+  - first:
+      213: -3552211772263211370
+    second: BattleUIV2_8
+  - first:
+      213: -1819083596150127387
+    second: BattleUIV2_9
+  - first:
+      213: -6391916094343536753
+    second: BattleUIV2_10
+  - first:
+      213: -8418545571226494795
+    second: BattleUIV2_11
+  - first:
+      213: -1262087269656263772
+    second: BattleUIV2_12
+  - first:
+      213: 559110923215530672
+    second: BattleUIV2_13
+  - first:
+      213: -4620135983914742945
+    second: BattleUIV2_14
+  - first:
+      213: 8447956315772644390
+    second: BattleUIV2_15
+  - first:
+      213: -5312513916703564955
+    second: BattleUIV2_16
+  - first:
+      213: 8243337321980000022
+    second: BattleUIV2_17
+  - first:
+      213: 2717275028576392542
+    second: BattleUIV2_18
+  - first:
+      213: -7443379025709336411
+    second: BattleUIV2_19
+  - first:
+      213: 9173838155161804395
+    second: BattleUIV2_20
+  - first:
+      213: 2319624963755234252
+    second: BattleUIV2_21
+  - first:
+      213: 7349862895433902454
+    second: BattleUIV2_22
+  - first:
+      213: 7988679433831818700
+    second: BattleUIV2_23
+  - first:
+      213: -8481914303913920313
+    second: BattleUIV2_24
+  - first:
+      213: 3189225147501242164
+    second: BattleUIV2_25
+  - first:
+      213: 4627326768381211762
+    second: BattleUIV2_26
+  - first:
+      213: -4121382484041984274
+    second: BattleUIV2_27
+  - first:
+      213: -5032948044511853670
+    second: BattleUIV2_28
+  - first:
+      213: 8973158472821962667
+    second: BattleUIV2_29
+  - first:
+      213: -8639330062135791676
+    second: BattleUIV2_30
+  - first:
+      213: 7476829837322280936
+    second: BattleUIV2_31
+  - first:
+      213: -8377947190449128389
+    second: BattleUIV2_32
+  - first:
+      213: -3298779415028435820
+    second: BattleUIV2_33
+  - first:
+      213: -4525379683608819981
+    second: BattleUIV2_34
+  - first:
+      213: -7196809872301644223
+    second: BattleUIV2_35
+  - first:
+      213: -8974904684737067218
+    second: BattleUIV2_36
+  - first:
+      213: 6816692462494910891
+    second: BattleUIV2_37
+  - first:
+      213: -4071474964721777541
+    second: BattleUIV2_38
+  - first:
+      213: -8321560820259054559
+    second: BattleUIV2_39
+  - first:
+      213: -6102724154307396175
+    second: BattleUIV2_40
+  - first:
+      213: -433415525667023410
+    second: BattleUIV2_41
+  - first:
+      213: -7168788249548719212
+    second: BattleUIV2_42
+  - first:
+      213: -1240793440018001704
+    second: BattleUIV2_43
+  - first:
+      213: -3766549011892430700
+    second: BattleUIV2_44
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: BattleUIV2_0
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 449
+        width: 49
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e89908e415c28b50800000000000000
+      internalID: 6594049498006788327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_1
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 478
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aeb066fc71bb5b6d0800000000000000
+      internalID: -2975266267870131222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_2
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 478
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a263645415ff34520800000000000000
+      internalID: 2685270527362610730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_3
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 478
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41f3a12ef871085a0800000000000000
+      internalID: -6521186353691345132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_4
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 478
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c01b4d3841e6dcb0800000000000000
+      internalID: -4839433049180794687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_5
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 469
+        width: 79
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7342d2eb42f90f2d0800000000000000
+      internalID: -3246920351175859145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_6
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 484
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b58acf3001c3d010800000000000000
+      internalID: 1212524931507193266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_7
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 484
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9020cfb745d1d4710800000000000000
+      internalID: 1679030484773634569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_8
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 485
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e5a4ba63204bec0800000000000000
+      internalID: -3552211772263211370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_9
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 485
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e44bb27b1151c6e0800000000000000
+      internalID: -1819083596150127387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_10
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 342
+        width: 98
+        height: 158
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8f1d829d2a5b47a0800000000000000
+      internalID: -6391916094343536753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_11
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 474
+        width: 86
+        height: 19
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b85b9508615b2b80800000000000000
+      internalID: -8418545571226494795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_12
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 463
+        width: 43
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a38898a05a2c7ee0800000000000000
+      internalID: -1262087269656263772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_13
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 438
+        width: 79
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ba6d402c6c52c700800000000000000
+      internalID: 559110923215530672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_14
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 470
+        width: 54
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5b03c81dcaf1efb0800000000000000
+      internalID: -4620135983914742945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_15
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 456
+        width: 52
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62c65af828b2d3570800000000000000
+      internalID: 8447956315772644390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_16
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56b909a5db82646b0800000000000000
+      internalID: -5312513916703564955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_17
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61776588e97366270800000000000000
+      internalID: 8243337321980000022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_18
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e55d553ed33b5b520800000000000000
+      internalID: 2717275028576392542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_19
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a8700c763ec3b890800000000000000
+      internalID: -7443379025709336411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_20
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6e18517235005f70800000000000000
+      internalID: 9173838155161804395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_21
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc352c85d96f03020800000000000000
+      internalID: 2319624963755234252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_22
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6796926bc55fff560800000000000000
+      internalID: 7349862895433902454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_23
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc5a3068e9d7dde60800000000000000
+      internalID: 7988679433831818700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_24
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c8f7e331ef2a4a80800000000000000
+      internalID: -8481914303913920313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_25
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 437ed89df57624c20800000000000000
+      internalID: 3189225147501242164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_26
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 274b401ed21973040800000000000000
+      internalID: 4627326768381211762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_27
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 401
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee6192f7778edc6c0800000000000000
+      internalID: -4121382484041984274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_28
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 405
+        width: 37
+        height: 8
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a93cfd15b60672ab0800000000000000
+      internalID: -5032948044511853670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_29
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 397
+        width: 29
+        height: 7
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba7f6d5d610178c70800000000000000
+      internalID: 8973158472821962667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_30
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 401
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cfea05e41fea1880800000000000000
+      internalID: -8639330062135791676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_31
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 397
+        width: 35
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8efd2a38f1903c760800000000000000
+      internalID: 7476829837322280936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_32
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 351
+        width: 142
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3c3c462b6d8bbb80800000000000000
+      internalID: -8377947190449128389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_33
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 357
+        width: 20
+        height: 20
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 494fbd689916832d0800000000000000
+      internalID: -3298779415028435820
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_34
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 320
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f60abc772f9231c0800000000000000
+      internalID: -4525379683608819981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_35
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 320
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 146af6d2d8bcf1c90800000000000000
+      internalID: -7196809872301644223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_36
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 321
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e2702458dbbb27380800000000000000
+      internalID: -8974904684737067218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_37
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 321
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba98712ada1c99e50800000000000000
+      internalID: 6816692462494910891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_38
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 321
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b74ccd757173f77c0800000000000000
+      internalID: -4071474964721777541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_39
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 322
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12c96a30680e38c80800000000000000
+      internalID: -8321560820259054559
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_40
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 322
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bdbf4c17b4ce4ba0800000000000000
+      internalID: -6102724154307396175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_41
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 323
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec55a7030e23cf9f0800000000000000
+      internalID: -433415525667023410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_42
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 322
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49b77a3a119538c90800000000000000
+      internalID: -7168788249548719212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_43
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 321
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d09718b0f0d7cee0800000000000000
+      internalID: -1240793440018001704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_44
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 321
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4989d0531a78abbc0800000000000000
+      internalID: -3766549011892430700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_45
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 406
+        width: 27
+        height: 5
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99a99d50fb653de47b06a438ecd7b081
+      internalID: 2030772751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_46
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 463
+        width: 52
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe88288ab97380e4db86875f43302bec
+      internalID: 1275782293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_47
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 448
+        width: 52
+        height: 6
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: efdfe5340c1ef9a4584ea83bb7cb947e
+      internalID: 1556601492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_48
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 434
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f60109de705f6aa419648bff444bc95a
+      internalID: 1142094149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_49
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 417
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a7ac062d1f1f5b4299a185844a014ae
+      internalID: -1102479426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_50
+      rect:
+        serializedVersion: 2
+        x: 186
+        y: 416
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d86ff8aeaaccb434a9bc370717aeb130
+      internalID: 846704616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_51
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 321
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bea12addb81af34d887f0038850fdc5
+      internalID: -1311792736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_52
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 321
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a6953a9ad2f1ce47a774f7ff0526785
+      internalID: 838067035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_53
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 304
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 310646cd3d5f4b34eb88d4fcc7a902eb
+      internalID: -1674175842
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_54
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 304
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 07dc17f5563de824290544a94f1649b8
+      internalID: -698061677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_55
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 309
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f95abe9222e8a8468443f21a944655e
+      internalID: 1354533350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_56
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 309
+        width: 15
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a20d0a8ff9dc954b84696c852972971
+      internalID: -730966506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_57
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 309
+        width: 14
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94c7ae489022806498cf412d0a233508
+      internalID: 746346721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_58
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 305
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a3974948aa6fdb4a93959c4dfc4980c
+      internalID: -1462041630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_59
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 305
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 932cffb2002b08647aecf6e97f1afaf3
+      internalID: 553783993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_60
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 306
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f8300927fa14ea44da7628fd77b03922
+      internalID: 734121066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_61
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 305
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b0442274a96dee43ae4dd622903df28
+      internalID: 1122084612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_62
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 305
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 868c22839ef7d2546b8089bf43f7afd6
+      internalID: -943217685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_63
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 305
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b276250c02868a45be23852e08d41ee
+      internalID: 1930839731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_64
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 307
+        width: 18
+        height: 10
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d31157fe283e63543bc4420208ea6ef2
+      internalID: -631791876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_65
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 306
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a844ee3b5e3a91547970d2dccf858841
+      internalID: -2009674176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_66
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 231
+        width: 83
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8233ce4d6f2ca84f98b24e4b16588f8
+      internalID: -1305891173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_67
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 261
+        width: 83
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88a26ce2b0a293543b630ce79da706e5
+      internalID: 325787133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: BattleUIV2_68
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 203
+        width: 83
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eab4c09fe8d31ba42af1fbed22b619b0
+      internalID: 1894801200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: f903fdb3b8b160240beee90f27994a51
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      BattleUIV2_0: 6594049498006788327
+      BattleUIV2_1: -2975266267870131222
+      BattleUIV2_10: -6391916094343536753
+      BattleUIV2_11: -8418545571226494795
+      BattleUIV2_12: -1262087269656263772
+      BattleUIV2_13: 559110923215530672
+      BattleUIV2_14: -4620135983914742945
+      BattleUIV2_15: 8447956315772644390
+      BattleUIV2_16: -5312513916703564955
+      BattleUIV2_17: 8243337321980000022
+      BattleUIV2_18: 2717275028576392542
+      BattleUIV2_19: -7443379025709336411
+      BattleUIV2_2: 2685270527362610730
+      BattleUIV2_20: 9173838155161804395
+      BattleUIV2_21: 2319624963755234252
+      BattleUIV2_22: 7349862895433902454
+      BattleUIV2_23: 7988679433831818700
+      BattleUIV2_24: -8481914303913920313
+      BattleUIV2_25: 3189225147501242164
+      BattleUIV2_26: 4627326768381211762
+      BattleUIV2_27: -4121382484041984274
+      BattleUIV2_28: -5032948044511853670
+      BattleUIV2_29: 8973158472821962667
+      BattleUIV2_3: -6521186353691345132
+      BattleUIV2_30: -8639330062135791676
+      BattleUIV2_31: 7476829837322280936
+      BattleUIV2_32: -8377947190449128389
+      BattleUIV2_33: -3298779415028435820
+      BattleUIV2_34: -4525379683608819981
+      BattleUIV2_35: -7196809872301644223
+      BattleUIV2_36: -8974904684737067218
+      BattleUIV2_37: 6816692462494910891
+      BattleUIV2_38: -4071474964721777541
+      BattleUIV2_39: -8321560820259054559
+      BattleUIV2_4: -4839433049180794687
+      BattleUIV2_40: -6102724154307396175
+      BattleUIV2_41: -433415525667023410
+      BattleUIV2_42: -7168788249548719212
+      BattleUIV2_43: -1240793440018001704
+      BattleUIV2_44: -3766549011892430700
+      BattleUIV2_45: 2030772751
+      BattleUIV2_46: 1275782293
+      BattleUIV2_47: 1556601492
+      BattleUIV2_48: 1142094149
+      BattleUIV2_49: -1102479426
+      BattleUIV2_5: -3246920351175859145
+      BattleUIV2_50: 846704616
+      BattleUIV2_51: -1311792736
+      BattleUIV2_52: 838067035
+      BattleUIV2_53: -1674175842
+      BattleUIV2_54: -698061677
+      BattleUIV2_55: 1354533350
+      BattleUIV2_56: -730966506
+      BattleUIV2_57: 746346721
+      BattleUIV2_58: -1462041630
+      BattleUIV2_59: 553783993
+      BattleUIV2_6: 1212524931507193266
+      BattleUIV2_60: 734121066
+      BattleUIV2_61: 1122084612
+      BattleUIV2_62: -943217685
+      BattleUIV2_63: 1930839731
+      BattleUIV2_64: -631791876
+      BattleUIV2_65: -2009674176
+      BattleUIV2_66: -1305891173
+      BattleUIV2_67: 325787133
+      BattleUIV2_68: 1894801200
+      BattleUIV2_7: 1679030484773634569
+      BattleUIV2_8: -3552211772263211370
+      BattleUIV2_9: -1819083596150127387
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

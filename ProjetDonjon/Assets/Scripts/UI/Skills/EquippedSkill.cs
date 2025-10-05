@@ -60,7 +60,7 @@ public class EquippedSkill : MonoBehaviour
             _mainText.text = passiveData.passiveName;
             _skillIcon.sprite = passiveData.passiveIcon;
         }
-        else
+        else if(!isLocked)
         {
             _mainText.enabled = false;  
         }
@@ -90,6 +90,7 @@ public class EquippedSkill : MonoBehaviour
     {
         isLocked = true;
 
+        _mainText.enabled = true;
         _mainText.text = "LV." + lockedLevel;
 
         skillData = null;

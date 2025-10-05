@@ -14,7 +14,8 @@ public enum AlterationType
     Stunned,
     Sturdy,
     Poisoned,
-    Slowed
+    Slowed,
+    Skulled
 }
 
 [CreateAssetMenu(fileName = "AlterationData", menuName = "Scriptable Objects/AlterationData")]

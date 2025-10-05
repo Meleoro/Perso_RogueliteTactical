@@ -38,7 +38,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddedLight: 1
-    - _BlurOffset: 0.00112
+    - _BlurOffset: 0.0007
     - _GridEffectSize: 130.58
     - _GridEffectStrength: 0.15
     - _HorizontalLinesCount: 200

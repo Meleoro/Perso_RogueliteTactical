@@ -55,6 +55,7 @@ MonoBehaviour:
   hinderVFX: {fileID: 3781525101279808218, guid: b036fc6eb74df2246a442811942557f3, type: 3}
   healVFX: {fileID: 3493669056963546257, guid: 0ae6680a16c47224daefd2e67649e76f, type: 3}
   stunVFX: {fileID: 8724637062435613789, guid: 4fd7bfdd009c82c4ba9d96a32f72f584, type: 3}
+  skullVFX: {fileID: 0}
   overlayColor: {r: 1, g: 1, b: 1, a: 1}
   positiveColor: {r: 0, g: 1, b: 0, a: 1}
   negativeColor: {r: 1, g: 0, b: 0, a: 1}
@@ -120,7 +121,7 @@ Transform:
   m_GameObject: {fileID: 2023899455191038057}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.4069999, z: 0}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -208,7 +209,7 @@ Transform:
   m_GameObject: {fileID: 4946960069964644675}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.023, z: 0.40451372}
+  m_LocalPosition: {x: 0, y: 0.3, z: 0.40451372}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -258,12 +259,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -1035785141089646686, guid: 3a6432cb9bbb05741824abbe51780b9a, type: 3}
+  m_Sprite: {fileID: 4624889251662800260, guid: 7d5f5663e69dac74c80fda645d8b3253, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 4, y: 4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -400,7 +401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7586550519330485921, guid: 50299cee98d06b74bbc376e830645ccc, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.77
+      value: 1.035
       objectReference: {fileID: 0}
     - target: {fileID: 7586550519330485921, guid: 50299cee98d06b74bbc376e830645ccc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

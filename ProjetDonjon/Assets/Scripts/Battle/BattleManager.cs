@@ -41,8 +41,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     public bool IsInBattle {  get { return isInBattle; } }
     public MenuType CurrentActionType { get { return _playerActionsMenu.CurrentMenu; } }
     public Tile[] HoleTiles { get { return holeTiles; } }
-    public PathCalculator PathCalculator { get { return PathCalculator; } }
+    public PathCalculator PathCalculator { get { return _pathCalculator; } }
     public TilesManager TilesManager {  get { return _tilesManager; } }
+    public PassivesManager PassivesManager {  get { return _passivesManager; } }
 
 
     [Header("References")]
@@ -50,6 +51,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     [SerializeField] private PlayerActionsMenu _playerActionsMenu;
     private PathCalculator _pathCalculator;
     private TilesManager _tilesManager;
+    private PassivesManager _passivesManager;
 
 
 
@@ -57,6 +59,9 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     {
         _pathCalculator = new PathCalculator();
         _tilesManager = new TilesManager();
+        _passivesManager = new PassivesManager();
+
+        _tilesManager.Initialise(_pathCalculator, _playerActionsMenu);
     }
 
 
@@ -144,6 +149,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         isInBattle = true;
         this.battleRoom = battleRoom;
+        _tilesManager.battleRoom = battleRoom;
 
         for(int i = 0; i < HeroesManager.Instance.Heroes.Length; i++)
         {
@@ -166,7 +172,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
     private IEnumerator StartBattleCoroutine(float delay)
     {
-        yield return new WaitForSeconds(1f + delay);
+        yield return new WaitForSeconds(2.5f + delay);
 
         _timeline.InitialiseTimeline(currentUnits);
 
@@ -222,6 +228,8 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             _timeline.NextTurn();
 
         currentUnit = _timeline.Slots[0].Unit;
+        _tilesManager.currentUnit = currentUnit;
+
         currentUnit.StartTurn();
 
         if (currentUnit.GetType() == typeof(Hero))
@@ -243,7 +251,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
 
         if(currentUnit.CurrentTile.TileCoordinates == aimedTile.TileCoordinates)
         {
-            ResetTiles();
+            _tilesManager.ResetTiles();
 
             if (CurrentUnit.GetType() == typeof(Hero))
                 OnMoveUnit.Invoke();
@@ -262,7 +270,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             }
 
             StartCoroutine(currentUnit.MoveUnitCoroutine(pathTiles));
-            ResetTiles();
+            _tilesManager.ResetTiles();
 
             StartCoroutine(CameraManager.Instance.FocusOnTrCoroutine(pathTiles[pathTiles.Length - 1].transform, 5f, 0.4f));
 
@@ -282,45 +290,25 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
     }
 
+    #endregion
 
-    public Unit[] GetConcernedUnits(BattleTile[] tiles, SkillData skill, Unit baseUnit)
-    {
-        List<Unit> result = new List<Unit>();
 
-        foreach(BattleTile tile in tiles)
-        {
-            if (tile.UnitOnTile is null) continue;
-
-            switch (skill.skillEffects[0].skillEffectTargetType)
-            {
-                case SkillEffectTargetType.Enemies:
-                    if (baseUnit.GetType() != tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
-                    break;
-
-                case SkillEffectTargetType.Allies:
-                    if (baseUnit.GetType() == tile.UnitOnTile.GetType()) result.Add(tile.UnitOnTile);
-                    break;
-            }
-        }
-
-        return result.ToArray();
-    }
-
+    #region Use Skill
 
     public IEnumerator UseSkillCoroutine(SkillData usedSkill)
     {
-        if (usedSkill == null) usedSkill = currentSkill;
+        if (usedSkill == null) usedSkill = _tilesManager.CurrentSkill;
         OnSkillUsed.Invoke();
 
-        BattleTile[] skillBattleTiles = GetAllSkillTiles().ToArray();
+        BattleTile[] skillBattleTiles = _tilesManager.GetAllSkillTiles().ToArray();
         currentVFXIndex = 0;
 
         // We verify is the attack is crit
         bool isCrit = false;
-        if (currentUnit.GetType() == typeof(Hero) && currentSkill.skillEffects[0].skillEffectType == SkillEffectType.Damage)
+        if (currentUnit.GetType() == typeof(Hero) && usedSkill.skillEffects[0].skillEffectType == SkillEffectType.Damage)
         {
-            Unit[] attackUnits = GetConcernedUnits(skillBattleTiles, usedSkill, CurrentUnit);
-            isCrit = currentUnit.VerifyCrit(attackUnits);
+            Unit[] attackUnits = _tilesManager.GetConcernedUnits(skillBattleTiles, usedSkill, CurrentUnit);
+            isCrit = currentUnit.VerifyCrit(attackUnits, _passivesManager.GetPassiveCritChanceUpgrade(currentUnit, attackUnits[0]));
         }
 
         // We launch the animations / others effects
@@ -357,10 +345,10 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             }
         }
 
-        ResetTiles();
+        _tilesManager.ResetTiles();
 
         // We verify if the turn ends
-        if(currentUnit.GetType() == typeof(Hero))
+        if (currentUnit.GetType() == typeof(Hero))
         {
             (currentUnit as Hero).CurrentSkillPoints -= usedSkill.skillPointCost;
 
@@ -375,22 +363,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
 
         currentUnit.EndTurn(0.5f);
-    }
-
-
-    private List<BattleTile> GetAllSkillTiles()
-    {
-        List<BattleTile> returnedTiles = new List<BattleTile>();
-
-        for(int i = 0; i < battleRoom.BattleTiles.Count; i++)
-        {
-            if (battleRoom.BattleTiles[i].CurrentTileState == BattleTileState.Danger)
-            {
-                returnedTiles.Add(battleRoom.BattleTiles[i]);
-            }
-        } 
-
-        return returnedTiles;
     }
 
 
@@ -432,9 +404,15 @@ public class BattleManager : GenericSingletonClass<BattleManager>
             switch (usedSkill.skillEffects[i].skillEffectType)
             {
                 case SkillEffectType.Damage:
-                    if (isCrit) battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower 
-                        * unit.CurrentStrength * unit.CurrentCritMultiplier), unit);
+                    if (isCrit) battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower * unit.CurrentStrength * 
+                        (unit.CurrentCritMultiplier + _passivesManager.GetPassiveCritDamagesUpgrade(unit, battleTile.UnitOnTile))), unit);
                     else battleTile.UnitOnTile.TakeDamage((int)(usedSkill.skillEffects[i].multipliedPower * unit.CurrentStrength), unit);
+
+                    PassiveData[] prokedPassives = _passivesManager.GetTriggeredPassives(PassiveTriggerType.OnAttack, unit).ToArray();
+                    _passivesManager.ApplyPassives(prokedPassives, unit, battleTile.UnitOnTile);
+
+                    prokedPassives = _passivesManager.GetTriggeredPassives(PassiveTriggerType.OnDamageReceived, battleTile.UnitOnTile).ToArray();
+                    _passivesManager.ApplyPassives(prokedPassives, battleTile.UnitOnTile, unit);
                     break;
 
                 case SkillEffectType.Heal:
@@ -452,16 +430,41 @@ public class BattleManager : GenericSingletonClass<BattleManager>
                 case SkillEffectType.HealDebuffs:
                     battleTile.UnitOnTile.RemoveAllNegativeAlterations();
                     break;
+
+                case SkillEffectType.DestroySelf:
+                    currentUnit.RemoveAllAlterations();
+                    currentUnit.TakeDamage(999, currentUnit);
+                    break;
             }
         }
     }
+
+    private void SummonUnit(AIUnit prefab, BattleTile tile)
+    {
+        AIUnit unit = Instantiate(prefab, transform);
+        unit.Initialise(false);
+        unit.MoveUnit(tile);
+
+        AddUnit(unit);
+        unit.EnterBattle(tile);
+
+        _timeline.AddUnit(unit);
+
+        PassiveData[] passives = _passivesManager.GetTriggeredPassives(PassiveTriggerType.OnSummon, currentUnit).ToArray();
+        _passivesManager.ApplyPassives(passives, currentUnit, unit);
+    }
+
+    #endregion
+
+
+    #region Skill Visuals
 
     private void PlaySkillVFX(BattleTile[] battleTile, SkillData usedSkill)
     {
         if (usedSkill.VFXs.Length == 0 && usedSkill.downVFX == null && usedSkill.throwedObject == null) return;
 
         // Throwable VFX
-        if(usedSkill.throwedObject != null)
+        if (usedSkill.throwedObject != null)
         {
             Vector3 middlePos = Vector2.zero;
             foreach (BattleTile tile in battleTile)
@@ -481,15 +484,15 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         }
 
 
-        Vector2Int coordDif = currentSkillBaseTile.TileCoordinates - currentUnit.CurrentTile.TileCoordinates;
+        Vector2Int coordDif = _tilesManager.CurrentSkillBaseTile.TileCoordinates - currentUnit.CurrentTile.TileCoordinates;
 
         // We Choose the VFX to play
         GameObject usedVFX = null;
-        if(usedSkill.VFXs.Length == 0)
+        if (usedSkill.VFXs.Length == 0)
         {
-            if(coordDif.x > 0) usedVFX = usedSkill.rightVFX;
-            else if(coordDif.x < 0) usedVFX = usedSkill.leftVFX;
-            else if(coordDif.y > 0) usedVFX = usedSkill.upVFX;
+            if (coordDif.x > 0) usedVFX = usedSkill.rightVFX;
+            else if (coordDif.x < 0) usedVFX = usedSkill.leftVFX;
+            else if (coordDif.y > 0) usedVFX = usedSkill.upVFX;
             else usedVFX = usedSkill.downVFX;
         }
         else
@@ -535,7 +538,7 @@ public class BattleManager : GenericSingletonClass<BattleManager>
     {
         if (skillData.mirrorHorizontalVFX)
         {
-            if (coordDif.x < 0) 
+            if (coordDif.x < 0)
                 vfx.transform.localScale = new Vector3(-1 * vfx.transform.localScale.x, vfx.transform.localScale.y, vfx.transform.localScale.z);
         }
 
@@ -548,271 +551,6 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         if (skillData.rotateVFX)
         {
             vfx.transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(coordDif.y, coordDif.x) * Mathf.Rad2Deg);
-        }
-    }
-
-    private void SummonUnit(AIUnit prefab, BattleTile tile)
-    {
-        AIUnit unit = Instantiate(prefab, transform);
-        unit.Initialise(false);
-        unit.MoveUnit(tile);
-
-        AddUnit(unit);
-        unit.EnterBattle(tile);
-
-        _timeline.AddUnit(unit);
-    }
-
-    #endregion
-
-
-    #region Tiles Functions
-
-    public List<BattleTile> GetPaternTiles(Vector2Int paternMiddle, bool[] patern, int paternSize, bool useDiagonals = false, 
-        ObstacleType obstacleType = ObstacleType.Nothing, BattleTile ignoredTile = null)
-    {
-        List<BattleTile> returnedTiles = new List<BattleTile>();
-
-        for (int i = 0; i < patern.Length; i++) 
-        {
-            if (!patern[i]) continue;
-
-            Vector2Int currentCoord = new Vector2Int(i % paternSize, i / paternSize);
-            Vector2Int coordAccordingToCenter = new Vector2Int(currentCoord.x - (int)(paternSize * 0.5f), currentCoord.y - (int)(paternSize * 0.5f));
-            BattleTile battleTile = battleRoom.GetBattleTile(paternMiddle + coordAccordingToCenter);
-
-            if (battleTile is null) continue;
-            if (obstacleType != ObstacleType.Nothing && !_pathCalculator.VerifyIsReachable(paternMiddle, paternMiddle + coordAccordingToCenter, 
-                useDiagonals, obstacleType, ignoredTile)) continue;
-            if (battleTile.UnitOnTile is not null && (obstacleType == ObstacleType.Units || obstacleType == ObstacleType.All) 
-                && ignoredTile != battleTile) continue;
-
-            returnedTiles.Add(battleTile);
-        }
-
-        return returnedTiles;
-    }
-
-    public List<BattleTile> GetAdjacentTiles(BattleTile middleTile) 
-    {
-        List<BattleTile> result = new List<BattleTile>();
-        List<BattleTile> openList = new List<BattleTile>();
-        result.Add(middleTile);
-        openList.Add(middleTile);
-
-        while(openList.Count > 0)
-        {
-            BattleTile currentTile = openList[0];
-            openList.RemoveAt(0);
-
-            foreach(BattleTile tile in currentTile.TileNeighbors)
-            {
-                if (result.Contains(tile)) continue;
-                if (tile.CurrentTileState != BattleTileState.Attack && tile.CurrentTileState != BattleTileState.Danger) continue;
-                
-                result.Add(tile);
-                openList.Add(tile);
-            }
-        }
-
-        return result;
-    }
-
-
-    public List<BattleTile> DisplayPossibleSkillTiles(SkillData skill, BattleTile baseTile, bool doBounce = true)
-    {
-        ResetTiles();
-
-        if (skill is not null) currentSkill = skill;
-        if (baseTile is not null) currentSkillBaseTile = baseTile;
-
-        bool isBlockedByUnits = currentSkill.skillType != SkillType.SkillArea && currentSkill.skillType != SkillType.AdjacentTiles;
-
-        List<BattleTile> skillTiles = GetPaternTiles(currentSkillBaseTile.TileCoordinates, currentSkill.skillPatern, 
-            (int)Mathf.Sqrt(currentSkill.skillPatern.Length), true,
-            isBlockedByUnits ? ObstacleType.UnitsIncluded : ObstacleType.Nothing);
-
-        for(int i = 0; i < skillTiles.Count; i++)
-        {
-            skillTiles[i].DisplayPossibleAttackTile(doBounce);
-        }
-
-        return skillTiles;
-    }
-
-
-    public void DisplayDangerTiles(BattleTile overlayedTile, SkillData skill)
-    {
-        // For Heroes
-        if(skill is null)
-        {
-            skill = currentSkill;
-            //DisplayPossibleSkillTiles(skill, currentSkillBaseTile);
-        }
-
-        List<BattleTile> skillTiles =new List<BattleTile>();
-
-        switch(skill.skillType)
-        {
-            case SkillType.AOEPaternTiles:
-                if (skill.useOrientatedAOE)
-                {
-                    Vector2Int coordinateDif = overlayedTile.TileCoordinates - CurrentUnit.CurrentTile.TileCoordinates;
-
-                    if (coordinateDif.y > 0)
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternUp,
-                            (int)Mathf.Sqrt(skill.skillAOEPaternUp.Length), false, Enums.ObstacleType.UnitsIncluded);
-
-                    else if (coordinateDif.y < 0)
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternDown,
-                            (int)Mathf.Sqrt(skill.skillAOEPaternDown.Length), false, Enums.ObstacleType.UnitsIncluded);
-
-                    else if (coordinateDif.x > 0)
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternRight,
-                            (int)Mathf.Sqrt(skill.skillAOEPaternRight.Length), false, Enums.ObstacleType.UnitsIncluded);
-
-                    else
-                        skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPaternLeft,
-                            (int)Mathf.Sqrt(skill.skillAOEPaternLeft.Length), false, Enums.ObstacleType.UnitsIncluded);
-                }
-                else
-                {
-                    skillTiles = GetPaternTiles(overlayedTile.TileCoordinates, skill.skillAOEPatern, (int)Mathf.Sqrt(skill.skillAOEPatern.Length), false,
-                        ObstacleType.UnitsIncluded);
-                }
-                break;
-
-            case SkillType.SkillArea:
-                skillTiles = GetPaternTiles(currentUnit.CurrentTile.TileCoordinates, skill.skillPatern, (int)Mathf.Sqrt(skill.skillPatern.Length), 
-                    false, ObstacleType.Nothing);
-                break;
-
-            case SkillType.AdjacentTiles:
-                skillTiles = GetAdjacentTiles(overlayedTile);
-                break;
-        }
-
-        for (int i = 0; i < skillTiles.Count; i++)
-        {
-            skillTiles[i].DisplayDangerTile();
-        }
-    }
-
-
-    // FOR ENEMIES, SHOWS THE POSSIBLE MOVE / SKILL TILES 
-    public void DisplayPossibleTiles(AIUnit enemy)
-    {
-        ResetTiles();
-
-        List<BattleTile> tiles = new List<BattleTile>();
-        List<BattleTile> secondaryTiles = new List<BattleTile>();
-        switch (enemy.CurrentPreviewType)
-        {
-            case PreviewType.Move:
-                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern, 
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
-
-                for (int i = 0; i < tiles.Count; i++)
-                {
-                    tiles[i].DisplayMoveTile();
-                }
-
-                break;
-
-            case PreviewType.Attack:
-                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.CurrentSkillData.skillPatern,
-                    (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true);
-
-                for (int i = 0; i < tiles.Count; i++)
-                {
-                    tiles[i].DisplayPossibleAttackTile(true);
-                }
-                break;
-
-            case PreviewType.MoveAndAttack:
-                tiles = GetPaternTiles(enemy.CurrentTile.TileCoordinates, enemy.AIData.movePatern,
-                    (int)Mathf.Sqrt(enemy.AIData.movePatern.Length), true, ObstacleType.All);
-
-                for (int i = 0; i < tiles.Count; i++)
-                {
-                    secondaryTiles = GetPaternTiles(tiles[i].TileCoordinates, enemy.CurrentSkillData.skillPatern,
-                        (int)Mathf.Sqrt(enemy.CurrentSkillData.skillPatern.Length), true, ObstacleType.UnitsIncluded);
-
-                    for (int j = 0; j < secondaryTiles.Count; j++)
-                    {
-                        if (secondaryTiles[j].CurrentTileState == BattleTileState.Move) continue;
-                        secondaryTiles[j].DisplayPossibleAttackTile(true);
-                    }
-
-                    tiles[i].DisplayMoveTile();
-                }
-
-                break;
-        }
-    }
-
-    public void StopDisplayPossibleMoveTiles()
-    {
-        if (_playerActionsMenu.CurrentMenu == MenuType.Skills) return;
-
-        ResetTiles();
-
-        if(_playerActionsMenu.CurrentMenu == MenuType.Move)
-        {
-            DisplayPossibleMoveTiles(currentUnit as Hero);
-        }
-    }
-
-
-    public void DisplayPossibleMoveTiles(Hero hero)
-    {
-        BattleTile startTile = hero.CurrentTile;
-        List<BattleTile> openList = new List<BattleTile>();
-        List<BattleTile> closedList= new List<BattleTile>();
-        Vector3 tilesPositionsAddition = Vector3.zero;
-        int tilesCount = 0;
-
-        openList.Add(startTile);
-        closedList.Add(startTile);
-
-        for(int i = 0; i < hero.CurrentMovePoints; i++)
-        {
-            List<BattleTile> neighbors = new List<BattleTile>();
-
-            for(int j = 0; j < openList.Count; j++)
-            {
-                neighbors.AddRange(openList[j].TileNeighbors);
-
-                openList[j].DisplayMoveTile();
-
-                tilesPositionsAddition += openList[j].transform.position;
-                tilesCount++;
-            }
-
-            openList.Clear();
-
-            for (int j = 0; j < neighbors.Count; j++)
-            {
-                if (closedList.Contains(neighbors[j])) continue;
-                if (neighbors[j].UnitOnTile != null) continue;
-                if (neighbors[j].IsHole) continue;
-
-                openList.Add(neighbors[j]);
-                closedList.Add(neighbors[j]);
-
-                neighbors[j].DisplayMoveTile();
-            }
-        }
-
-        CameraManager.Instance.FocusOnPosition(tilesPositionsAddition / tilesCount, 6f);
-    }
-
-
-    public void ResetTiles()
-    {
-        for (int i = 0; i < battleRoom.BattleTiles.Count; i++)
-        {
-            battleRoom.BattleTiles[i].DisplayNormalTile();
         }
     }
 

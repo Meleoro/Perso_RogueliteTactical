@@ -27,7 +27,8 @@ public enum SkillEffectType
     AddEnergy,
     Push,
     Summon,
-    HealDebuffs
+    HealDebuffs,
+    DestroySelf
 }
 
 [Serializable]

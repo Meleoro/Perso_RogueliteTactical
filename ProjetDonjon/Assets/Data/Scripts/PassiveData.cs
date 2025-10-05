@@ -13,6 +13,7 @@ public class PassiveData : ScriptableObject
 
     [Header("Effect")]
     public PassiveTriggerType passiveTriggerType;
+    public AlterationData neededAlteration;
     [Range(0, 100)] public float passiveTriggerProba;
     public PassiveEffect[] passiveEffects;
 }
@@ -21,27 +22,36 @@ public class PassiveData : ScriptableObject
 public struct PassiveEffect
 {
     public PassiveEffectType passiveEffectType;
+
     public AlterationData appliedAlteration;
-
-    public int additivePower;
+    public float additivePower;
     public float multipliedPower;
-    public int duration;
-
-    public AIUnit summonPrefab;
 }
 
 public enum PassiveEffectType
 {
-    Alteration,
+    ApplyOnSelfAlteration,
+    ApplyOnOtherAlteration,
+    UpgradeAlteration,
+    ImmuneAlteration,
+    UpgradeCritDamages,
+    UpgradeCritChances,
     MaxSkillPoints,
-    GainSkillPoint
+    GainSkillPoint,
+    UpgradeSummonHealth,
+    UpgradeSummonDamages
 }
 
 public enum PassiveTriggerType
 {
-    OnBattleStart,
-    OnShieldGain,
+    Always,
     OnDamageReceived,
+    OnAlterationGained,
+    OnAlterationApplied,
+    OnAttackUnitWithAlt,
     OnAttack,
-    OnKill
+    OnAttacked,
+    OnCrit,
+    OnKill,
+    OnSummon
 }

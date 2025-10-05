@@ -38,6 +38,7 @@ public class SkillsMenu : MonoBehaviour
     [SerializeField] private RectTransform[] _upButtonsRectTr;
     [SerializeField] private TextMeshProUGUI[] _upButtonsTexts;
     [SerializeField] private Image[] _upButtonsImages;
+    [SerializeField] private RectTransform _buttonsParent;
 
     [Header("References Right")]
     [SerializeField] private RectTransform _rightPartParent;
@@ -106,6 +107,7 @@ public class SkillsMenu : MonoBehaviour
         {
             if (_equippedSkillButtons[i].IsLocked) continue;
             if (_equippedSkillButtons[i].IsPassiveSlot && equippableSkill.PassiveData is null) continue;
+            if (!_equippedSkillButtons[i].IsPassiveSlot && equippableSkill.PassiveData is not null) continue;
             if (_equippedSkillButtons[i].SkillData is not null || _equippedSkillButtons[i].PassiveData is not null) continue;
 
             if(equippableSkill.SkillData is not null) _equippedSkillButtons[i].SetEquippedElement(equippableSkill.SkillData);
@@ -161,7 +163,7 @@ public class SkillsMenu : MonoBehaviour
             {
                 if (_equippedSkillButtons[i].PassiveData is null) continue;
 
-                currentPassives[i] = _equippedSkillButtons[i].PassiveData;
+                currentPassives[i - 6] = _equippedSkillButtons[i].PassiveData;
             }
         }
 
@@ -321,6 +323,7 @@ public class SkillsMenu : MonoBehaviour
     {
         SkillTreeData skillTreeData = currentHero.SkillTreeData;
         SkillTreeNodeData[] validNodes = GetAllPossessedNodes(skillTreeData, currentHero.SkillTreeUnlockedNodes);
+        int height = 100;
 
         if (isOnSkills)
         {
@@ -329,12 +332,14 @@ public class SkillsMenu : MonoBehaviour
             for(int i = 0; i < currentHero.HeroData.heroBaseSkills.Length; i++)
             {
                 availableSkills.Add(currentHero.HeroData.heroBaseSkills[i]);
+                height += 50;
             }
 
             for(int i = 0; i < validNodes.Length; i++)
             {
                 if (validNodes[i].skillData is null) continue;
                 availableSkills.Add(validNodes[i].skillData);
+                height += 50;
             }
 
             for (int i = 0; i < _equippableSkillButtons.Length; i++)
@@ -358,6 +363,7 @@ public class SkillsMenu : MonoBehaviour
             {
                 if (validNodes[i].passiveData is null) continue;
                 availablePassives.Add(validNodes[i].passiveData);
+                height += 50;
             }
 
             for(int i = 0; i < _equippableSkillButtons.Length; i++)
@@ -373,6 +379,8 @@ public class SkillsMenu : MonoBehaviour
                 _equippableSkillButtons[i].Show(availablePassives[i]);
             }
         }
+
+        _buttonsParent.sizeDelta = new Vector2(_buttonsParent.rect.width, height); 
     }
 
     private SkillTreeNodeData[] GetAllPossessedNodes(SkillTreeData skillTreeData, bool[] unlockedNodes)
@@ -424,7 +432,7 @@ public class SkillsMenu : MonoBehaviour
             }
             else if (equippedPassives[i - 6] is not null)
             {
-                _equippedSkillButtons[i].SetEquippedElement(equippedSkills[i]);
+                _equippedSkillButtons[i].SetEquippedElement(equippedPassives[i - 6]);
             }
             else
             {

@@ -28,6 +28,7 @@ public class Unit : MonoBehaviour
 {
     [Header("Main parameters")]
     [SerializeField] protected bool isEnemy = true;
+    [SerializeField] protected bool isTall;
 
     [Header("Actions")]
     public Action OnHeroInfosChange;
@@ -39,6 +40,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private GameObject hinderVFX;
     [SerializeField] private GameObject healVFX;
     [SerializeField] private GameObject stunVFX;
+    [SerializeField] private GameObject skullVFX;
 
     [Header("Outline Color")]
     [SerializeField] protected Color overlayColor = Color.white;
@@ -47,14 +49,15 @@ public class Unit : MonoBehaviour
     [SerializeField] protected Color unitsTurnColor = Color.yellow; 
  
     [Header("Private Infos")]
-    private int currentHealth;
-    private int currentMaxHealth;
-    private int currentStrength;
-    private int currentSpeed;
-    private int currentLuck;
-    private int currentMovePoints;
-    private int currentShield;
-    private bool restartTurnOutlineNext;
+    protected int currentHealth;
+    protected int currentMaxHealth;
+    protected int currentStrength;
+    protected int currentSpeed;
+    protected int currentLuck;
+    protected int currentMovePoints;
+    protected int currentShield;
+    protected bool restartTurnOutlineNext;
+    protected bool isHovered;
 
     [Header("Private Stats Modificators")]
     private int strengthModificatorAdditive;
@@ -72,6 +75,7 @@ public class Unit : MonoBehaviour
     protected Unit provocationTarget;
     protected Coroutine squishCoroutine;
     protected Coroutine turnOutlineCoroutine;
+    protected PassiveData[] equippedPassives = new PassiveData[3];
 
     [Header("Public Infos")]
     public int CurrentHealth { get { return currentHealth; } set { currentHealth = value; 
@@ -85,31 +89,12 @@ public class Unit : MonoBehaviour
     public float CurrentCritMultiplier { get { return 2 + critModificatorAdditive; } }
     public UnitData UnitData { get { return unitData; } }
     public BattleTile CurrentTile { get { return currentTile; } }
+    public PassiveData[] EquippedPassives { get { return equippedPassives; } }
     public bool IsEnemy { get { return isEnemy; } }
-    public bool IsHindered { get {
-            foreach(AlterationStruct altStruct in currentAlterations)
-            {
-                if(altStruct.alteration.alterationType == AlterationType.Hindered)
-                {
-                    return true;
-                }
-            }
-            return false;
-        } }
-    public bool IsStunned
-    {
-        get
-        {
-            foreach (AlterationStruct altStruct in currentAlterations)
-            {
-                if (altStruct.alteration.alterationType == AlterationType.Stunned)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
+    public bool IsHindered { get { return VerifyHasAlteration(AlterationType.Hindered) != null; } }
+    public bool IsStunned { get { return VerifyHasAlteration(AlterationType.Stunned) != null; } }
+    public bool IsSkulled { get { return VerifyHasAlteration(AlterationType.Skulled) != null; } }
+    public bool IsHovered { get { return isHovered; } }
 
     [Header("References")]
     [SerializeField] protected UnitUI _ui;
@@ -140,20 +125,48 @@ public class Unit : MonoBehaviour
 
         _ui.ActualiseUI(1, currentHealth, currentAlterations);
 
+        StartCoroutine(StartAlterationsDelayCoroutine());
+
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
     }
 
-    public virtual void ActualiseUnitInfos(int newMaxHealth, int newStrength, int newSpeed, int newLuck, int newMovePoints, int maxSP)
+    private IEnumerator StartAlterationsDelayCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+
+        for (int i = 0; i < unitData.startAlterations.Length; i++)
+        {
+            AddAlteration(unitData.startAlterations[i], this);
+        }
+
+        _ui.ActualiseUI(1, currentHealth, currentAlterations);
+    }
+
+    public virtual void ActualiseUnitInfos(int addedMaxHealth, int addedStrength, int addedSpeed, int addedLuck, int addedMovePoints, int addedSP)
     {
         int currentDamages = currentMaxHealth - currentHealth;
 
-        currentMaxHealth = newMaxHealth;
+        currentMaxHealth = unitData.baseHealth + addedMaxHealth;
         currentHealth = currentMaxHealth - currentDamages;
-        currentStrength = newStrength;
-        currentSpeed = newSpeed;
-        currentLuck = newLuck;
+        currentStrength = unitData.baseStrength + addedStrength;
+        currentSpeed = unitData.baseSpeed + addedSpeed;
+        currentLuck = unitData.baseLuck + addedLuck;
 
-        currentMovePoints = newMovePoints;
+        PassiveData[] passives = BattleManager.Instance.PassivesManager.GetTriggeredPassives(PassiveTriggerType.Always, this).ToArray();
+        BattleManager.Instance.PassivesManager.ApplyPassives(passives, this, null);
+
+        _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
+    }
+
+    public virtual void AddStatsModificators(int addedMaxHealth, int addedStrength, int addedSpeed, int addedLuck, int addedMovePoints, int addedSP)
+    {
+        int currentDamages = currentMaxHealth - currentHealth;
+
+        currentMaxHealth += addedMaxHealth;
+        currentHealth = currentMaxHealth - currentDamages;
+        currentStrength += addedStrength;
+        currentSpeed += addedSpeed;
+        currentLuck += addedLuck;
 
         _ui.ActualiseUI((float)currentHealth / currentMaxHealth, currentHealth, currentAlterations);
     }
@@ -206,7 +219,7 @@ public class Unit : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
-        tile.UnitEnterTile(this);
+        tile.UnitEnterTile(this, isTall);
         currentTile = tile;
 
         transform.position = tile.transform.position;
@@ -273,7 +286,7 @@ public class Unit : MonoBehaviour
 
     #region Use / Apply Skills
 
-    public bool VerifyCrit(Unit[] attackedUnits)
+    public bool VerifyCrit(Unit[] attackedUnits, int addedProba)
     {
         if(attackedUnits.Length == 0) return false;
 
@@ -287,11 +300,17 @@ public class Unit : MonoBehaviour
         int critProba = ((CurrentLuck - averageLuck) + 3) * 3;
         int pickedProba = Random.Range(0, 100);
 
-        return pickedProba < critProba;
+        return pickedProba < critProba + addedProba;
     }
 
     public virtual void TakeDamage(int damageAmount, Unit originUnit)
     {
+        PassiveData[] triggeredPassives = BattleManager.Instance.PassivesManager.GetTriggeredPassives(PassiveTriggerType.OnDamageReceived, this).ToArray();
+        for(int i = 0; i <= triggeredPassives.Length; i++)
+        {
+            BattleManager.Instance.PassivesManager.ApplyPassives(triggeredPassives, this, originUnit);
+        }
+
         _animator.SetTrigger("Damage");
         CameraManager.Instance.DoCameraShake(0.2f, Mathf.Lerp(0.5f, 1f, damageAmount / 15f), 50);
 
@@ -300,6 +319,13 @@ public class Unit : MonoBehaviour
         {
             AlterationData thornAlt = VerifyHasAlteration(AlterationType.Thorn);
             if (thornAlt) originUnit.TakeDamage((int)thornAlt.strength, null);
+        }
+
+        // Skulled
+        if (IsSkulled)
+        {
+            RemoveAlteration(AlterationType.Skulled);
+            return;
         }
 
         // Vulnerable
@@ -354,6 +380,10 @@ public class Unit : MonoBehaviour
     {
         bool alreadyApplied = false;
 
+        if (BattleManager.Instance.PassivesManager.VerifyAlterationImmunities(alteration.alterationType, this)) return;
+        int passiveModificator = BattleManager.Instance.PassivesManager.GetGivePassiveAlterationUpgrade(origin, alteration);
+        passiveModificator += BattleManager.Instance.PassivesManager.GetReceivePassiveAlterationUpgrade(this, alteration);
+
         for (int i = 0; i < currentAlterations.Count; i++)
         {
             if (currentAlterations[i].alteration.alterationType == alteration.alterationType)
@@ -378,22 +408,40 @@ public class Unit : MonoBehaviour
                     current.currentStrength += alteration.strength;
                 }
 
+                current.currentStrength += passiveModificator;
                 currentAlterations[i] = current;
+
+                break;
             }
         }
 
         if (!alreadyApplied)
         {
-            currentAlterations.Add(new AlterationStruct(alteration, alteration.duration, alteration.strength, origin));
+            currentAlterations.Add(new AlterationStruct(alteration, alteration.duration, alteration.strength + passiveModificator, origin));
         }
 
         if(alteration.alterationType == AlterationType.Shield)
         {
-            CurrentShield = Mathf.Max(CurrentShield, (int)alteration.strength);
+            CurrentShield = Mathf.Max(CurrentShield, (int)alteration.strength + passiveModificator);
         }
 
         PlayAlterationVFX(alteration.alterationType, alteration.isPositive);
         ActualiseAlterations(false);
+    }
+
+    public void AddAlterationStrength(AlterationType type, float addedStrength)
+    {
+        for (int i = 0; i < currentAlterations.Count; i++)
+        {
+            if (currentAlterations[i].alteration.alterationType == type)
+            {
+                AlterationStruct current = currentAlterations[i];
+
+                current.currentStrength += addedStrength;
+
+                currentAlterations[i] = current;
+            }
+        }
     }
 
 
@@ -428,6 +476,10 @@ public class Unit : MonoBehaviour
 
             case AlterationType.Hindered:
                 Destroy(Instantiate(hinderVFX, transform.position, Quaternion.Euler(0, 0, 0)), 1f);
+                return;
+
+            case AlterationType.Skulled:
+                Destroy(Instantiate(skullVFX, transform.position, Quaternion.Euler(0,0, 0)), 1f);
                 return;
         }
 
@@ -549,11 +601,24 @@ public class Unit : MonoBehaviour
 
     private void HoverUnit()
     {
+        isHovered = true;
+
         CurrentTile?.OverlayTile();
     }
 
     private void UnHoverUnit()
     {
+        isHovered = false;
+
+        StartCoroutine(VerifyQuitOverlayTile());
+    }
+
+    private IEnumerator VerifyQuitOverlayTile()
+    {
+        yield return new WaitForEndOfFrame();
+
+        if (!CurrentTile || CurrentTile.IsHovered) yield break;
+
         CurrentTile?.QuitOverlayTile();
     }
 

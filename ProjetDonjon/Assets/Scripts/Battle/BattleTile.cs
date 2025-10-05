@@ -48,6 +48,8 @@ public class BattleTile : MonoBehaviour
     private Coroutine changeStateEffectCoroutine;
     private BattleTile[] highlightedTiles;
     private bool isHole;
+    private bool cantStopHere;
+    private bool isHovered;
 
     [Header("Public Infos")]
     public Unit UnitOnTile { get { return unitOnTile; } }
@@ -55,6 +57,8 @@ public class BattleTile : MonoBehaviour
     public Vector2Int TileCoordinates { get { return tileCoordinates; } }
     public BattleTileState CurrentTileState { get { return currentTileState; } }
     public bool IsHole { get { return isHole; } }
+    public bool CantStopHere { get { return cantStopHere; } }
+    public bool IsHovered { get { return isHovered; } }
 
     [Header("References")]
     [SerializeField] private SpriteRenderer _mainSpriteRenderer;
@@ -94,6 +98,7 @@ public class BattleTile : MonoBehaviour
     {
         saveTileState = BattleTileState.None;
     }
+
 
     #region Hide / Show
 
@@ -156,7 +161,7 @@ public class BattleTile : MonoBehaviour
         currentTileState = BattleTileState.None;
 
         if(changeStateEffectCoroutine is not null) StopCoroutine(changeStateEffectCoroutine);
-        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(baseTileColorOutline, baseTileColorBack, false));
+        changeStateEffectCoroutine = StartCoroutine(ChangeStateEffect(baseTileColorOutline, baseTileColorBack, false, true));
     }
 
     private IEnumerator ChangeStateEffect(Color outlineColor, Color backColor, bool doBounce = true, bool doInstant = false)
@@ -164,24 +169,29 @@ public class BattleTile : MonoBehaviour
         currentColorOutline = outlineColor;
         currentColorBack = backColor;
 
+        _mainSpriteRenderer.DOComplete();
+        _backSpriteRenderer.DOComplete();
+        transform.DOComplete();
+
         StopHighlight();
 
         if (doInstant)
         {
-            _mainSpriteRenderer.DOComplete();
-            transform.DOComplete();
-
             _mainSpriteRenderer.color = outlineColor;
             _backSpriteRenderer.color = backColor;
+
+            transform.position = savePos;
+            transform.localScale = Vector3.one;
 
             yield break;
         }
 
         if (doBounce)
         {
-            yield return new WaitForSeconds(Random.Range(0, 0.05f));
+            //yield return new WaitForSeconds(Random.Range(0, 0.05f));
 
             float randomDelay = 0.1f + Random.Range(-0.03f, 0.03f);
+            randomDelay = 0.1f;
 
             _mainSpriteRenderer.DOColor(outlineColor + Color.white * 0.25f, randomDelay).SetEase(Ease.InOutCubic);
             _backSpriteRenderer.DOColor(backColor + Color.white * 0.25f, randomDelay).SetEase(Ease.InOutCubic);
@@ -189,7 +199,7 @@ public class BattleTile : MonoBehaviour
             transform.DOMove(savePos + new Vector3(0, 0.1f, 0), randomDelay).SetEase(Ease.InOutCubic);
             transform.DOScale(new Vector3(1, Random.Range(1f, 1.15f), 1), randomDelay).SetEase(Ease.InOutCubic);
 
-            yield return new WaitForSeconds(randomDelay);
+            yield return new WaitForSeconds(randomDelay + 0.01f);
 
             transform.DOMove(savePos, randomDelay).SetEase(Ease.InOutCubic);
             transform.DOScale(Vector3.one, randomDelay).SetEase(Ease.InOutCubic);
@@ -212,14 +222,31 @@ public class BattleTile : MonoBehaviour
 
     #region Tile Content 
 
-    public void UnitEnterTile(Unit unit)
+    public void UnitEnterTile(Unit unit, bool isTall)
     {
         unitOnTile = unit;
+
+        if (!isTall) return;
+        
+        // We prevent unit stoping on the top neighbor if the unit is tall
+        foreach(BattleTile neighbor in tileNeighbors)
+        {
+            if (neighbor.TileCoordinates.y <= tileCoordinates.y) continue;
+
+            neighbor.cantStopHere = true;
+        }    
     }
 
     public void UnitLeaveTile()
     {
         unitOnTile = null;
+
+        foreach (BattleTile neighbor in tileNeighbors)
+        {
+            if (neighbor.TileCoordinates.y <= tileCoordinates.y) continue;
+
+            neighbor.cantStopHere = false;
+        }
     }
 
     #endregion
@@ -227,11 +254,18 @@ public class BattleTile : MonoBehaviour
 
     #region Mouse Input Functions
 
+    public void HoverTile()
+    {
+        isHovered = true;
+
+        OverlayTile();
+    }
+
     public void OverlayTile()
     {
         if (currentTileState == BattleTileState.Attack && BattleManager.Instance.CurrentActionType == MenuType.Skills)
         {
-            BattleManager.Instance.DisplayDangerTiles(this, null);
+            BattleManager.Instance.TilesManager.DisplayDangerTiles(this, null);
         }
         else
         {
@@ -241,7 +275,7 @@ public class BattleTile : MonoBehaviour
                 unitOnTile.DisplayOverlayOutline();
                 if (unitOnTile.GetType() != typeof(Hero) && BattleManager.Instance.CurrentUnit.GetType() == typeof(Hero))
                 {
-                    BattleManager.Instance.DisplayPossibleTiles(unitOnTile as AIUnit);
+                    BattleManager.Instance.TilesManager.DisplayPossibleTiles(unitOnTile as AIUnit);
                 }
             }
         }
@@ -267,11 +301,27 @@ public class BattleTile : MonoBehaviour
         }
     }
 
+    public void UnhoverTile()
+    {
+        isHovered = false;
+
+        StartCoroutine(VerifyQuitOverlayTile());
+    }
+
+    private IEnumerator VerifyQuitOverlayTile()
+    {
+        yield return new WaitForEndOfFrame();
+
+        if(unitOnTile && unitOnTile.IsHovered) yield break;
+
+        QuitOverlayTile();
+    }
+
     public void QuitOverlayTile()
     {
         if (currentTileState == BattleTileState.Danger)
         {
-            BattleManager.Instance.DisplayPossibleSkillTiles(null, null, false);
+            BattleManager.Instance.TilesManager.DisplayPossibleSkillTiles(null, null, false);
         }
         else
         {
@@ -281,7 +331,7 @@ public class BattleTile : MonoBehaviour
                 unitOnTile.HideOutline();
                 if (unitOnTile.GetType() != typeof(Hero) && BattleManager.Instance.CurrentUnit.GetType() == typeof(Hero))
                 {
-                    BattleManager.Instance.StopDisplayPossibleMoveTiles();
+                    BattleManager.Instance.TilesManager.StopDisplayPossibleMoveTiles();
                 }
             }
         }
@@ -327,12 +377,16 @@ public class BattleTile : MonoBehaviour
 
     public void HighlightMovePathTile()
     {
+        StopHighlight();
+
         highlightCoroutine = StartCoroutine(HighlightTile(moveTileColorOutline, moveTileColorBack, 0.3f));
     }
 
 
     public void HighlightSkillTile()
     {
+        StopHighlight();
+
         highlightCoroutine = StartCoroutine(HighlightTile(attackTileColorOutline, attackTileColorBack, 0.3f));
     }
 
@@ -342,8 +396,8 @@ public class BattleTile : MonoBehaviour
         if (highlightCoroutine is null) return;
         StopCoroutine(highlightCoroutine);
 
-        _mainSpriteRenderer.UStopSpriteRendererLerpColor();
-        _backSpriteRenderer.UStopSpriteRendererLerpColor();
+        _mainSpriteRenderer.DOComplete();
+        _backSpriteRenderer.DOComplete();
 
         _mainSpriteRenderer.color = currentColorOutline;
         _backSpriteRenderer.color = currentColorBack;
@@ -354,14 +408,13 @@ public class BattleTile : MonoBehaviour
     {
         while (true)
         {
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, outlineColor + new Color(0.02f, 0.02f, 0.02f, 0.2f), CurveType.EaseInOutCubic);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, backColor + new Color(0.005f, 0.005f, 0.005f, 0.2f), CurveType.EaseInOutCubic);
+            _mainSpriteRenderer.DOColor(outlineColor + new Color(0.02f, 0.02f, 0.02f, 0.2f), duration * 0.98f).SetEase(Ease.InOutCubic);
+            _backSpriteRenderer.DOColor(backColor + new Color(0.005f, 0.005f, 0.005f, 0.2f), duration * 0.98f).SetEase(Ease.InOutCubic);
 
             yield return new WaitForSeconds(duration);
 
-
-            _mainSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, outlineColor + new Color(0.01f, 0.01f, 0.01f, 0.1f), CurveType.EaseInOutCubic);
-            _backSpriteRenderer.ULerpColorSpriteRenderer(duration * 0.98f, backColor + new Color(0.005f, 0.005f, 0.005f, 0.1f), CurveType.EaseInOutCubic);
+            _mainSpriteRenderer.DOColor(outlineColor + new Color(0.01f, 0.01f, 0.01f, 0.1f), duration * 0.98f).SetEase(Ease.InOutCubic);
+            _backSpriteRenderer.DOColor(backColor + new Color(0.005f, 0.005f, 0.005f, 0.1f), duration * 0.98f).SetEase(Ease.InOutCubic);
 
             yield return new WaitForSeconds(duration);
         }

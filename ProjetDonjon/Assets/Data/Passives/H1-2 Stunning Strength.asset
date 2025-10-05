@@ -18,12 +18,11 @@ MonoBehaviour:
   passiveHighlightIcon: {fileID: -1451717230, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas:
   - {fileID: 11400000, guid: f88c8bf3130dd394b92c7bb80e2c4467, type: 2}
-  passiveTriggerType: 3
-  passiveTriggerProba: 10
+  passiveTriggerType: 5
+  neededAlteration: {fileID: 0}
+  passiveTriggerProba: 80
   passiveEffects:
-  - passiveEffectType: 0
+  - passiveEffectType: 1
     appliedAlteration: {fileID: 11400000, guid: c2542ffcfdc24874f80e68e474db9402, type: 2}
     additivePower: 0
     multipliedPower: 0
-    duration: 0
-    summonPrefab: {fileID: 0}

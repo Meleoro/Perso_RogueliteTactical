@@ -105,14 +105,14 @@ public class SkillsPanel : MonoBehaviour
     {
         if(currentButtonSkill != null)
         {
-            BattleManager.Instance.DisplayPossibleSkillTiles(currentButtonSkill.SkillData, BattleManager.Instance.CurrentUnit.CurrentTile);
+            BattleManager.Instance.TilesManager.DisplayPossibleSkillTiles(currentButtonSkill.SkillData, BattleManager.Instance.CurrentUnit.CurrentTile);
 
             _skillNameText.text = currentButtonSkill.SkillData.name;
             _skillDescriptionText.text = currentButtonSkill.SkillData.skillDescription;
         }
         else
         {
-            BattleManager.Instance.ResetTiles();
+            BattleManager.Instance.TilesManager.ResetTiles();
 
             _skillNameText.text = "";
             _skillDescriptionText.text = "";
