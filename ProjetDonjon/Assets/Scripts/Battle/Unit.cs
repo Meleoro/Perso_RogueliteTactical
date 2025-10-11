@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -29,6 +30,11 @@ public class Unit : MonoBehaviour
     [Header("Main parameters")]
     [SerializeField] protected bool isEnemy = true;
     [SerializeField] protected bool isTall;
+    [SerializeField][ColorUsage(true, true)] protected Color damageColor;
+    [SerializeField][ColorUsage(true, true)] protected Color healColor;
+    [SerializeField][ColorUsage(true, true)] protected Color poisonColor;
+    [SerializeField][ColorUsage(true, true)] protected Color skullColor;
+    [SerializeField][ColorUsage(true, true)] protected Color shieldColor;
 
     [Header("Actions")]
     public Action OnHeroInfosChange;
@@ -325,6 +331,7 @@ public class Unit : MonoBehaviour
         if (IsSkulled)
         {
             RemoveAlteration(AlterationType.Skulled);
+            StartCoroutine(DoColorEffectCoroutine(skullColor));
             return;
         }
 
@@ -343,6 +350,8 @@ public class Unit : MonoBehaviour
 
         CurrentShield -= shieldDamages;
         CurrentHealth -= healthDamages;
+
+        StartCoroutine(DoColorEffectCoroutine(damageColor));
 
         // Shield
         if(shieldDamages != 0)
@@ -369,6 +378,17 @@ public class Unit : MonoBehaviour
             CurrentHealth = Mathf.Clamp(CurrentHealth + healedAmount, 0, CurrentMaxHealth);
         else
             CurrentHealth = CurrentMaxHealth;
+
+        StartCoroutine(DoColorEffectCoroutine(healColor));
+    }
+
+    private IEnumerator DoColorEffectCoroutine(Color color)
+    {
+        _spriteRenderer.material.DOVector(color, "_AddedColor", 0.1f);
+
+        yield return new WaitForSeconds(0.15f);
+
+        _spriteRenderer.material.DOVector(Color.black, "_AddedColor", 0.25f);
     }
 
     #endregion
@@ -745,6 +765,7 @@ public class Unit : MonoBehaviour
 
         StartTurnOutline();
     }
+
 
     public virtual void EndTurn(float delay)
     {

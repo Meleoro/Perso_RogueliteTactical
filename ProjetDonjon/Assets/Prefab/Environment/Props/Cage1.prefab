@@ -100,6 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ff6927587203042a7dc7582845c5e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 0
+  offset: 1
   publicOffset: 0
-  _spriteRenderer: {fileID: 9042613300403173725, guid: 48a0017a40d18cd47bb1ae128b38858b, type: 3}
+  _spriteRenderer: {fileID: 8570897988476032857}
+  _heroParentTr: {fileID: 0}

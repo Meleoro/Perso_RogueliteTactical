@@ -51,6 +51,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 1
+  isTall: 0
+  damageColor: {r: 7.9999995, g: 0.025155544, b: 0.025155544, a: 0}
+  healColor: {r: 0, g: 7.9999995, b: 0.041885372, a: 0}
+  poisonColor: {r: 0.45512962, g: 0, b: 4, a: 0}
+  skullColor: {r: 4, g: 4, b: 4, a: 0}
+  shieldColor: {r: 0, g: 0.20690918, b: 4, a: 0}
   buffVFX: {fileID: 681623016373210144, guid: 65722577af6b2cf48bc5018986b195f6, type: 3}
   debuffVFX: {fileID: 7845840632209546155, guid: fe1f168013654594da5974d28c188584, type: 3}
   shieldVFX: {fileID: 4073576334773073123, guid: d3ea12f10502ea84c86aeea07470278a, type: 3}

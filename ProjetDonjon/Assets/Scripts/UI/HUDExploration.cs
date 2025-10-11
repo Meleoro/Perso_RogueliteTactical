@@ -21,12 +21,12 @@ public class HUDExploration : MonoBehaviour
 
     private void Start()
     {
-        _heroInfosScreen.Open += Hide;
-        _heroInfosScreen.Close += Show;
+        _heroInfosScreen.OnShow += Hide;
+        _heroInfosScreen.OnHide += Show;
         _inventoryManager.OnInventoryOpen += Hide;
         _inventoryManager.OnInventoryClose += Show;
-        _skillTreeScreen.OnSkillTreeOpen += Hide;
-        _skillTreeScreen.OnSkillTreeClose += Show;
+        _skillTreeScreen.OnShow += Hide;
+        _skillTreeScreen.OnHide += Show;
         BattleManager.Instance.OnBattleStart += Hide;
         BattleManager.Instance.OnBattleEnd += Show;
         _skillsMenu.OnShow += Hide;

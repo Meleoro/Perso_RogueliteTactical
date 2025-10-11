@@ -244,7 +244,7 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < inventorySlots.Length; i++)
         {
-            List<InventorySlot> overlayedSlots = GetOverlayedCoordinates(inventorySlots[i].SlotCoordinates, item.LootData.spaceTaken);
+            List<InventorySlot> overlayedSlots = GetOverlayedCoordinates(inventorySlots[i].SlotCoordinates, item.LootData.spaceTaken, 0);
             if (overlayedSlots.Count == 0) continue;
 
             item.PlaceInInventory(overlayedSlots);
@@ -252,7 +252,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public List<InventorySlot> GetOverlayedCoordinates(Vector2Int bottomLeftCoord, SpaceTakenRow[] spaceTaken)
+    public List<InventorySlot> GetOverlayedCoordinates(Vector2Int bottomLeftCoord, SpaceTakenRow[] spaceTaken, float currentAngle)
     {
         List<InventorySlot> validSlots = new List<InventorySlot>();
 
@@ -260,8 +260,10 @@ public class Inventory : MonoBehaviour
         {
             for (int x = 0; x < spaceTaken[y].row.Length; x++)
             {
-                Vector2Int currentCoord = bottomLeftCoord + new Vector2Int(x, y);
-                InventorySlot currentSlot = GetSlotAtCoord(currentCoord);
+                Vector2 currentCoord = bottomLeftCoord;
+                currentCoord += new Vector2(x, y).RotateDirection(currentAngle);
+
+                InventorySlot currentSlot = GetSlotAtCoord(new Vector2Int(Mathf.RoundToInt(currentCoord.x), Mathf.RoundToInt(currentCoord.y)));
 
                 if (currentSlot is null) return new List<InventorySlot>();    // If the placement isn't valid
                 if (currentSlot.VerifyHasLoot()) return new List<InventorySlot>();

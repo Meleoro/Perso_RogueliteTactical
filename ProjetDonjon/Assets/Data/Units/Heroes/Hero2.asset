@@ -27,7 +27,6 @@ MonoBehaviour:
   heroBaseSkills:
   - {fileID: 11400000, guid: fa97ea0063e522441914677eada810e1, type: 2}
   - {fileID: 11400000, guid: a54d94e12a6ae5e48b51889145abb1af, type: 2}
-  - {fileID: 11400000, guid: 3b58756d0586d7047b935a61a7e16d05, type: 2}
   heroSkillPool:
   - {fileID: 11400000, guid: fa97ea0063e522441914677eada810e1, type: 2}
   - {fileID: 11400000, guid: 482bef61e241a5e44ae9564744b6361c, type: 2}

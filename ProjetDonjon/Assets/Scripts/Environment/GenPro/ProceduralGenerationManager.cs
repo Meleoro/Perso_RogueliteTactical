@@ -22,6 +22,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     [SerializeField] private Vector2Int roomSizeUnits;
     [SerializeField] private Vector2 offsetRoomCenter;
     [SerializeField] private RoomGlobalCollider roomGlobalColliderPredab;
+    [SerializeField] private bool noGeneration;
 
     [Header("Private Infos")]
     private int wantedRoomAmount;
@@ -51,7 +52,9 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
         trailFloorsIndexes[1] = Random.Range(3, 5);
 
         _heroesManager.StartExploration(spawnPos);
-        GenerateFloor(enviroData);
+
+        if (!noGeneration)
+            GenerateFloor(enviroData);
         StartCoroutine(_spriteLayererManager.InitialiseAllCoroutine(0.15f));
     }
 

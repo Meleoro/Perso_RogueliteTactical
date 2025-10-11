@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TMPro;
@@ -8,6 +9,9 @@ public class SkillsPanel : MonoBehaviour
 {
     [Header("Parameters")]
     [SerializeField] private Vector3 offset;
+
+    [Header("Actions")]
+    public Action OnLaunchSkill;
 
     [Header("Private Infos")]
     private Hero currentHero;
@@ -76,6 +80,13 @@ public class SkillsPanel : MonoBehaviour
 
 
     private void ClickButton(SkillsPanelButton button)
+    {
+        OnLaunchSkill.Invoke();
+        currentButtonSkill = button;
+    }
+
+
+    private void ClickButtonOld(SkillsPanelButton button)
     {
         if (currentButtonSkill != null)
         {

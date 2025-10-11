@@ -98,7 +98,9 @@ public class PassivesManager
     {
         List<PassiveData> returnedList = new List<PassiveData>();
 
-        for(int i = 0; i < unit.EquippedPassives.Length; i++)
+        if (!unit) return returnedList;
+
+        for (int i = 0; i < unit.EquippedPassives.Length; i++)
         {
             if (unit.EquippedPassives[i] == null) continue;
             if (unit.EquippedPassives[i].passiveTriggerType != triggerType) continue;

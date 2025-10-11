@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ff6927587203042a7dc7582845c5e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  offset: 0
-  publicOffset: 0
+  offset: 1
+  PublicOffset: 0
   _spriteRenderer: {fileID: 9042613300403173725}
   _heroParentTr: {fileID: 0}

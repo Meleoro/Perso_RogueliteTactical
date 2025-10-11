@@ -53,11 +53,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEnemy: 0
+  isTall: 0
+  damageColor: {r: 4, g: 0, b: 0, a: 0}
+  healColor: {r: 0.22336197, g: 4, b: 0, a: 0}
+  poisonColor: {r: 0.5947075, g: 0, b: 4, a: 0}
+  skullColor: {r: 4, g: 4, b: 4, a: 0}
+  shieldColor: {r: 0, g: 0.12951946, b: 4, a: 0}
   buffVFX: {fileID: 681623016373210144, guid: 65722577af6b2cf48bc5018986b195f6, type: 3}
   debuffVFX: {fileID: 7845840632209546155, guid: fe1f168013654594da5974d28c188584, type: 3}
   shieldVFX: {fileID: 4073576334773073123, guid: d3ea12f10502ea84c86aeea07470278a, type: 3}
+  hinderVFX: {fileID: 0}
   healVFX: {fileID: 3493669056963546257, guid: 0ae6680a16c47224daefd2e67649e76f, type: 3}
   stunVFX: {fileID: 0}
+  skullVFX: {fileID: 0}
   overlayColor: {r: 1, g: 1, b: 1, a: 1}
   positiveColor: {r: 0, g: 1, b: 0, a: 1}
   negativeColor: {r: 1, g: 0, b: 0, a: 1}
@@ -65,6 +73,7 @@ MonoBehaviour:
   _ui: {fileID: 5078905496701275066}
   _spriteRenderer: {fileID: 2102602649195524311}
   _stunnedVFX: {fileID: 0}
+  _poisonedVFX: {fileID: 0}
   _shieldVFX: {fileID: 1081535331255305938}
   _animator: {fileID: 8575267897746095112}
   _unitAnimsInfos: {fileID: 8579939343909148784}
@@ -73,8 +82,7 @@ MonoBehaviour:
   heroIndex: 0
   startLoot:
   - {fileID: 11400000, guid: 5ef1cddf51852764e97f12bc0f4be436, type: 2}
-  - {fileID: 11400000, guid: d35ccc5368a3afb4f935d839db5247a2, type: 2}
-  - {fileID: 11400000, guid: e7257f000b5a63d40b3ec08d33568288, type: 2}
+  - {fileID: 11400000, guid: c7110c3f65a3990439bc0df0bb4015ee, type: 2}
   _controller: {fileID: 7159339506722094448}
   _spriteRendererParent: {fileID: 5050220775268981595}
   _shadowTransform: {fileID: 316598353547619335}
@@ -5301,7 +5309,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: 0
-  publicOffset: 0
+  PublicOffset: 0
   _spriteRenderer: {fileID: 2102602649195524311}
   _heroParentTr: {fileID: 3105457969320036442}
 --- !u!1 &5326024410854369830

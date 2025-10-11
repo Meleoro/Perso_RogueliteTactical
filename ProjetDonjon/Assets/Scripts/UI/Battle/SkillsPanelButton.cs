@@ -13,6 +13,8 @@ public class SkillsPanelButton : MonoBehaviour
     [SerializeField] private Color overlayActionAddedColor;
     [SerializeField] private Color clickedActionAddedColor;
     [SerializeField] private Color impossibleActionRemovedColor;
+    [SerializeField] private Color hoverTextColor;
+    [SerializeField] private Color baseTextColor;
     [SerializeField] private Sprite fullSPSprite;
     [SerializeField] private Sprite emptySPSprite;
 
@@ -87,6 +89,10 @@ public class SkillsPanelButton : MonoBehaviour
             OnSkillOverlay.Invoke(skillData);
         }
 
+        _skillIcon.color = hoverTextColor;
+        _skillIcon.sprite = skillData.skillHighlightIcon;
+        _buttonText.color = hoverTextColor;
+
         List<BattleTile> concernedTiles = BattleManager.Instance.TilesManager.DisplayPossibleSkillTiles(skillData, BattleManager.Instance.CurrentUnit.CurrentTile);
         float averageDist = 0;
 
@@ -114,6 +120,10 @@ public class SkillsPanelButton : MonoBehaviour
             if(!noActionCall)
                 OnSkillQuitOverlay.Invoke();
         }
+
+        _skillIcon.color = Color.white;
+        _skillIcon.sprite = skillData.skillIcon;
+        _buttonText.color = baseTextColor;
     }
 
     public void QuitOverlayButtonInstant(bool noActionCall = false)
@@ -122,6 +132,10 @@ public class SkillsPanelButton : MonoBehaviour
 
         _buttonImage.color = colorSave;
         _rectTr.localScale = Vector3.one * 0.95f;
+
+        _skillIcon.color = Color.white;
+        _skillIcon.sprite = skillData.skillIcon;
+        _buttonText.color = baseTextColor;
 
         if (!noActionCall)
             OnSkillQuitOverlay.Invoke();

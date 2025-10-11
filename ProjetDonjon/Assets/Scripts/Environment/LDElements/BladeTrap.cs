@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using Utilities;
@@ -42,23 +43,29 @@ public class BladeTrap : MonoBehaviour
         {
             yield return new WaitForSeconds(stayUpDuration);
 
-            _trapSprite.transform.UChangeLocalPosition(fallDuration, _endPosTr.localPosition, CurveType.EaseInCubic);
+            _trapSprite.transform.DOLocalMove(_endPosTr.localPosition, fallDuration).SetEase(Ease.InCubic);
             _trapSprite.material.ULerpMaterialFloat(fallDuration, 0, "_AddedY");
 
             yield return new WaitForSeconds(fallDuration);
 
             _sparksVFX.Play();
-            _spriteLayerer.publicOffset = -50;
+            _spriteLayerer.PublicOffset = -50;
             _bladeCollider.canCollide = true;
+
+            yield return new WaitForSeconds(0.05f);
+
+            _bladeCollider.canCollide = false;
 
             yield return new WaitForSeconds(stayDownDuration * 0.6f);
 
-            _spriteLayerer.publicOffset = 0;
-            _trapSprite.transform.UChangeLocalPosition(stayDownDuration * 0.4f, new Vector3(0, 0, 0), CurveType.EaseInOutCubic);
+            _trapSprite.transform.DOLocalMove(new Vector3(0, 0, 0), stayDownDuration * 0.4f).SetEase(Ease.InOutSine);
             _trapSprite.material.ULerpMaterialFloat(fallDuration * 0.4f, ceilingMatFloatValue, "_AddedY");
-            _bladeCollider.canCollide = false;
 
-            yield return new WaitForSeconds(stayDownDuration * 0.4f);
+            yield return new WaitForSeconds(stayDownDuration * 0.2f);
+
+            _spriteLayerer.PublicOffset = 0;
+
+            yield return new WaitForSeconds(stayDownDuration * 0.2f);
         }
     }
 }

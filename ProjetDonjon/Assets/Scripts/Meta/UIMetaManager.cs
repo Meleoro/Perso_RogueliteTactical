@@ -20,6 +20,7 @@ public class UIMetaManager : GenericSingletonClass<UIMetaManager>
 
     [Header("Public Infos")]
     public bool IsInTransition { get { return isInTransition; } }
+    public CollectionMenu CollectionMenu { get { return _collectionMenu; } }
 
     [Header("References")]
     [SerializeField] private Transform _globalParent;
@@ -46,11 +47,6 @@ public class UIMetaManager : GenericSingletonClass<UIMetaManager>
         _chestMenu.OnEndTransition += EndTransition;
         _chestMenu.OnShow += () => currentMetaMenu = CurrentMetaMenu.Chest;
         _chestMenu.OnHide += () => currentMetaMenu = CurrentMetaMenu.Main;
-
-        _collectionMenu.OnStartTransition += StartTransition;
-        _collectionMenu.OnEndTransition += EndTransition;
-        _collectionMenu.OnShow += () => currentMetaMenu = CurrentMetaMenu.Collection;
-        _collectionMenu.OnHide += () => currentMetaMenu = CurrentMetaMenu.Main;
     }
 
 
@@ -79,18 +75,28 @@ public class UIMetaManager : GenericSingletonClass<UIMetaManager>
 
     #region Show / Hide Meta Menu
 
-    public void Show()
+    public void EnterMetaMenu()
     {
         currentMetaMenu = CurrentMetaMenu.Main;
 
         _globalParent.gameObject.SetActive(true);
         isActive = true;
+
+        _collectionMenu.OnStartTransition += StartTransition;
+        _collectionMenu.OnEndTransition += EndTransition;
+        _collectionMenu.OnShow += () => currentMetaMenu = CurrentMetaMenu.Collection;
+        _collectionMenu.OnHide += () => currentMetaMenu = CurrentMetaMenu.Main;
     }
 
-    public void Hide()
+    public void QuitMetaMenu()
     {
         _globalParent.gameObject.SetActive(false);
         isActive = false;
+
+        _collectionMenu.OnStartTransition -= StartTransition;
+        _collectionMenu.OnEndTransition -= EndTransition;
+        _collectionMenu.OnShow -= () => currentMetaMenu = CurrentMetaMenu.Collection;
+        _collectionMenu.OnHide -= () => currentMetaMenu = CurrentMetaMenu.Main;
     }
 
     #endregion

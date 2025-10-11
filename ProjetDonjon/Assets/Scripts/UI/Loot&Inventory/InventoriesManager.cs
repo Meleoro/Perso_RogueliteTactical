@@ -28,7 +28,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
 
     [Header("Public Infos")]
     public RectTransform MainLootParent { get { return _mainLootParent; } }
-    public DetailsPanel DetailsPanel { get { return _detailsPanel; } }
+    public GenericDetailsPanel DetailsPanel { get { return _detailsPanel; } }
     public InventoryActionPanel InventoryActionPanel { get { return _inventoryActionsPanel; } }  
 
 
@@ -44,7 +44,7 @@ public class InventoriesManager : GenericSingletonClass<InventoriesManager>
     [SerializeField] private RectTransform _inventoriesParent;
     [SerializeField] private Image _backInventoriesImage;
     [SerializeField] private Image _backFadeImage;
-    [SerializeField] private DetailsPanel _detailsPanel;
+    [SerializeField] private GenericDetailsPanel _detailsPanel;
     [SerializeField] private InventoryActionPanel _inventoryActionsPanel;
 
 

@@ -7,6 +7,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using UnityEngine.UI;
 using Utilities;
+using DG.Tweening;
 
 [Serializable]
 public class BackgroundType
@@ -87,7 +88,7 @@ public class Loot : MonoBehaviour, IInteractible
 
         if (isOverlayed && !isDragged) return;
 
-        DoMoveSquishEffect();
+        //DoMoveSquishEffect();
 
         if (!isDragged) return;
         
@@ -371,7 +372,6 @@ public class Loot : MonoBehaviour, IInteractible
         }
     }
 
-
     public void PlaceInInventory(List<InventorySlot> overlayedSlots)
     {
         Vector3 position = Vector2.zero;
@@ -409,7 +409,7 @@ public class Loot : MonoBehaviour, IInteractible
     public void OverlayLoot()
     {
         isOverlayed = true;
-        InventoriesManager.Instance.DetailsPanel.OpenDetails(lootData, _imageBackground.transform.position);
+        InventoriesManager.Instance.DetailsPanel.LoadDetails(lootData, _imageBackground.transform.position, false);
         InventoriesManager.Instance.HoverLoot(this);
 
         if (overlayCoroutine is not null) StopCoroutine(overlayCoroutine);
@@ -419,20 +419,20 @@ public class Loot : MonoBehaviour, IInteractible
     private IEnumerator OverlayLootCoroutine(float duration)
     {
         _imageBackground.rectTransform.UChangeScale(duration, saveSize * 1.35f, CurveType.EaseInOutSin);
-        _imageBackground.material.ULerpMaterialColor(duration, Color.white * 0.2f, "_AddedColor");
-        _image.material.ULerpMaterialColor(duration, Color.white * 0.3f, "_AddedColor");
+        //_imageBackground.material.ULerpMaterialColor(duration, Color.white * 0.2f, "_AddedColor");
+        //_image.material.ULerpMaterialColor(duration, Color.white * 0.3f, "_AddedColor");
 
         yield return new WaitForSeconds(duration);
 
         _imageBackground.rectTransform.UChangeScale(duration * 0.3f, saveSize * 1.2f, CurveType.EaseInOutSin);
-        _imageBackground.material.ULerpMaterialColor(duration * 0.3f, Color.white * 0.1f, "_AddedColor");
-        _image.material.ULerpMaterialColor(duration * 0.3f, Color.white * 0.15f, "_AddedColor");
+        //_imageBackground.material.ULerpMaterialColor(duration * 0.3f, Color.white * 0.1f, "_AddedColor");
+        //_image.material.ULerpMaterialColor(duration * 0.3f, Color.white * 0.15f, "_AddedColor");
     }
 
     public void QuitOverlayLoot()
     {
         isOverlayed = false;
-        InventoriesManager.Instance.DetailsPanel.CloseDetails();
+        InventoriesManager.Instance.DetailsPanel.HideDetails();
         InventoriesManager.Instance.UnhoverLoot(this);
 
         if (overlayCoroutine is not null) StopCoroutine(overlayCoroutine);
@@ -444,19 +444,19 @@ public class Loot : MonoBehaviour, IInteractible
 
     public void OverlayOtherLoot()
     {
-        _imageBackground.ULerpImageColor(0.3f, new Color(_imageBackground.color.r, _imageBackground.color.g, _imageBackground.color.b, 0.5f));
-        _image.ULerpImageColor(0.3f, Color.white * 0.8f);
+        _imageBackground.DOFade(0.7f, 0.2f);
+        _image.DOFade(0.7f, 0.2f);
     }
 
     public void QuitOverlayOtherLoot()
     {
-        _imageBackground.ULerpImageColor(0.3f, new Color(_imageBackground.color.r, _imageBackground.color.g, _imageBackground.color.b, 1f));
-        _image.ULerpImageColor(0.3f, Color.white);
+        _imageBackground.DOFade(1f, 0.2f);
+        _image.DOFade(1f, 0.2f);
     }
 
     public void ClickLoot()
     {
-        InventoriesManager.Instance.DetailsPanel.CloseDetails();
+        InventoriesManager.Instance.DetailsPanel.HideDetails();
 
         InventoriesManager.Instance.InventoryActionPanel.OpenPanel(this);
     }
@@ -603,7 +603,6 @@ public class Loot : MonoBehaviour, IInteractible
 
     private List<InventorySlot> GetOverlayedSlots()
     {
-        List<InventorySlot> returnedSlots = new List<InventorySlot>();
         Vector2 bottomLeft = new Vector2((lootData.spaceTaken[0].row.Length * InventoriesManager.Instance.slotSize) * -0.5f + InventoriesManager.Instance.slotSize * 0.5f,
             (lootData.spaceTaken.Length * InventoriesManager.Instance.slotSize) * -0.5f + InventoriesManager.Instance.slotSize * 0.5f);
 
@@ -616,7 +615,8 @@ public class Loot : MonoBehaviour, IInteractible
 
         if (bottomLeftSlot is null) return new List<InventorySlot>();
 
-        return bottomLeftSlot.AssociatedInventory.GetOverlayedCoordinates(bottomLeftSlot.SlotCoordinates, lootData.spaceTaken);
+        return bottomLeftSlot.AssociatedInventory.GetOverlayedCoordinates(bottomLeftSlot.SlotCoordinates, lootData.spaceTaken, 
+            _imageBackground.rectTransform.eulerAngles.z);
     }
 
     private int GetNeededOccupiedSpace()

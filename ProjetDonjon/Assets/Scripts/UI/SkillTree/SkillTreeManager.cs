@@ -18,8 +18,8 @@ public class SkillTreeManager : MonoBehaviour
     private int currentIndex;
 
     [Header("Actions")]
-    public Action OnSkillTreeOpen;
-    public Action OnSkillTreeClose;
+    public Action OnShow;
+    public Action OnHide;
 
     [Header("References")]
     [SerializeField] private RectTransform _nodesBottomLeftTrRef;
@@ -135,7 +135,7 @@ public class SkillTreeManager : MonoBehaviour
         LoadHero(hero);
 
         HeroesManager.Instance.StopControl();
-        OnSkillTreeOpen.Invoke();
+        OnShow.Invoke();
         isOpeningOrClosing = true;
 
         StartCoroutine(ShowCoroutine());
@@ -163,7 +163,7 @@ public class SkillTreeManager : MonoBehaviour
         if (isOpeningOrClosing) return;
 
         HeroesManager.Instance.RestartControl();
-        OnSkillTreeClose.Invoke();
+        OnHide.Invoke();
         isOpeningOrClosing = true;
 
         StartCoroutine(HideCoroutine());

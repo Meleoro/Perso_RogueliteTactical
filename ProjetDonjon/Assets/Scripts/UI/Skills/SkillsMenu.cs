@@ -312,7 +312,7 @@ public class SkillsMenu : MonoBehaviour
     public void SetupHero(Hero hero)
     {
         currentHero = hero;
-        //_heroName.text = hero.HeroData.unitName;
+        _heroName.text = hero.HeroData.unitName;
 
         LoadEquippableButtons();
         LoadEquippedButtons();

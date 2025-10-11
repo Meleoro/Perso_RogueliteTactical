@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -24,7 +25,7 @@ public class CollectionMenu : MonoBehaviour
 
     private void Start()
     {
-        
+        RelicsManager.Instance.OnRelicObtained += AddNewRelic;
     }
 
 
@@ -40,52 +41,72 @@ public class CollectionMenu : MonoBehaviour
     }
 
 
+    #region Add New Relic
+
+    public void AddNewRelic(RelicData relicData, int relicIndex)
+    {
+        Show(relicIndex / 12);
+
+        StartCoroutine(AddNewRelicCoroutine(relicData, relicIndex));
+    }
+
+    private IEnumerator AddNewRelicCoroutine(RelicData relicData, int relicIndex)
+    {
+        yield return new WaitForSeconds(0.4f);
+
+        int pageIndex = (relicIndex / 12);
+        int pageRelicIndex = relicIndex - (pageIndex * 12);
+
+        StartCoroutine(_collectionRelics[pageRelicIndex].NewRelicEffectCoroutine());
+
+        yield return new WaitForSeconds(0.3f);
+    }
+
+    #endregion
+
+
     #region Open / Close
 
-    public void Show()
+    public void Show(int startPage = 0)
     {
-        OnStartTransition.Invoke();
-        OnShow.Invoke();
+        OnStartTransition?.Invoke();
+        OnShow?.Invoke();
+
+        _mainRectTr.gameObject.SetActive(true);
 
         possessedRelics = RelicsManager.Instance.PossessedRelicIndexes;
-        LoadPage(0);
+        LoadPage(startPage);
 
         StartCoroutine(ShowCoroutine());
     }
 
     private IEnumerator ShowCoroutine()
     {
-        yield return new WaitForSeconds(0.2f);
+        _mainRectTr.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
 
-        _mainRectTr.UChangeScale(0.2f, Vector3.one * 1.2f);
+        yield return new WaitForSeconds(0.3f);
 
-        yield return new WaitForSeconds(0.2f);
-
-        _mainRectTr.UChangeScale(0.2f, Vector3.one * 1f);
-
-        OnEndTransition.Invoke();
+        OnEndTransition?.Invoke();
     }
 
 
     public void Hide()
     {
-        OnStartTransition.Invoke();
-        OnHide.Invoke();
+        OnStartTransition?.Invoke();
+        OnHide?.Invoke();
 
         StartCoroutine(HideCoroutine());
     }
 
     private IEnumerator HideCoroutine()
     {
-        yield return new WaitForSeconds(0.2f);
+        _mainRectTr.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack);
 
-        _mainRectTr.UChangeScale(0.2f, Vector3.one * 1.2f);
+        yield return new WaitForSeconds(0.3f);
 
-        yield return new WaitForSeconds(0.2f);
+        _mainRectTr.gameObject.SetActive(false);
 
-        _mainRectTr.UChangeScale(0.2f, Vector3.one * 0f);
-
-        OnEndTransition.Invoke();
+        OnEndTransition?.Invoke();
     }
 
     #endregion

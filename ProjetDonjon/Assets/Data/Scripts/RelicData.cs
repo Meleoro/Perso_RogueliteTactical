@@ -8,6 +8,7 @@ public class RelicData : ScriptableObject
     [TextArea] public string relicDescription;
     [TextArea] public string relicHint;
     public Sprite icon;
+    public RarityType type;
 
     [Header("Spawn Infos")]
     public RelicSpawnType spawnType;
@@ -20,4 +21,12 @@ public enum RelicSpawnType
     BossBattleEndSpawn,
     TrialChestSpawn,
     NormalChestSpawn
+}
+
+public enum RarityType
+{
+    Common, 
+    Rare,
+    Epic, 
+    Mystic
 }

@@ -10,7 +10,8 @@ public enum UIState
     Inventories,
     HeroesInfos,
     SkillTrees,
-    Skills
+    Skills,
+    Collection
 }
 
 public class UIManager : GenericSingletonClass<UIManager>
@@ -45,6 +46,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     [SerializeField] private SkillTreeManager _skillTreesManager;
     [SerializeField] private SkillsMenu _skillsMenu;
     [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
+    [SerializeField] private CollectionMenu _collectionMenu;
     [SerializeField] private Image _transitionFadeImage;
     [SerializeField] private CoinUI _coinUI;
     [SerializeField] private Minimap _minimap;
@@ -63,11 +65,11 @@ public class UIManager : GenericSingletonClass<UIManager>
     {
         _inventoriesManager.OnInventoryOpen += OpenInventory;
 
-        _heroInfosScreen.Open += () => currentState = UIState.HeroesInfos;
-        _heroInfosScreen.Close += () => currentState = UIState.Nothing;
+        _heroInfosScreen.OnShow += () => currentState = UIState.HeroesInfos;
+        _heroInfosScreen.OnHide += () => currentState = UIState.Nothing;
 
-        _skillTreesManager.OnSkillTreeOpen += () => currentState = UIState.SkillTrees;
-        _skillTreesManager.OnSkillTreeClose += () => currentState = UIState.Nothing;
+        _skillTreesManager.OnShow += () => currentState = UIState.SkillTrees;
+        _skillTreesManager.OnHide += () => currentState = UIState.Nothing;
 
         _skillsMenu.OnShow += () => currentState = UIState.Skills;
         _skillsMenu.OnHide += () => currentState = UIState.Nothing;
@@ -109,7 +111,7 @@ public class UIManager : GenericSingletonClass<UIManager>
 
 
             case UIState.Inventories:
-                if (InputManager.wantsToInventory)
+                if (InputManager.wantsToInventory || InputManager.wantsToReturn)
                 {
                     if (!_inventoriesManager.VerifyCanOpenCloseInventory()) return;
                     _inventoriesManager.CloseInventories();
@@ -120,7 +122,7 @@ public class UIManager : GenericSingletonClass<UIManager>
 
             case UIState.HeroesInfos:
 
-                if (InputManager.wantsToHeroInfo)
+                if (InputManager.wantsToHeroInfo || InputManager.wantsToReturn)
                 {
                     if (!_heroInfosScreen.VerifyCanOpenOrCloseHeroInfos()) return;
                     StartCoroutine(_heroInfosScreen.CloseInfosScreenCoroutine());
@@ -129,20 +131,34 @@ public class UIManager : GenericSingletonClass<UIManager>
                 break;
 
             case UIState.SkillTrees:
-                if (InputManager.wantsToSkillTree)
-                {
-                    _skillTreesManager.Hide();
-                }
+                if (InputManager.wantsToSkillTree || InputManager.wantsToReturn) _skillTreesManager.Hide();
+                
                 break;
 
             case UIState.Skills:
-                if (InputManager.wantsToSkills)
-                {
-                    _skillsMenu.Hide();
-                }
+                if (InputManager.wantsToSkills || InputManager.wantsToReturn) _skillsMenu.Hide();
+                
+                break;
+
+            case UIState.Collection:
+                if(InputManager.wantsToReturn) _collectionMenu.Hide();
                 break;
         }
     }
+
+
+    public void StartExploration()
+    {
+        _collectionMenu.OnShow += () => currentState = UIState.Collection;
+        _collectionMenu.OnHide += () => currentState = UIState.Nothing;
+    }
+
+    public void EndExploration()
+    {
+        _collectionMenu.OnShow -= () => currentState = UIState.Collection;
+        _collectionMenu.OnHide -= () => currentState = UIState.Nothing;
+    }
+
 
     public void OpenInventory()
     {

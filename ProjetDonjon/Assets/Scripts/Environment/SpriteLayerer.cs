@@ -6,7 +6,7 @@ public class SpriteLayerer : MonoBehaviour
     [SerializeField] private int offset;
 
     [Header("Public Infos")]
-    [HideInInspector] public int publicOffset;
+    [HideInInspector] public int PublicOffset;
 
     [Header("Private Infos")]
     private Transform referenceTr;
@@ -35,6 +35,6 @@ public class SpriteLayerer : MonoBehaviour
     {
         if (!isInitialised) return;
 
-        _spriteRenderer.sortingOrder = Mathf.Clamp(100 - (int)((transform.position.y - referenceTr.position.y) * 5) + offset + publicOffset, 1, 200);
+        _spriteRenderer.sortingOrder = Mathf.Clamp(100 - (int)((transform.position.y - referenceTr.position.y) * 5) + offset + PublicOffset, 1, 200);
     }
 }

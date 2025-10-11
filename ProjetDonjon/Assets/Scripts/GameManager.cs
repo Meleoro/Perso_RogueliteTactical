@@ -21,7 +21,7 @@ public class GameManager : GenericSingletonClass<GameManager>
         }
         else
         {
-            UIMetaManager.Instance.Show();
+            UIMetaManager.Instance.EnterMetaMenu();
         }
     }
 
@@ -38,8 +38,10 @@ public class GameManager : GenericSingletonClass<GameManager>
 
     public void StartExploration(EnviroData enviroData)
     {
-        UIMetaManager.Instance.Hide();
+        UIMetaManager.Instance.QuitMetaMenu();
         IsInExplo = true;
+
+        UIManager.Instance.StartExploration();
 
         ProceduralGenerationManager.Instance.StartExploration(enviroData);
     }
@@ -55,10 +57,11 @@ public class GameManager : GenericSingletonClass<GameManager>
 
         ProceduralGenerationManager.Instance.EndExploration();
         HeroesManager.Instance.EndExploration();
+        UIManager.Instance.EndExploration();
 
         IsInExplo = false;
 
-        UIMetaManager.Instance.Show();
+        UIMetaManager.Instance.EnterMetaMenu();
     }
 
 

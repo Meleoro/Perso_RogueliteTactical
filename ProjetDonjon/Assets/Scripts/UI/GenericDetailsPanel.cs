@@ -10,6 +10,7 @@ public class GenericDetailsPanel : MonoBehaviour
     [Header("Parameters")]
     [SerializeField] private Vector3 offset;
     [SerializeField] private Vector3 offsetSkillTree;
+    [SerializeField] private Vector3 offsetInventory;
 
     [Header("Private Infos")]
     private Coroutine appearCoroutine;
@@ -23,6 +24,9 @@ public class GenericDetailsPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _skillCostText;
     [SerializeField] private TextMeshProUGUI _treeNodeTypeText;
     [SerializeField] private AdditionalTooltip[] _additionalTooltips;
+    [SerializeField] private RectTransform[] _statsParents;
+    [SerializeField] private TextMeshProUGUI[] _statsTexts;
+    [SerializeField] private RectTransform _statGlobalParent;
 
 
     private void Start()
@@ -30,12 +34,68 @@ public class GenericDetailsPanel : MonoBehaviour
         HideDetails();
     }
 
-
-    public void LoadDetails(SkillTreeNodeData nodeData, Vector3 position, bool mirrorPosition)
+    public void LoadDetails(LootData lootData, Vector3 position, bool mirrorHorizontal)
     {
         _mainRectTr.gameObject.SetActive(true);
 
-        if(mirrorPosition) _mainRectTr.position = position + offsetSkillTree;
+        if (mirrorHorizontal) _mainRectTr.position = position + offsetInventory;
+        else _mainRectTr.position = position - offsetInventory;
+
+        _nameText.text = lootData.lootName;
+        _descriptionText.text = lootData.lootDescription;
+
+        if(lootData.lootType != LootType.Equipment)
+        {
+            _statGlobalParent.gameObject.SetActive(false);
+        }
+        else
+        {
+            _statGlobalParent.gameObject.SetActive(true);
+
+            for (int i = 0; i < _statsParents.Length; i++)
+            {
+                _statsParents[i].gameObject.SetActive(false);
+            }
+
+            if (lootData.healthUpgrade != 0)
+            {
+                _statsParents[0].gameObject.SetActive(true);
+                _statsTexts[0].text = lootData.healthUpgrade.ToString();
+            }
+            if (lootData.strengthUpgrade != 0)
+            {
+                _statsParents[1].gameObject.SetActive(true);
+                _statsTexts[1].text = lootData.strengthUpgrade.ToString();
+            }
+            if (lootData.speedUpgrade != 0)
+            {
+                _statsParents[2].gameObject.SetActive(true);
+                _statsTexts[2].text = lootData.speedUpgrade.ToString();
+            }
+            if (lootData.luckUpgrade != 0)
+            {
+                _statsParents[3].gameObject.SetActive(true);
+                _statsTexts[3].text = lootData.luckUpgrade.ToString();
+            }
+        }
+
+        for (int i = 0; i < _additionalTooltips.Length; i++)
+        {
+            if (i < lootData.additionalTooltipDatas.Length)
+                _additionalTooltips[i].Show(lootData.additionalTooltipDatas[i], 0.15f + i * 0.15f);
+
+            else
+                _additionalTooltips[i].Hide();
+        }
+
+        appearCoroutine = StartCoroutine(AppearEffectCoroutine());
+    }
+
+    public void LoadDetails(SkillTreeNodeData nodeData, Vector3 position, bool mirrorHorizontal)
+    {
+        _mainRectTr.gameObject.SetActive(true);
+
+        if(mirrorHorizontal) _mainRectTr.position = position + offsetSkillTree;
         else _mainRectTr.position = position - offsetSkillTree;
 
         _treeNodeTypeText.enabled = true;
@@ -44,6 +104,7 @@ public class GenericDetailsPanel : MonoBehaviour
         {
             _nameText.text = nodeData.skillData.skillName;
             _descriptionText.text = nodeData.skillData.skillDescription;
+            
             _numberText.text = "";
             _treeNodeTypeText.text = "SKILL";
 
@@ -81,7 +142,6 @@ public class GenericDetailsPanel : MonoBehaviour
 
         appearCoroutine = StartCoroutine(AppearEffectCoroutine());
     }
-
 
     public void LoadDetails(SkillData skillData, Vector3 position)
     {
@@ -143,6 +203,7 @@ public class GenericDetailsPanel : MonoBehaviour
         _mainRectTr.DOComplete();
         _mainRectTr.gameObject.SetActive(false);
 
+        _statGlobalParent.gameObject.SetActive(false);
         _treeNodeTypeText.enabled = false;
         _skillCostText.enabled = false;
         for(int i = 0; i < _skillCostImages.Length; i++)

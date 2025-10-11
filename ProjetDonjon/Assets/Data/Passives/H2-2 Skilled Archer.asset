@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   passiveName: SKILLED ARCHER
   passiveDescription: CRIT HIT GIVE YOU 1 SKILL POINT
-  passiveIcon: {fileID: 553366629, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
-  passiveHighlightIcon: {fileID: 311212683, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  passiveIcon: {fileID: 847775307, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
+  passiveHighlightIcon: {fileID: 1196405056, guid: 888e112301f7e7b41b20accdedb0e2fd, type: 3}
   additionalTooltipDatas: []
   passiveTriggerType: 7
   neededAlteration: {fileID: 0}

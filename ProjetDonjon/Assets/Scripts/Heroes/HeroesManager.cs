@@ -310,6 +310,20 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>, ISaveable
         HeroesCurrentSkillTreePoint = data.heroesCurrentSkillPoint;
         HeroesEquippedSkillNames = data.heroesEquippedSkillIndexes;
         HeroesEquippedPassiveNames = data.heroesEquippedPassiveIndexes;
+
+        if (data.needEquippedInitialisation)
+        {
+            data.needEquippedInitialisation = false;
+
+            for(int i = 0; i < allHeroesPrefabs.Length; i++)
+            {
+                HeroesEquippedSkillNames[i * 6] = allHeroesPrefabs[i].HeroData.heroBaseSkills[0].skillName;
+                HeroesEquippedSkillNames[i * 6 + 1] = allHeroesPrefabs[i].HeroData.heroBaseSkills[1].skillName;
+
+                
+            }
+
+        }
     }
 
     public void SaveGame(ref GameData data)

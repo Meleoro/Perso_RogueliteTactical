@@ -11,6 +11,7 @@ public enum MenuType
     BaseActions,
     Move,
     Skills,
+    LaunchSkill,
     UseItems
 }
 
@@ -56,6 +57,8 @@ public class PlayerActionsMenu : MonoBehaviour
         {
             colorSaves[i] = _buttonImages[i].color;
         }
+
+        _skillsPanel.OnLaunchSkill += StartLaunchSkillAction;
     }
 
     private void Update()
@@ -153,6 +156,13 @@ public class PlayerActionsMenu : MonoBehaviour
         _skillsPanel.OpenSkillsPanel(currentHero);
 
         CloseActionsMenu();
+    }
+
+    public void StartLaunchSkillAction()
+    {
+        currentMenu = MenuType.LaunchSkill;
+
+        _skillsPanel.CloseSkillsPanel();
     }
 
     public void StartUseObjectAction()
@@ -255,6 +265,11 @@ public class PlayerActionsMenu : MonoBehaviour
                 CameraManager.Instance.FocusOnTr(currentHero.transform, 5f);
                 BattleManager.Instance.TilesManager.ResetTiles();
                 _skillsPanel.CloseSkillsPanel();
+                break;
+
+            case MenuType.LaunchSkill:
+                BattleManager.Instance.TilesManager.ResetTiles();
+                StartSkillsAction();
                 break;
 
             case MenuType.BaseActions:

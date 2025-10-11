@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class GameData 
 {
+    public bool needEquippedInitialisation;
+
     // HEROES
     public int[] heroesLevel;
     public bool[] heroesUnlockedNodes;
@@ -23,5 +25,7 @@ public class GameData
         heroesEquippedPassiveIndexes = new string[4 * 3];
 
         possessedRelicsIndexes = new bool[12 * 4];
+
+        needEquippedInitialisation = true;
     }
 }

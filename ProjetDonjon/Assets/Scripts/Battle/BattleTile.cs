@@ -263,14 +263,14 @@ public class BattleTile : MonoBehaviour
 
     public void OverlayTile()
     {
-        if (currentTileState == BattleTileState.Attack && BattleManager.Instance.CurrentActionType == MenuType.Skills)
+        if (currentTileState == BattleTileState.Attack && BattleManager.Instance.CurrentActionType == MenuType.LaunchSkill)
         {
             BattleManager.Instance.TilesManager.DisplayDangerTiles(this, null);
         }
-        else
+        else 
         {
             // Displays a preview of the possible movement of the tile's current unit if it's possible
-            if (unitOnTile is not null && BattleManager.Instance.CurrentUnit is not null && BattleManager.Instance.CurrentActionType != MenuType.Skills)
+            if (unitOnTile is not null && BattleManager.Instance.CurrentUnit is not null && BattleManager.Instance.CurrentActionType != MenuType.LaunchSkill)
             {
                 unitOnTile.DisplayOverlayOutline();
                 if (unitOnTile.GetType() != typeof(Hero) && BattleManager.Instance.CurrentUnit.GetType() == typeof(Hero))
@@ -323,7 +323,7 @@ public class BattleTile : MonoBehaviour
         {
             BattleManager.Instance.TilesManager.DisplayPossibleSkillTiles(null, null, false);
         }
-        else
+        else if (BattleManager.Instance.CurrentActionType != MenuType.LaunchSkill)
         {
             // Hides the preview of the possible movement of the tile's current unit if it's possible
             if (unitOnTile is not null && BattleManager.Instance.CurrentUnit is not null)
@@ -364,7 +364,7 @@ public class BattleTile : MonoBehaviour
                 break;
 
             case BattleTileState.Danger:
-                if (BattleManager.Instance.CurrentActionType != MenuType.Skills) break;
+                if (BattleManager.Instance.CurrentActionType != MenuType.LaunchSkill) break;
                 StartCoroutine(BattleManager.Instance.UseSkillCoroutine(null));
                 break;
         }

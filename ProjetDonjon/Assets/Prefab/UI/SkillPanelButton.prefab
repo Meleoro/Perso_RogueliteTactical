@@ -407,6 +407,8 @@ MonoBehaviour:
   overlayActionAddedColor: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 0}
   clickedActionAddedColor: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 0}
   impossibleActionRemovedColor: {r: 0.101960786, g: 0.101960786, b: 0.101960786, a: 0}
+  hoverTextColor: {r: 0.94509804, g: 0.6901961, b: 0.49411765, a: 1}
+  baseTextColor: {r: 0.24705882, g: 0.13333334, b: 0.03529412, a: 1}
   fullSPSprite: {fileID: -672830172, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   emptySPSprite: {fileID: -419928012, guid: c24fa17b1e0e56b44a28f933fc61d136, type: 3}
   _buttonText: {fileID: 4821994025315047221}

@@ -165,6 +165,8 @@ public class Hero : Unit
         base.ExitBattle(currentHero);
         _controller.ExitBattle();
 
+        currentShield = 0;
+
         RemoveAllAlterations();
 
         if (currentHero == this) return;

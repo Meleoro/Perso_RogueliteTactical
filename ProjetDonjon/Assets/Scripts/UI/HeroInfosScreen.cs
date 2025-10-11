@@ -14,8 +14,8 @@ public class HeroInfosScreen : MonoBehaviour
     [SerializeField] private float closeDuration;
 
     [Header("Actions")]
-    public Action Open;
-    public Action Close;
+    public Action OnShow;
+    public Action OnHide;
 
     [Header("Private Infos")]
     private HeroData heroData;
@@ -125,7 +125,7 @@ public class HeroInfosScreen : MonoBehaviour
 
         HeroesManager.Instance.Heroes[currentHeroIndex].Controller.StopControl();
 
-        Open.Invoke();
+        OnShow.Invoke();
 
         isOpenning = true;
         currentInventory = hero.Inventory;
@@ -150,7 +150,7 @@ public class HeroInfosScreen : MonoBehaviour
 
         HeroesManager.Instance.Heroes[HeroesManager.Instance.CurrentHeroIndex].Controller.RestartControl();
 
-        Close.Invoke();
+        OnHide.Invoke();
 
         _mainRectParent.UChangePosition(closeDuration, _hiddenInfoScreenPosition.position, CurveType.EaseOutCubic);
         currentInventory.RectTransform.UChangePosition(closeDuration, _hiddenInventoryPosition.position, CurveType.EaseOutCubic);
