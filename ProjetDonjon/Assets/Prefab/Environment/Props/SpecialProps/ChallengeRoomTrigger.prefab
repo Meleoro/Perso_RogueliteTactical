@@ -101,7 +101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: -2
-  publicOffset: 0
+  PublicOffset: 0
   _spriteRenderer: {fileID: 6003424801943754666}
   _heroParentTr: {fileID: 0}
 --- !u!1 &3413013529619005349
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   offset: 2
-  publicOffset: 0
+  PublicOffset: 0
   _spriteRenderer: {fileID: 2098807091178172425}
   _heroParentTr: {fileID: 0}
 --- !u!1 &4884620835923897838
@@ -261,6 +261,7 @@ MonoBehaviour:
   displayedDitherValue: 2
   hiddenDitherValue: -2
   lootPrefab: {fileID: 6116046027794798314, guid: 8529cd8fcc49e9f4f958669b6e3cdac4, type: 3}
+  relicPrefab: {fileID: 6701382241377333428, guid: 64d99f6a61a190b4693a2ea00e73977b, type: 3}
   _spriteRenderer: {fileID: 2098807091178172425}
   _collider: {fileID: 1917999599689523477}
   _room: {fileID: 0}

@@ -1,13 +1,15 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utilities;
 
-public class ChallengeTrigger : MonoBehaviour, IInteractible
+public class ChallengeChest : MonoBehaviour, IInteractible
 {
     [Header("Parameters")]
     [SerializeField] private float displayedDitherValue;
     [SerializeField] private float hiddenDitherValue;
     [SerializeField] private Loot lootPrefab;
+    [SerializeField] private Relic relicPrefab;
 
     [Header("Private Infos")]
     private bool isActivated = false;
@@ -25,7 +27,7 @@ public class ChallengeTrigger : MonoBehaviour, IInteractible
     private void Start()
     {
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
-        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
+        possibleLoots = ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
     }
 
     private void GenerateLoot()
@@ -60,12 +62,18 @@ public class ChallengeTrigger : MonoBehaviour, IInteractible
 
         yield return new WaitForSeconds(openDuration * 0.25f);
 
+        // Relic Spawn
+        RelicData relicData = RelicsManager.Instance.TryRelicSpawn(RelicSpawnType.TrialChestSpawn,
+            ProceduralGenerationManager.Instance.CurrentFloor, 0);
+        if (relicData != null)
+        {
+            Relic newRelic = Instantiate(relicPrefab, transform.position, Quaternion.Euler(0, 0, 0));
+            newRelic.Initialise(relicData);
+        }
+
         GenerateLoot();
-        //_chestLight.ULerpIntensity(openDuration * 0.03f, 3f);
 
         yield return new WaitForSeconds(openDuration * 0.03f);
-
-        //_chestLight.ULerpIntensity(openDuration * 0.05f, 0f);
     }
 
 

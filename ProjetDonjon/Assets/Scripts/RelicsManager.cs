@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utilities;
+using Random = UnityEngine.Random;
 
 public class RelicsManager : GenericSingletonClass<RelicsManager>, ISaveable
 {
@@ -44,6 +45,7 @@ public class RelicsManager : GenericSingletonClass<RelicsManager>, ISaveable
 
             OnRelicObtained.Invoke(data, i);
             PossessedRelicIndexes[i] = true;
+            currentAvailableRelics.Remove(allRelics[i]);
 
             break;
         }
@@ -53,11 +55,11 @@ public class RelicsManager : GenericSingletonClass<RelicsManager>, ISaveable
     public void StartExploration(int enviroIndex)
     {
         int startIndex = enviroIndex * 12;
-        currentAvailableRelics.Clear();
+        currentAvailableRelics = new List<RelicData>();
 
         for(int i = 0; i < 12; i++)
         {
-            if (i >= allRelics.Length) return;
+            if (i + startIndex >= allRelics.Length) return;
             if (PossessedRelicIndexes[i + startIndex]) continue;
 
             currentAvailableRelics.Add(allRelics[i]);
@@ -68,32 +70,11 @@ public class RelicsManager : GenericSingletonClass<RelicsManager>, ISaveable
 
     #region Verify Relic Spawn 
 
-    public RelicData TryBattleEndSpawn(int floorIndex, float probaModificator)
+    public RelicData TryRelicSpawn(RelicSpawnType eventType, int floorIndex, float probaModificator)
     {
-        RelicData[] possibeRelics = GetAllRelicsOfSpawnType(RelicSpawnType.BattleEndSpawn);
+        RelicData[] possibeRelics = GetAllRelicsOfSpawnType(eventType);
 
-        return null;
-    }
-
-    public RelicData TryBossBattleEndSpawn(int floorIndex, float probaModificator)
-    {
-        RelicData[] possibeRelics = GetAllRelicsOfSpawnType(RelicSpawnType.BossBattleEndSpawn);
-
-        return null;
-    }
-
-    public RelicData TryNormalChestSpawn(int floorIndex, float probaModificator)
-    {
-        RelicData[] possibeRelics = GetAllRelicsOfSpawnType(RelicSpawnType.NormalChestSpawn);
-
-        return null;
-    }
-
-    public RelicData TryTrialChestSpawn(int floorIndex, float probaModificator)
-    {
-        RelicData[] possibeRelics = GetAllRelicsOfSpawnType(RelicSpawnType.TrialChestSpawn);
-
-        return null;
+        return GetSpawnedRelic(possibeRelics, floorIndex);
     }
 
     private RelicData[] GetAllRelicsOfSpawnType(RelicSpawnType spawnType)
@@ -102,12 +83,26 @@ public class RelicsManager : GenericSingletonClass<RelicsManager>, ISaveable
 
         for(int i = 0; i < currentAvailableRelics.Count; i++)
         {
-            if (currentAvailableRelics[i].spawnType != spawnType) continue;
+            if (currentAvailableRelics[i].spawnType != spawnType && currentAvailableRelics[i].spawnType != RelicSpawnType.Everywhere) continue;
 
             result.Add(currentAvailableRelics[i]);
         }
 
         return result.ToArray();
+    }
+
+    private RelicData GetSpawnedRelic(RelicData[] possibleRelics, int floorIndex)
+    {
+        for(int i = 0;i < possibleRelics.Length; i++)
+        {
+            int pickedProba = Random.Range(0, 100);
+            if (possibleRelics[i].spawnProbaPerFloor[floorIndex] > pickedProba)
+            {
+                return possibleRelics[i];
+            }
+        }
+
+        return null;
     }
 
     #endregion

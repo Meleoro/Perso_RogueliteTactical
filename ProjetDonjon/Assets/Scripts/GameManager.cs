@@ -41,7 +41,8 @@ public class GameManager : GenericSingletonClass<GameManager>
         UIMetaManager.Instance.QuitMetaMenu();
         IsInExplo = true;
 
-        UIManager.Instance.StartExploration();
+        UIManager.Instance.StartExploration(enviroData);
+        RelicsManager.Instance.StartExploration(enviroData.enviroIndex);
 
         ProceduralGenerationManager.Instance.StartExploration(enviroData);
     }
@@ -49,11 +50,11 @@ public class GameManager : GenericSingletonClass<GameManager>
 
     public IEnumerator EndExplorationCoroutine()
     {
-        UIManager.Instance.FadeScreen(0.8f, 1);
+        UIManager.Instance.FloorTransition.FadeScreen(0.8f, 1);
 
         yield return new WaitForSeconds(1);
 
-        UIManager.Instance.FadeScreen(0.8f, 0);
+        UIManager.Instance.FloorTransition.FadeScreen(0.8f, 0);
 
         ProceduralGenerationManager.Instance.EndExploration();
         HeroesManager.Instance.EndExploration();

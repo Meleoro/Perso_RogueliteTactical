@@ -21,7 +21,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Start()
     {
-        possibleSpawns = ProceduralGenerationManager.Instance?.enviroData.enemySpawnsPerFloor[ProceduralGenerationManager.Instance.CurrentFloor].possibleEnemies;
+        possibleSpawns = ProceduralGenerationManager.Instance?.EnviroData.enemySpawnsPerFloor[ProceduralGenerationManager.Instance.CurrentFloor].possibleEnemies;
     }
 
 

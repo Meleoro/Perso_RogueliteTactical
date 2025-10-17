@@ -29,7 +29,7 @@ public class UIManager : GenericSingletonClass<UIManager>
     public AlterationDetailsPanel AlterationDetailsPanel { get { return _alterationDetailsPanel; } }
     public CoinUI CoinUI { get { return _coinUI; } }
     public Minimap Minimap { get { return _minimap; } }
-    public FloorTransitionText FloorTransitionText { get { return _floorTransitionText; } }
+    public FloorTransition FloorTransition { get { return _floorTransition; } }
     public HeroInfosScreen HeroInfosScreen { get { return _heroInfosScreen; } }
 
     [Header("Actions")]
@@ -47,10 +47,9 @@ public class UIManager : GenericSingletonClass<UIManager>
     [SerializeField] private SkillsMenu _skillsMenu;
     [SerializeField] private AlterationDetailsPanel _alterationDetailsPanel;
     [SerializeField] private CollectionMenu _collectionMenu;
-    [SerializeField] private Image _transitionFadeImage;
     [SerializeField] private CoinUI _coinUI;
     [SerializeField] private Minimap _minimap;
-    [SerializeField] private FloorTransitionText _floorTransitionText;
+    [SerializeField] private FloorTransition _floorTransition;
 
     [Header("References Hero Infos")]
     [SerializeField] private HeroInfoPanel[] _heroInfoPanels1H;
@@ -61,22 +60,6 @@ public class UIManager : GenericSingletonClass<UIManager>
     [SerializeField] private Animator _heroInfoPanelsAnimator3H;
 
 
-    private void Start()
-    {
-        _inventoriesManager.OnInventoryOpen += OpenInventory;
-
-        _heroInfosScreen.OnShow += () => currentState = UIState.HeroesInfos;
-        _heroInfosScreen.OnHide += () => currentState = UIState.Nothing;
-
-        _skillTreesManager.OnShow += () => currentState = UIState.SkillTrees;
-        _skillTreesManager.OnHide += () => currentState = UIState.Nothing;
-
-        _skillsMenu.OnShow += () => currentState = UIState.Skills;
-        _skillsMenu.OnHide += () => currentState = UIState.Nothing;
-
-        _transitionFadeImage.color = new Color(_transitionFadeImage.color.r, _transitionFadeImage.color.g, _transitionFadeImage.color.b, 1);
-        StartCoroutine(FloorTransitionText.IntroCoroutine(2f));
-    }
 
     private void Update()
     {
@@ -147,28 +130,46 @@ public class UIManager : GenericSingletonClass<UIManager>
     }
 
 
-    public void StartExploration()
+    public void StartExploration(EnviroData enviroData)
     {
         _collectionMenu.OnShow += () => currentState = UIState.Collection;
         _collectionMenu.OnHide += () => currentState = UIState.Nothing;
+
+        _inventoriesManager.OnInventoryOpen += OpenInventory;
+
+        _heroInfosScreen.OnShow += () => currentState = UIState.HeroesInfos;
+        _heroInfosScreen.OnHide += () => currentState = UIState.Nothing;
+
+        _skillTreesManager.OnShow += () => currentState = UIState.SkillTrees;
+        _skillTreesManager.OnHide += () => currentState = UIState.Nothing;
+
+        _skillsMenu.OnShow += () => currentState = UIState.Skills;
+        _skillsMenu.OnHide += () => currentState = UIState.Nothing;
+
+        _floorTransition.StartTransition(enviroData, 0);
     }
 
     public void EndExploration()
     {
         _collectionMenu.OnShow -= () => currentState = UIState.Collection;
         _collectionMenu.OnHide -= () => currentState = UIState.Nothing;
+
+        _inventoriesManager.OnInventoryOpen -= OpenInventory;
+
+        _heroInfosScreen.OnShow -= () => currentState = UIState.HeroesInfos;
+        _heroInfosScreen.OnHide -= () => currentState = UIState.Nothing;
+
+        _skillTreesManager.OnShow -= () => currentState = UIState.SkillTrees;
+        _skillTreesManager.OnHide -= () => currentState = UIState.Nothing;
+
+        _skillsMenu.OnShow -= () => currentState = UIState.Skills;
+        _skillsMenu.OnHide -= () => currentState = UIState.Nothing;
     }
 
 
     public void OpenInventory()
     {
         currentState = UIState.Inventories;
-    }
-
-
-    public void FadeScreen(float duration, float finalValue)
-    {
-        _transitionFadeImage.UFadeImage(duration, finalValue);
     }
 
 

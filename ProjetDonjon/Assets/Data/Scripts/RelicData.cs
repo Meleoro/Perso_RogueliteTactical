@@ -17,8 +17,8 @@ public class RelicData : ScriptableObject
 
 public enum RelicSpawnType
 {
+    Everywhere,
     BattleEndSpawn,
-    BossBattleEndSpawn,
     TrialChestSpawn,
     NormalChestSpawn
 }

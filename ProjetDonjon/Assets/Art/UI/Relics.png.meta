@@ -115,10 +115,10 @@ TextureImporter:
       name: Relics_0
       rect:
         serializedVersion: 2
-        x: 20
-        y: 466
-        width: 26
-        height: 26
+        x: 21
+        y: 467
+        width: 24
+        height: 24
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -137,10 +137,10 @@ TextureImporter:
       name: Relics_1
       rect:
         serializedVersion: 2
-        x: 66
-        y: 466
-        width: 29
-        height: 28
+        x: 67
+        y: 467
+        width: 27
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -159,10 +159,10 @@ TextureImporter:
       name: Relics_2
       rect:
         serializedVersion: 2
-        x: 114
-        y: 464
-        width: 29
-        height: 30
+        x: 115
+        y: 465
+        width: 27
+        height: 28
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,10 +181,10 @@ TextureImporter:
       name: Relics_3
       rect:
         serializedVersion: 2
-        x: 162
-        y: 467
-        width: 28
-        height: 28
+        x: 163
+        y: 468
+        width: 26
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -203,10 +203,10 @@ TextureImporter:
       name: Relics_4
       rect:
         serializedVersion: 2
-        x: 211
-        y: 466
-        width: 25
-        height: 28
+        x: 212
+        y: 467
+        width: 23
+        height: 26
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -221,11 +221,121 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: Relics_5
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 466
+        width: 23
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0523e6df3cb837348a1d7afec703c74b
+      internalID: 1503466479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Relics_6
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 468
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 27b82b756e6414743b8c14fc2dec8c4d
+      internalID: -732707823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Relics_7
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 466
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b5ae370deab1fe546a5c90763315005a
+      internalID: 775175084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Relics_8
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 466
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e98563bcf8e147643bb87e3c3f550ddb
+      internalID: -535689475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Relics_9
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 468
+        width: 30
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc501ba63d6b90a44a0f5695397700f5
+      internalID: 1066309943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: ba701456c5c9a9c4196988195118a55b
     internalID: 0
     vertices: []
     indices: 
@@ -240,6 +350,11 @@ TextureImporter:
       Relics_2: -5310228929941939868
       Relics_3: -5265623100913011340
       Relics_4: 4982871040124427490
+      Relics_5: 1503466479
+      Relics_6: -732707823
+      Relics_7: 775175084
+      Relics_8: -535689475
+      Relics_9: 1066309943
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

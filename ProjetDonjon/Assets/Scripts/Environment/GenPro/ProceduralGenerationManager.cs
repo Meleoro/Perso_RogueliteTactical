@@ -18,7 +18,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
     }
 
     [Header("Parameters")]
-    public EnviroData enviroData;
+    [SerializeField] private EnviroData enviroData;
     [SerializeField] private Vector2Int roomSizeUnits;
     [SerializeField] private Vector2 offsetRoomCenter;
     [SerializeField] private RoomGlobalCollider roomGlobalColliderPredab;
@@ -33,6 +33,7 @@ public class ProceduralGenerationManager : GenericSingletonClass<ProceduralGener
 
     [Header("Public Infos")]
     public int CurrentFloor { get { return currentFloor; } }
+    public EnviroData EnviroData { get { return enviroData; } }
 
     [Header("References")]
     [SerializeField] private HeroesManager _heroesManager;

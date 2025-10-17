@@ -181,16 +181,11 @@ public class HeroesManager : GenericSingletonClass<HeroesManager>, ISaveable
     {
         heroes[currentHeroIndex].Controller.AutoMove(heroes[currentHeroIndex].transform.position + Vector3.up * 2f);
 
-        UIManager.Instance.FadeScreen(1, 1);
-        StartCoroutine(UIManager.Instance.FloorTransitionText.ChangeFloorCoroutine(_genProScript.CurrentFloor + 2, 2.5f));
+        UIManager.Instance.FloorTransition.StartTransition(_genProScript.EnviroData, _genProScript.CurrentFloor + 1);
 
         yield return new WaitForSeconds(1);
 
         _genProScript.GenerateNextFloor();
-
-        yield return new WaitForSeconds(1f);
-
-        UIManager.Instance.FadeScreen(1, 0);
 
         heroes[currentHeroIndex].Controller.StopAutoMove();
     }

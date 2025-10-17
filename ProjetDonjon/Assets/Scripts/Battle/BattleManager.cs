@@ -7,11 +7,15 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Utilities;
 using static Enums;
+using Random = UnityEngine.Random;
 
 public class BattleManager : GenericSingletonClass<BattleManager>
 {
     [Header("Parameters")]
     [SerializeField] private Tile[] holeTiles;
+    [SerializeField] private Loot lootPrefab;
+    [SerializeField] private Relic relicPrefab;
+    [SerializeField] private Coin coinPrefab;
 
     [Header("Actions")]
     public Action OnMoveUnit;
@@ -202,6 +206,60 @@ public class BattleManager : GenericSingletonClass<BattleManager>
         HeroesManager.Instance.ExitBattle();
 
         _timeline.Disappear();
+    }
+
+    public void BattleEndRewards(AIUnit lastUnit)
+    {
+        // Relic Spawn
+        RelicData relicData = RelicsManager.Instance.TryRelicSpawn(RelicSpawnType.BattleEndSpawn, 
+            ProceduralGenerationManager.Instance.CurrentFloor, 0);
+        if(relicData != null)
+        {
+            Relic newRelic = Instantiate(relicPrefab, lastUnit.transform.position, Quaternion.Euler(0, 0, 0));
+            newRelic.Initialise(relicData);
+        }
+
+        // Loot Spawn
+        SpawnBattleEndLoot(lastUnit);
+        if (lastUnit.IsBoss)
+        {
+            SpawnBattleEndLoot(lastUnit);
+            SpawnBattleEndLoot(lastUnit);
+        }
+
+        // Coin Spawn
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minBattleCoins,
+            ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxBattleCoins);
+
+        for (int i = 0; i < pickedCoinsAmount; i++)
+        {
+            Coin coin = Instantiate(coinPrefab, transform.position, Quaternion.Euler(0, 0, 0), UIManager.Instance.CoinUI.transform);
+            coin.transform.position = transform.position;
+        }
+    }
+
+    private void SpawnBattleEndLoot(AIUnit lastUnit)
+    {
+        PossibleLootData[] possibleLoots =
+            ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].battleEndPossibleLoots;
+
+        int pickedPercentage = Random.Range(0, 100);
+        int currentSum = 0;
+
+        for (int i = 0; i < possibleLoots.Length; i++)
+        {
+            currentSum += possibleLoots[i].probability;
+
+            if (currentSum > pickedPercentage)
+            {
+                if (possibleLoots[i].loot is null) break;
+
+                Loot newLoot = Instantiate(lootPrefab, lastUnit.transform.position, Quaternion.Euler(0, 0, 0));
+                newLoot.Initialise(possibleLoots[i].loot);
+
+                break;
+            }
+        }
     }
 
     public void StartBattleEndCutscene()

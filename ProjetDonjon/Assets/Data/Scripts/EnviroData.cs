@@ -9,6 +9,8 @@ public class EnviroData : ScriptableObject
     [TextArea] public string enviroDescription;
     public string enviroDangerText;
     public Sprite enviroIllustration;
+    public int enviroIndex;
+    public int[] recommandedLevels;
 
     [Header("Main Generation")]
     public int minDistGoldenPath;

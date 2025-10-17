@@ -158,30 +158,6 @@ public class AIUnit : Unit
         _ui.ShowUnitUI();
     }
 
-    private void SpawnLoot()
-    {
-        PossibleLootData[] possibleLoots =
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].battleEndPossibleLoots;
-
-        int pickedPercentage = Random.Range(0, 100);
-        int currentSum = 0;
-
-        for (int i = 0; i < possibleLoots.Length; i++)
-        {
-            currentSum += possibleLoots[i].probability;
-
-            if (currentSum > pickedPercentage)
-            {
-                if (possibleLoots[i].loot is null) break;
-
-                Loot newLoot = Instantiate(lootPrefab, transform.position, Quaternion.Euler(0, 0, 0));
-                newLoot.Initialise(possibleLoots[i].loot);
-
-                break;
-            }
-        }
-    }
-
     private IEnumerator LastEnemyDisappearCoroutine(float duration)
     {
         CameraManager.Instance.FocusOnTr(transform, 3f);
@@ -191,22 +167,7 @@ public class AIUnit : Unit
 
         yield return new WaitForSeconds(duration * 0.75f);
 
-        // loot generation
-        SpawnLoot();
-        if (isBoss)
-        {
-            SpawnLoot();
-            SpawnLoot();
-        }
-
-        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minBattleCoins,
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxBattleCoins);
-
-        for (int i = 0; i < pickedCoinsAmount; i++)
-        {
-            Coin coin = Instantiate(coinPrefab, transform.position, Quaternion.Euler(0, 0, 0), UIManager.Instance.CoinUI.transform);
-            coin.transform.position = transform.position;
-        }
+        BattleManager.Instance.BattleEndRewards(this);
 
         StartCoroutine(DisappearCoroutine(duration * 0.25f));
     }

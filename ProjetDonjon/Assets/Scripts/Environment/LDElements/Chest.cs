@@ -8,6 +8,7 @@ public class Chest : MonoBehaviour, IInteractible
     [Header("Parameters")]
     [SerializeField] private Loot lootPrefab;
     [SerializeField] private Coin coinPrefab;
+    [SerializeField] private Relic relicPrefab;
 
     [Header("Private Infos")]
     private bool isOpened;
@@ -23,7 +24,7 @@ public class Chest : MonoBehaviour, IInteractible
     private void Start()
     {
         _spriteRenderer.material.SetVector("_TextureSize", new Vector2(_spriteRenderer.sprite.texture.width, _spriteRenderer.sprite.texture.height));
-        possibleLoots = ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
+        possibleLoots = ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].chestPossibleLoots;
     }
 
 
@@ -45,8 +46,8 @@ public class Chest : MonoBehaviour, IInteractible
             }
         }
 
-        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minChestCoins,
-            ProceduralGenerationManager.Instance.enviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxChestCoins);
+        int pickedCoinsAmount = Random.Range(ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].minChestCoins,
+            ProceduralGenerationManager.Instance.EnviroData.lootPerFloors[ProceduralGenerationManager.Instance.CurrentFloor].maxChestCoins);
 
         for(int i = 0; i < pickedCoinsAmount; i++)
         {
@@ -67,6 +68,15 @@ public class Chest : MonoBehaviour, IInteractible
         _animator.SetTrigger("Open");
 
         yield return new WaitForSeconds(openDuration * 0.25f);
+
+        // Relic Spawn
+        RelicData relicData = RelicsManager.Instance.TryRelicSpawn(RelicSpawnType.NormalChestSpawn,
+            ProceduralGenerationManager.Instance.CurrentFloor, 0);
+        if (relicData != null)
+        {
+            Relic newRelic = Instantiate(relicPrefab, transform.position, Quaternion.Euler(0, 0, 0));
+            newRelic.Initialise(relicData);
+        }
 
         GenerateLoot();
         _chestLight.ULerpIntensity(openDuration * 0.03f, 3f);
